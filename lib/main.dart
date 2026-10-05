@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:skinx/learn_screen.dart';
+import 'package:skinx/app_shell.dart';
 
 void main() {
   runApp(const SkinX());
@@ -16,7 +16,7 @@ class SkinX extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const LearnScreen(),
+      home: const AppShell(),
     );
   }
 }
