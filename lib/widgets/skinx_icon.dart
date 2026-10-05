@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 const _teal = Color(0xFF14665E);
 
-enum SkinXIconType { globe, chevronDown, arrowUpRight, search, heart, chevronRight, play, book, history, scan, chat, account, calendar, folderLock }
+enum SkinXIconType { globe, chevronDown, arrowUpRight, search, heart, chevronRight, play, book, history, scan, chat, account, calendar, folderLock, camera, upload, info, checkCircle, image, expand, arrowUp, externalLink }
 
 class SkinXIcon extends StatelessWidget {
   const SkinXIcon(this.symbol, {required this.size, this.color = _teal});
@@ -130,6 +130,100 @@ class _SkinXIconPainter extends CustomPainter {
         );
         canvas.drawPath(
           Path()..moveTo(16, 15)..lineTo(16, 13)..cubicTo(16, 10, 20, 10, 20, 13)..lineTo(20, 15),
+          p,
+        );
+        break;
+      case SkinXIconType.camera:
+        canvas.drawPath(
+          Path()
+            ..moveTo(8, 5)
+            ..lineTo(9.5, 3)
+            ..lineTo(14.5, 3)
+            ..lineTo(16, 5)
+            ..lineTo(20, 5)
+            ..quadraticBezierTo(22, 5, 22, 7)
+            ..lineTo(22, 19)
+            ..quadraticBezierTo(22, 21, 20, 21)
+            ..lineTo(4, 21)
+            ..quadraticBezierTo(2, 21, 2, 19)
+            ..lineTo(2, 7)
+            ..quadraticBezierTo(2, 5, 4, 5)
+            ..close(),
+          p,
+        );
+        canvas.drawCircle(const Offset(12, 13), 4, p);
+        break;
+      case SkinXIconType.upload:
+        canvas.drawPath(
+          Path()
+            ..moveTo(12, 15)
+            ..lineTo(12, 3)
+            ..moveTo(7, 8)
+            ..lineTo(12, 3)
+            ..lineTo(17, 8)
+            ..moveTo(4, 15)
+            ..lineTo(4, 21)
+            ..lineTo(20, 21)
+            ..lineTo(20, 15),
+          p,
+        );
+        break;
+      case SkinXIconType.info:
+        canvas.drawCircle(const Offset(12, 12), 9, p);
+        canvas.drawCircle(const Offset(12, 7.5), 1, Paint()..color = color);
+        canvas.drawLine(const Offset(12, 11), const Offset(12, 17), p);
+        break;
+      case SkinXIconType.checkCircle:
+        canvas.drawCircle(const Offset(12, 12), 9, p);
+        canvas.drawPath(Path()..moveTo(7.5, 12)..lineTo(10.5, 15)..lineTo(16.5, 9), p);
+        break;
+      case SkinXIconType.image:
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(const Rect.fromLTRB(3, 3, 21, 21), const Radius.circular(2)),
+          p,
+        );
+        canvas.drawCircle(const Offset(8, 8), 1.5, p);
+        canvas.drawPath(
+          Path()..moveTo(4, 19)..lineTo(10, 13)..lineTo(13, 16)..lineTo(17, 11)..lineTo(21, 15),
+          p,
+        );
+        break;
+      case SkinXIconType.expand:
+        canvas.drawPath(
+          Path()
+            ..moveTo(9, 3)..lineTo(3, 3)..lineTo(3, 9)
+            ..moveTo(3, 3)..lineTo(9, 9)
+            ..moveTo(15, 3)..lineTo(21, 3)..lineTo(21, 9)
+            ..moveTo(21, 3)..lineTo(15, 9)
+            ..moveTo(21, 15)..lineTo(21, 21)..lineTo(15, 21)
+            ..moveTo(21, 21)..lineTo(15, 15)
+            ..moveTo(9, 21)..lineTo(3, 21)..lineTo(3, 15)
+            ..moveTo(3, 21)..lineTo(9, 15),
+          p,
+        );
+        break;
+      case SkinXIconType.arrowUp:
+        canvas.drawPath(
+          Path()..moveTo(12, 20)..lineTo(12, 4)..moveTo(5, 11)..lineTo(12, 4)..lineTo(19, 11),
+          p,
+        );
+        break;
+      case SkinXIconType.externalLink:
+        canvas.drawPath(
+          Path()
+            ..moveTo(11, 5)
+            ..lineTo(5, 5)
+            ..quadraticBezierTo(3, 5, 3, 7)
+            ..lineTo(3, 19)
+            ..quadraticBezierTo(3, 21, 5, 21)
+            ..lineTo(17, 21)
+            ..quadraticBezierTo(19, 21, 19, 19)
+            ..lineTo(19, 13)
+            ..moveTo(13, 3)
+            ..lineTo(21, 3)
+            ..lineTo(21, 11)
+            ..moveTo(21, 3)
+            ..lineTo(10, 14),
           p,
         );
         break;
