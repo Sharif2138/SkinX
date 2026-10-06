@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 const _teal = Color(0xFF14665E);
 
-enum SkinXIconType { globe, chevronDown, arrowUpRight, search, heart, chevronRight, play, book, history, scan, chat, account, calendar, folderLock, camera, upload, info, checkCircle, image, expand, arrowUp, externalLink }
+enum SkinXIconType { globe, chevronDown, arrowUpRight, search, heart, chevronRight, play, book, history, scan, chat, account, calendar, folderLock, camera, upload, info, checkCircle, image, expand, arrowUp, externalLink, eye, eyeOff, shieldCheck, signOut }
 
 class SkinXIcon extends StatelessWidget {
   const SkinXIcon(this.symbol, {required this.size, this.color = _teal});
@@ -224,6 +224,48 @@ class _SkinXIconPainter extends CustomPainter {
             ..lineTo(21, 11)
             ..moveTo(21, 3)
             ..lineTo(10, 14),
+          p,
+        );
+        break;
+      case SkinXIconType.eye:
+      case SkinXIconType.eyeOff:
+        canvas.drawPath(
+          Path()..moveTo(2.5, 12)..cubicTo(6.5, 3, 17.5, 3, 21.5, 12)..cubicTo(17.5, 21, 6.5, 21, 2.5, 12)..close(),
+          p,
+        );
+        canvas.drawCircle(const Offset(12, 12), 3.2, p);
+        if (symbol == SkinXIconType.eyeOff) {
+          canvas.drawLine(const Offset(3, 3), const Offset(21, 21), p);
+        }
+        break;
+      case SkinXIconType.shieldCheck:
+        canvas.drawPath(
+          Path()
+            ..moveTo(12, 2)
+            ..lineTo(20, 6)
+            ..lineTo(20, 12)
+            ..cubicTo(19.5, 18, 15.5, 21, 12, 22)
+            ..cubicTo(8.5, 21, 4.5, 18, 4, 12)
+            ..lineTo(4, 6)
+            ..close(),
+          p,
+        );
+        canvas.drawPath(Path()..moveTo(8, 12)..lineTo(11, 15)..lineTo(16, 10), p);
+        break;
+      case SkinXIconType.signOut:
+        canvas.drawPath(
+          Path()
+            ..moveTo(11, 3)
+            ..lineTo(5, 3)
+            ..quadraticBezierTo(3, 3, 3, 5)
+            ..lineTo(3, 19)
+            ..quadraticBezierTo(3, 21, 5, 21)
+            ..lineTo(11, 21)
+            ..moveTo(10, 12)
+            ..lineTo(21, 12)
+            ..moveTo(16, 7)
+            ..lineTo(21, 12)
+            ..lineTo(16, 17),
           p,
         );
         break;

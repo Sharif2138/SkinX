@@ -19,13 +19,13 @@ class SkinXHeader extends StatelessWidget {
       height: 40,
       child: Row(
         children: [
-          SvgPicture.asset('assets/skinx_logo.svg', width: 20, height: 20),
+          SvgPicture.asset('assets/skinx_logo.svg', width: 27, height: 27),
           const SizedBox(width: 10),
           const Text(
-            'skinX',
+            'SkinX',
             style: TextStyle(
               fontFamily: 'Roboto',
-              fontSize: 23,
+              fontSize: 18,
               fontWeight: FontWeight.w700,
               color: Color(0xFF193B38),
               height: 1.25,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'account_screen.dart';
 import 'ask_screen.dart';
 import 'history_screen.dart';
 import 'learn_screen.dart';
@@ -20,6 +21,7 @@ class AppShell extends StatefulWidget {
     this.isIllustrativePhoto = false,
     this.onAskQuestionSubmitted,
     this.onAskSourceTap,
+    this.accountScreen = const AccountScreen(),
   });
 
   final ValueChanged<SkinXDestination>? onNavigationTap;
@@ -32,6 +34,8 @@ class AppShell extends StatefulWidget {
   final bool isIllustrativePhoto;
   final ValueChanged<String>? onAskQuestionSubmitted;
   final ValueChanged<Uri>? onAskSourceTap;
+  // Supply account details and action callbacks through this screen.
+  final AccountScreen accountScreen;
 
   @override
   State<AppShell> createState() => _AppShellState();
@@ -41,13 +45,8 @@ class _AppShellState extends State<AppShell> {
   SkinXDestination _selectedDestination = SkinXDestination.learn;
 
   void _selectDestination(SkinXDestination destination) {
-    if (destination == SkinXDestination.learn ||
-        destination == SkinXDestination.history ||
-        destination == SkinXDestination.screen ||
-        destination == SkinXDestination.ask) {
-      FocusScope.of(context).unfocus();
-      setState(() => _selectedDestination = destination);
-    }
+    FocusScope.of(context).unfocus();
+    setState(() => _selectedDestination = destination);
     widget.onNavigationTap?.call(destination);
   }
 
@@ -69,6 +68,7 @@ class _AppShellState extends State<AppShell> {
             SkinXDestination.history => 1,
             SkinXDestination.screen => 2,
             SkinXDestination.ask => 3,
+            SkinXDestination.account => 4,
             _ => 0,
           },
           children: [
@@ -87,6 +87,7 @@ class _AppShellState extends State<AppShell> {
               onQuestionSubmitted: widget.onAskQuestionSubmitted,
               onSourceTap: widget.onAskSourceTap,
             ),
+            widget.accountScreen,
           ],
         ),
         bottomNavigationBar: SkinXBottomNavigationBar(
