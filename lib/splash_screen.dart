@@ -1,13 +1,40 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class SplashScreen extends StatelessWidget {
+import 'sign_up_screen.dart'; 
+
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key, this.statusText = 'Getting ready...'});
 
   final String statusText;
 
-  // Your startup logic decides when to leave this screen.
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer(const Duration(seconds: 3), () {
+      if (!mounted) return;
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const SignUpScreen()),
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -27,7 +54,9 @@ class SplashScreen extends StatelessWidget {
               if (constraints.maxHeight < 360) {
                 return SingleChildScrollView(
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.all(24),
                       child: Column(
@@ -35,7 +64,7 @@ class SplashScreen extends StatelessWidget {
                         children: [
                           const _Brand(),
                           const SizedBox(height: 32),
-                          _LoadingStatus(text: statusText),
+                          _LoadingStatus(text: widget.statusText),
                         ],
                       ),
                     ),
@@ -50,7 +79,7 @@ class SplashScreen extends StatelessWidget {
                     left: 24,
                     right: 24,
                     bottom: 52,
-                    child: _LoadingStatus(text: statusText),
+                    child: _LoadingStatus(text: widget.statusText),
                   ),
                 ],
               );
@@ -76,13 +105,24 @@ class _Brand extends StatelessWidget {
           const SizedBox(height: 24),
           const Text(
             'SkinX',
-            style: TextStyle(fontFamily: 'Roboto', fontSize: 28, fontWeight: FontWeight.w700, color: Color(0xFF193B38), height: 1.2),
+            style: TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 28,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF193B38),
+              height: 1.2,
+            ),
           ),
           const SizedBox(height: 10),
           const Text(
             'Skin-cancer education and\nAI-assisted screening',
             textAlign: TextAlign.center,
-            style: TextStyle(fontFamily: 'Roboto', fontSize: 14, color: Color(0xFF647D78), height: 1.5),
+            style: TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 14,
+              color: Color(0xFF647D78),
+              height: 1.5,
+            ),
           ),
         ],
       ),
@@ -111,7 +151,16 @@ class _LoadingStatus extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 12),
-        Text(text, textAlign: TextAlign.center, style: const TextStyle(fontFamily: 'Roboto', fontSize: 12, color: Color(0xFF647D78), height: 1.4)),
+        Text(
+          text,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontFamily: 'Roboto',
+            fontSize: 12,
+            color: Color(0xFF647D78),
+            height: 1.4,
+          ),
+        ),
       ],
     );
   }
@@ -124,6 +173,10 @@ class _Dot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(width: 5, height: 5, decoration: BoxDecoration(color: color, shape: BoxShape.circle));
+    return Container(
+      width: 5,
+      height: 5,
+      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+    );
   }
 }

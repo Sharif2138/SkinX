@@ -5,6 +5,7 @@ import 'sign_in_screen.dart';
 import 'widgets/skinx_account_type_selector.dart';
 import 'widgets/skinx_auth_field.dart';
 import 'widgets/skinx_header.dart';
+import 'app_shell.dart';
 
 const _ink = Color(0xFF193B38);
 const _teal = Color(0xFF14665E);
@@ -159,7 +160,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         SizedBox(
                           width: double.infinity,
                           child: FilledButton(
-                            onPressed: _submit,
+                            onPressed: () => Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (_) => const AppShell()),
+                            ),
                             style: FilledButton.styleFrom(
                               backgroundColor: _teal,
                               foregroundColor: Colors.white,

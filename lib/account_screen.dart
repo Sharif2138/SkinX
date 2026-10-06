@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'widgets/skinx_account_type_selector.dart';
 import 'widgets/skinx_header.dart';
 import 'widgets/skinx_icon.dart';
+import 'splash_screen.dart';
 
 const _ink = Color(0xFF193B38);
 const _teal = Color(0xFF14665E);
@@ -164,7 +165,9 @@ class _AccountScreenState extends State<AccountScreen> {
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: InkWell(
-                    onTap: widget.onSignOutTap,
+                    onTap: () => Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (_) => const SplashScreen()),
+                    ),
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(minHeight: 54),
                       child: Padding(

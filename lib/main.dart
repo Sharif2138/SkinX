@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:skinx/app_shell.dart';
+import 'package:skinx/splash_screen.dart';
 
 void main() {
   runApp(const SkinX());
@@ -16,7 +16,7 @@ class SkinX extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const AppShell(),
+      home: const SplashScreen(),
     );
   }
 }
