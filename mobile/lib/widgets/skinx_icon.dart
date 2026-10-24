@@ -5,7 +5,7 @@ const _teal = Color(0xFF14665E);
 enum SkinXIconType { globe, chevronDown, arrowUpRight, search, heart, chevronRight, play, book, history, scan, chat, account, calendar, folderLock, camera, upload, info, checkCircle, image, expand, arrowUp, externalLink, eye, eyeOff, shieldCheck, signOut }
 
 class SkinXIcon extends StatelessWidget {
-  const SkinXIcon(this.symbol, {required this.size, this.color = _teal});
+  const SkinXIcon(this.symbol, {super.key, required this.size, this.color = _teal});
 
   final SkinXIconType symbol;
   final double size;
