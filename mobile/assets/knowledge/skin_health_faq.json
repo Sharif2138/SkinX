@@ -7,7 +7,9 @@
       "When should I seek care?",
       "My wound is not healing",
       "My spot is bleeding",
-      "My skin lesion is growing"
+      "My skin lesion is growing",
+      "What are early symptoms of skin cancer?",
+      "What are the early warning signs of skin cancer?"
     ],
     "answer": "A new growth, a sore that does not heal, or a spot that grows, bleeds, crusts or changes needs assessment by a trained health professional. This is especially important for people with albinism. Please seek care promptly; an app cannot diagnose the cause.",
     "keywords": [
@@ -30,7 +32,10 @@
     "questions": [
       "How can I protect my skin from the sun?",
       "How do I prevent sun damage?",
-      "Do I need sunscreen?"
+      "Do I need sunscreen?",
+      "How to prevent skin cancer?",
+      "What can I do to avoid skin cancer?",
+      "How can I stop sun damage?"
     ],
     "answer": "Try to stay in the shade, especially around midday. Wear a wide-brimmed hat, protective clothing and sunglasses. Use broad-spectrum sunscreen SPF 30 or higher and reapply it as directed, especially outdoors. Sunscreen is one part of protection, not a reason to stay in strong sun longer.",
     "keywords": [
@@ -132,7 +137,9 @@
     "id": "melanoma",
     "questions": [
       "What is melanoma?",
-      "Can people with albinism get melanoma?"
+      "Can people with albinism get melanoma?",
+      "What is the meaning of melanoma?",
+      "Tell me about melanoma"
     ],
     "answer": "Melanoma is a type of skin cancer. It can sometimes have little or no dark pigment. Any new, changing or concerning lesion should be examined. SkinX cannot identify melanoma as a separate diagnosis.",
     "keywords": [
@@ -146,7 +153,8 @@
     "id": "checkups",
     "questions": [
       "How often should I check my skin?",
-      "Who should I visit?"
+      "Who should I visit?",
+      "Is a yearly dermatologist check helpful?"
     ],
     "answer": "Regularly look for new or changing areas of skin. If possible, ask a trained health professional how often you need a full skin check. If a sore is not healing or a spot is changing, do not wait for a routine check.",
     "keywords": [
@@ -165,7 +173,9 @@
     "questions": [
       "Why is my wound not healing?",
       "I have a sore that will not heal",
-      "My skin has had a wound for weeks"
+      "My skin has had a wound for weeks",
+      "My wound has not healed for weeks",
+      "Why is a skin wound taking so long to heal?"
     ],
     "answer": "A sore or wound that does not heal needs assessment by a health professional. Persistent sores can have several causes, including skin cancer. Arrange a clinical check promptly even if an app says Less suspicious.",
     "keywords": [
@@ -184,7 +194,9 @@
     "questions": [
       "A spot on my skin is bleeding",
       "Why does my skin spot bleed?",
-      "My lesion bleeds when I touch it"
+      "My lesion bleeds when I touch it",
+      "My spot keeps bleeding",
+      "My sore keeps bleeding"
     ],
     "answer": "A skin spot that bleeds repeatedly, grows or becomes an open sore should be checked by a health professional promptly. Do not rely on an image screening result to decide whether to seek care.",
     "keywords": [
@@ -219,7 +231,9 @@
     "questions": [
       "What should I do after sunburn?",
       "My skin is red after the sun",
-      "How can I avoid sunburn?"
+      "How can I avoid sunburn?",
+      "What if I get a burn in the sun?",
+      "What should I do if I got sunburned?"
     ],
     "answer": "Move out of the sun and protect the affected skin. Keep the skin cool and hydrated. Seek medical care for severe burns, widespread blistering, fever, or feeling unwell. Prevent further exposure using clothing, shade and sunscreen.",
     "keywords": [
@@ -533,6 +547,1087 @@
       "specialist",
       "nearby",
       "access"
+    ],
+    "source": ""
+  },
+  {
+    "id": "sun_cloudy",
+    "questions": [
+      "Can the sun harm me on a cloudy day?",
+      "Do I need sunscreen when it is cloudy?",
+      "What about sun protection when it rains?",
+      "Is sunscreen necessary in cloudy weather?"
+    ],
+    "answer": "UV rays can reach your skin even when the sky is cloudy. If you spend time outside, keep using shade, clothing and sunscreen. Clouds do not make sun exposure completely safe.",
+    "keywords": [
+      "cloudy",
+      "clouds",
+      "overcast",
+      "cloudy-day",
+      "rain",
+      "uv"
+    ],
+    "source": "https://www.aad.org/public/everyday-care/sun-protection/shade-clothing-sunscreen/practice-safe-sun"
+  },
+  {
+    "id": "sun_morning_evening",
+    "questions": [
+      "Is the morning sun safe?",
+      "Does evening sun damage skin?",
+      "What time is the sun strongest?"
+    ],
+    "answer": "UV levels change during the day. Sun exposure is often strongest around midday, but you can still be exposed at other times. Protect your skin when outdoors and seek shade during the strongest sunlight.",
+    "keywords": [
+      "morning",
+      "evening",
+      "midday",
+      "uv",
+      "strongest",
+      "sunlight",
+      "time"
+    ],
+    "source": "https://www.aad.org/public/everyday-care/sun-protection/shade-clothing-sunscreen/practice-safe-sun"
+  },
+  {
+    "id": "shade",
+    "questions": [
+      "Is shade enough to protect my skin?",
+      "Can I still get sunburned in shade?",
+      "Does sitting under a tree help?"
+    ],
+    "answer": "Shade reduces direct sunlight, but reflected UV light can still reach you. Use shade together with protective clothing and sunscreen, especially when you are outside for a long time.",
+    "keywords": [
+      "shade",
+      "tree",
+      "umbrella",
+      "reflection",
+      "uv"
+    ],
+    "source": "https://www.aad.org/public/everyday-care/sun-protection/shade-clothing-sunscreen/practice-safe-sun"
+  },
+  {
+    "id": "sunscreen_choose",
+    "questions": [
+      "How do I choose sunscreen?",
+      "Which sunscreen is good for albinism?",
+      "Should I buy SPF 30 or SPF 50?",
+      "Are sun creams useful?",
+      "Which sun cream can I use?",
+      "What does sunblock do?"
+    ],
+    "answer": "Look for broad-spectrum sunscreen with SPF 30 or higher and water resistance. Higher SPF does not mean you can stay in strong sunlight without other protection. A pharmacist can help you choose a product that suits your skin.",
+    "keywords": [
+      "choose",
+      "buy",
+      "product",
+      "spf30",
+      "spf50",
+      "broad-spectrum",
+      "sunscreen"
+    ],
+    "source": "https://www.aad.org/public/everyday-care/sun-protection/shade-clothing-sunscreen/how-to-apply-sunscreen"
+  },
+  {
+    "id": "sunscreen_amount",
+    "questions": [
+      "How much sunscreen should I use?",
+      "Do I need sunscreen on my ears?",
+      "Where do I apply sunscreen?",
+      "How much sunscreen should I put?",
+      "How much sunscreen should I apply on my skin?"
+    ],
+    "answer": "Put enough sunscreen on all uncovered skin, including your ears, neck and feet. Adults often need around a shot-glass amount for the whole body. Ask someone for help with areas you cannot reach.",
+    "keywords": [
+      "amount",
+      "enough",
+      "apply",
+      "ears",
+      "neck",
+      "feet",
+      "body"
+    ],
+    "source": "https://www.aad.org/public/everyday-care/sun-protection/shade-clothing-sunscreen/how-to-apply-sunscreen"
+  },
+  {
+    "id": "sunscreen_reapply",
+    "questions": [
+      "Should I reapply sunscreen after sweating?",
+      "Do I reapply sunscreen after swimming?",
+      "Can sunscreen last all day?"
+    ],
+    "answer": "Reapply sunscreen at least every two hours while outdoors, and sooner after swimming or heavy sweating. Follow the instructions on the product. Sunscreen does not protect you for the entire day after one application.",
+    "keywords": [
+      "reapply",
+      "swimming",
+      "sweat",
+      "hours",
+      "sunscreen"
+    ],
+    "source": "https://www.aad.org/public/everyday-care/sun-protection/shade-clothing-sunscreen/how-to-apply-sunscreen"
+  },
+  {
+    "id": "sunscreen_lips",
+    "questions": [
+      "Do my lips need sunscreen?",
+      "How do I protect my lips from the sun?",
+      "Can lips burn in the sun?"
+    ],
+    "answer": "Lips can be damaged by the sun. Use lip balm with SPF 30 or higher and reapply as directed. Ask a clinician about a lip sore that keeps coming back, bleeds or does not heal.",
+    "keywords": [
+      "lips",
+      "lip",
+      "balm",
+      "spf"
+    ],
+    "source": "https://www.aad.org/public/everyday-care/sun-protection/shade-clothing-sunscreen/how-to-apply-sunscreen"
+  },
+  {
+    "id": "sunscreen_expired",
+    "questions": [
+      "Can I use expired sunscreen?",
+      "Does sunscreen expire?",
+      "Is an old sunscreen still safe?"
+    ],
+    "answer": "Check the expiration date and storage advice on your sunscreen. An expired or badly stored product may not protect you as expected. Replace it when possible and keep using clothing and shade.",
+    "keywords": [
+      "expired",
+      "expiration",
+      "old",
+      "storage",
+      "sunscreen"
+    ],
+    "source": "https://www.aad.org/public/everyday-care/sun-protection/shade-clothing-sunscreen/how-to-apply-sunscreen"
+  },
+  {
+    "id": "sunscreen_irritation",
+    "questions": [
+      "What if sunscreen irritates my skin?",
+      "My skin stings after sunscreen",
+      "Can sunscreen cause a rash?"
+    ],
+    "answer": "Some sunscreens can irritate sensitive skin. Stop using a product that causes a reaction and ask a pharmacist or clinician about alternatives. If the reaction is severe or affects breathing, get urgent medical help.",
+    "keywords": [
+      "sunscreen",
+      "irritation",
+      "stings",
+      "rash",
+      "allergic",
+      "reaction"
+    ],
+    "source": "https://www.aad.org/public/everyday-care/sun-protection/shade-clothing-sunscreen/how-to-apply-sunscreen"
+  },
+  {
+    "id": "clothing_upf",
+    "questions": [
+      "What is UPF clothing?",
+      "Are thin shirts enough for sun protection?",
+      "What clothes block UV?"
+    ],
+    "answer": "Long sleeves, trousers and tightly woven fabric help cover skin. Clothing marked with a UPF rating is designed to block more UV light. Thin, loosely woven or wet clothes may protect less.",
+    "keywords": [
+      "upf",
+      "fabric",
+      "weave",
+      "thin",
+      "long",
+      "sleeve",
+      "clothing"
+    ],
+    "source": "https://www.aad.org/public/everyday-care/sun-protection/shade-clothing-sunscreen/what-to-wear-protect-skin-from-sun"
+  },
+  {
+    "id": "hat_choice",
+    "questions": [
+      "Is a baseball cap enough?",
+      "What kind of hat should I wear?",
+      "Why wear a wide brim hat?"
+    ],
+    "answer": "A wide-brimmed hat covers more of the face, ears and neck than a baseball cap. Use it with other sun protection, especially sunscreen on areas the hat does not cover.",
+    "keywords": [
+      "hat",
+      "cap",
+      "brim",
+      "ears",
+      "neck"
+    ],
+    "source": "https://www.aad.org/public/everyday-care/sun-protection/shade-clothing-sunscreen/what-to-wear-protect-skin-from-sun"
+  },
+  {
+    "id": "sunglasses_uv",
+    "questions": [
+      "Are dark sunglasses enough?",
+      "Which sunglasses protect my eyes?",
+      "What does UV protection on glasses mean?"
+    ],
+    "answer": "Choose sunglasses labelled with UV protection. Dark lenses alone do not guarantee UV protection. A hat can also help reduce bright light around your eyes.",
+    "keywords": [
+      "sunglasses",
+      "uv",
+      "glasses",
+      "dark",
+      "lenses",
+      "eyes"
+    ],
+    "source": "https://www.aad.org/public/everyday-care/sun-protection/shade-clothing-sunscreen/what-to-wear-protect-skin-from-sun"
+  },
+  {
+    "id": "sun_outdoor_work",
+    "questions": [
+      "How can I protect myself when I work outside?",
+      "I work on a farm in the sun",
+      "How can outdoor workers prevent sun damage?"
+    ],
+    "answer": "Try to arrange shade and breaks during the hottest, brightest hours. Wear protective clothing and a broad-brimmed hat. Apply sunscreen to uncovered skin and reapply outdoors. Ask your workplace or community group about access to protection.",
+    "keywords": [
+      "work",
+      "farm",
+      "farming",
+      "field",
+      "outdoor",
+      "break",
+      "job",
+      "protection"
+    ],
+    "source": "https://www.aad.org/public/everyday-care/sun-protection/shade-clothing-sunscreen/practice-safe-sun"
+  },
+  {
+    "id": "sun_school",
+    "questions": [
+      "How can children with albinism stay safe at school?",
+      "My child plays outside at school",
+      "How should schools help students with albinism?"
+    ],
+    "answer": "A child with albinism may need a hat, sunscreen, shade and a place to rest out of strong sun. Families can discuss outdoor schedules and seating with teachers. Eye and vision support may also be important.",
+    "keywords": [
+      "children",
+      "school",
+      "student",
+      "pupils",
+      "teacher",
+      "play",
+      "playground"
+    ],
+    "source": "https://albinism.iarc.who.int/"
+  },
+  {
+    "id": "sun_car_window",
+    "questions": [
+      "Can sunlight through a window affect my skin?",
+      "Is it safe near a car window?",
+      "Does glass block all UV rays?"
+    ],
+    "answer": "Some ultraviolet light can pass through certain types of glass. Sitting beside a sunny window for long periods may still expose skin. Use shade or covering when practical, particularly on long journeys.",
+    "keywords": [
+      "car",
+      "window",
+      "bus",
+      "glass",
+      "travel",
+      "transport"
+    ],
+    "source": "https://www.aad.org/public/everyday-care/sun-protection/shade-clothing-sunscreen/practice-safe-sun"
+  },
+  {
+    "id": "sun_tanning",
+    "questions": [
+      "Is getting a tan healthy?",
+      "Can I tan safely?",
+      "Is sun tanning good for skin?"
+    ],
+    "answer": "Tanning is a sign that skin has reacted to UV exposure, not a sign of better health. Avoid deliberately tanning or burning your skin. Shade and sun protection help reduce UV damage.",
+    "keywords": [
+      "tan",
+      "tanning",
+      "bronze",
+      "tanning-bed"
+    ],
+    "source": "https://www.aad.org/public/everyday-care/sun-protection/shade-clothing-sunscreen/practice-safe-sun"
+  },
+  {
+    "id": "albinism_genetics",
+    "questions": [
+      "Is albinism inherited?",
+      "Is albinism contagious?",
+      "Can someone catch albinism?"
+    ],
+    "answer": "Albinism is a genetic condition that affects the production of melanin. It is not contagious and cannot spread through touch, food or living together. People with albinism deserve the same respect and opportunities as everyone else.",
+    "keywords": [
+      "inherited",
+      "genetics",
+      "genetic",
+      "contagious",
+      "catch",
+      "transmitted"
+    ],
+    "source": "https://albinism.iarc.who.int/"
+  },
+  {
+    "id": "albinism_skin",
+    "questions": [
+      "Why do people with albinism burn easily?",
+      "What does melanin do?",
+      "Why does albinism affect skin?"
+    ],
+    "answer": "Melanin helps protect skin from some UV damage. Many people with albinism have much less melanin, so sun exposure can damage their skin more easily. Regular protection and medical skin checks are important.",
+    "keywords": [
+      "melanin",
+      "pigment",
+      "albino",
+      "burning",
+      "burn",
+      "easily"
+    ],
+    "source": "https://albinism.iarc.who.int/"
+  },
+  {
+    "id": "albinism_vision",
+    "questions": [
+      "Does albinism affect eyesight?",
+      "Why is bright light difficult with albinism?",
+      "Can albinism cause low vision?"
+    ],
+    "answer": "Albinism can also affect eye development and vision. Bright light may be uncomfortable, and some people need visual aids or other eye care. An eye-health professional can advise about individual needs.",
+    "keywords": [
+      "eyes",
+      "vision",
+      "eyesight",
+      "glare",
+      "sight",
+      "light",
+      "sensitivity"
+    ],
+    "source": "https://albinism.iarc.who.int/"
+  },
+  {
+    "id": "albinism_not_disease",
+    "questions": [
+      "Is albinism a disease?",
+      "Can albinism be cured?",
+      "Does having albinism mean I am sick?"
+    ],
+    "answer": "Albinism is an inherited condition, not an infection. It does not define a person’s health or ability. People with albinism may need sun protection, skin care and support for vision.",
+    "keywords": [
+      "disease",
+      "sick",
+      "cure",
+      "infection",
+      "normal"
+    ],
+    "source": "https://albinism.iarc.who.int/"
+  },
+  {
+    "id": "albinism_stigma",
+    "questions": [
+      "What can I do about discrimination?",
+      "People make fun of my albinism",
+      "How do I support someone facing stigma?"
+    ],
+    "answer": "Discrimination against people with albinism is harmful. You can reach out to a trusted person, school, community organisation or local support group. Everyone deserves safety, respect, education and care.",
+    "keywords": [
+      "stigma",
+      "discrimination",
+      "bullied",
+      "bullying",
+      "insult",
+      "mock"
+    ],
+    "source": "https://albinism.iarc.who.int/"
+  },
+  {
+    "id": "freckles",
+    "questions": [
+      "Are freckles dangerous?",
+      "Do freckles mean skin cancer?",
+      "My skin has small sun spots"
+    ],
+    "answer": "Freckles are often harmless, but any new or changing spot should be checked if it concerns you. Do not assume a mark is harmless from its color or from an app photo. Use sun protection consistently.",
+    "keywords": [
+      "freckles",
+      "freckle",
+      "sun",
+      "spots",
+      "tiny",
+      "speckles"
+    ],
+    "source": "https://www.aad.org/public/diseases/skin-cancer/check-skin"
+  },
+  {
+    "id": "mole_vs_cancer",
+    "questions": [
+      "How can I tell a mole from skin cancer?",
+      "Is a mole always harmless?",
+      "Can a normal mole become a problem?"
+    ],
+    "answer": "Many moles are harmless. A mole that changes in size, shape, color, feel or starts to bleed needs medical assessment. A photograph or chatbot cannot reliably tell a harmless mole from skin cancer.",
+    "keywords": [
+      "mole",
+      "benign",
+      "cancer",
+      "changing"
+    ],
+    "source": "https://www.aad.org/public/diseases/skin-cancer/check-skin"
+  },
+  {
+    "id": "rough_patch",
+    "questions": [
+      "Why do I have a rough skin patch?",
+      "Can a dry scaly patch be serious?",
+      "What does a crusty patch mean?"
+    ],
+    "answer": "A rough or scaly patch may have many causes, including sun damage. Actinic keratosis is one possibility, but a clinician must examine the skin to know what it is. Ask for care if it persists or changes.",
+    "keywords": [
+      "rough",
+      "scaly",
+      "flaky",
+      "crusty",
+      "dry",
+      "patch"
+    ],
+    "source": "https://www.cancer.gov/types/skin/patient/skin-treatment-pdq"
+  },
+  {
+    "id": "pink_patch",
+    "questions": [
+      "Is a pink spot a sign of cancer?",
+      "Should I worry about a pale bump?",
+      "Can skin cancer have no dark color?"
+    ],
+    "answer": "Yes, some skin cancers can look pink, pale, red or skin-colored. Do not rely on dark color alone to decide whether a spot matters. Seek care for a new, growing, bleeding or persistent change.",
+    "keywords": [
+      "pink",
+      "pale",
+      "red",
+      "colorless",
+      "skin-colored",
+      "spot"
+    ],
+    "source": "https://www.cancer.gov/types/skin/patient/skin-treatment-pdq"
+  },
+  {
+    "id": "face_lesion",
+    "questions": [
+      "I have a new spot on my face",
+      "Are facial wounds serious?",
+      "A bump appeared near my nose"
+    ],
+    "answer": "The face often receives sunlight and can develop many kinds of skin changes. A new or growing facial spot, especially one that bleeds or does not heal, should be assessed by a clinician.",
+    "keywords": [
+      "face",
+      "facial",
+      "nose",
+      "cheek",
+      "forehead",
+      "bump"
+    ],
+    "source": "https://www.nhs.uk/conditions/non-melanoma-skin-cancer/symptoms/"
+  },
+  {
+    "id": "ear_lesion",
+    "questions": [
+      "I have a wound on my ear",
+      "Can skin cancer affect ears?",
+      "Why does my ear have a scab?"
+    ],
+    "answer": "Ears can receive a lot of sun exposure. If you notice a persistent wound, crust, bleeding or growing spot on an ear, ask for medical assessment. Cover your ears with a wide-brimmed hat when outdoors.",
+    "keywords": [
+      "ear",
+      "ears",
+      "scab",
+      "crust",
+      "wound"
+    ],
+    "source": "https://www.nhs.uk/conditions/non-melanoma-skin-cancer/symptoms/"
+  },
+  {
+    "id": "lip_lesion",
+    "questions": [
+      "I have a sore on my lip",
+      "Can skin cancer happen on lips?",
+      "My lip wound is not healing"
+    ],
+    "answer": "A persistent lip sore or crust may have different causes. Because the lips are also exposed to the sun, a sore that does not heal should be checked by a qualified health professional.",
+    "keywords": [
+      "lip",
+      "sore",
+      "crust",
+      "mouth"
+    ],
+    "source": "https://www.nhs.uk/conditions/non-melanoma-skin-cancer/symptoms/"
+  },
+  {
+    "id": "scalp_lesion",
+    "questions": [
+      "Can skin cancer appear on the scalp?",
+      "A sore is under my hair",
+      "How do I check my scalp?"
+    ],
+    "answer": "The scalp can be hard to see. Ask someone you trust to help check for new, crusting or bleeding spots. A clinician should assess a sore that stays or grows.",
+    "keywords": [
+      "scalp",
+      "head",
+      "hair",
+      "scalp-lesion"
+    ],
+    "source": "https://www.aad.org/public/diseases/skin-cancer/check-skin"
+  },
+  {
+    "id": "hand_lesion",
+    "questions": [
+      "There is a skin change on my hand",
+      "Can sun damage my hands?",
+      "A rough spot appeared on my arm"
+    ],
+    "answer": "Hands and arms often receive sunlight. A rough, growing or non-healing spot may need assessment. Wear protective clothing when practical and use sunscreen on skin that remains uncovered.",
+    "keywords": [
+      "hand",
+      "hands",
+      "arm",
+      "forearm",
+      "rough",
+      "spot"
+    ],
+    "source": "https://www.aad.org/public/diseases/skin-cancer/check-skin"
+  },
+  {
+    "id": "itch_without_spot",
+    "questions": [
+      "My skin itches but I see no lesion",
+      "Does itching mean cancer?",
+      "Why am I itchy?"
+    ],
+    "answer": "Itching can have many causes, and itching alone does not mean skin cancer. Avoid scratching badly irritated skin. Ask a health professional if itching is strong, lasting, spreading or comes with a changing spot.",
+    "keywords": [
+      "itch",
+      "itchy",
+      "itching",
+      "itchiness"
+    ],
+    "source": "https://www.nhs.uk/conditions/non-melanoma-skin-cancer/symptoms/"
+  },
+  {
+    "id": "pain_wound",
+    "questions": [
+      "A spot on my skin is painful",
+      "Does skin cancer hurt?",
+      "My wound hurts"
+    ],
+    "answer": "Some skin cancers cause pain, but many other skin conditions hurt too. Pain alone cannot identify the cause. Seek medical care for a persistent, growing or worsening painful skin lesion.",
+    "keywords": [
+      "pain",
+      "painful",
+      "hurts",
+      "tender",
+      "sore"
+    ],
+    "source": "https://www.nhs.uk/conditions/non-melanoma-skin-cancer/symptoms/"
+  },
+  {
+    "id": "rash_vs_cancer",
+    "questions": [
+      "Can a rash be skin cancer?",
+      "How is a rash different from a lesion?",
+      "I have red patches"
+    ],
+    "answer": "Rashes can have many causes, including irritation or infection. Some skin cancers may look like patches, so a persistent or changing patch deserves medical review. SkinX cannot identify a rash from a photo.",
+    "keywords": [
+      "rash",
+      "irritated",
+      "redness",
+      "red",
+      "patches"
+    ],
+    "source": "https://www.nhs.uk/conditions/non-melanoma-skin-cancer/symptoms/"
+  },
+  {
+    "id": "scar_change",
+    "questions": [
+      "My old scar is changing",
+      "Can skin cancer grow in a scar?",
+      "A scar started bleeding"
+    ],
+    "answer": "A scar that changes, grows, breaks down or bleeds should be examined by a health professional. Do not assume the change is harmless because the area was injured before.",
+    "keywords": [
+      "scar",
+      "healed",
+      "injury",
+      "old",
+      "wound"
+    ],
+    "source": "https://www.nhs.uk/conditions/non-melanoma-skin-cancer/symptoms/"
+  },
+  {
+    "id": "infection_vs_cancer",
+    "questions": [
+      "How do I know if a wound is infected?",
+      "Could a sore be infected instead of cancer?",
+      "A wound has pus"
+    ],
+    "answer": "Infection can cause warmth, swelling, pain or discharge, but a photo cannot show the cause reliably. Ask a clinician for care, especially if redness spreads, you have a fever or the wound is getting worse.",
+    "keywords": [
+      "infection",
+      "infected",
+      "pus",
+      "swollen",
+      "swelling",
+      "fever",
+      "warm",
+      "discharge"
+    ],
+    "source": "https://www.nhs.uk/conditions/non-melanoma-skin-cancer/symptoms/"
+  },
+  {
+    "id": "ak_vs_scc",
+    "questions": [
+      "Is actinic keratosis already cancer?",
+      "Can AK turn into SCC?",
+      "What is the difference between AK and SCC?"
+    ],
+    "answer": "Actinic keratosis is generally considered a precancerous sun-damaged patch. Squamous cell carcinoma is cancer. A clinician can decide whether a patch needs treatment or testing.",
+    "keywords": [
+      "ak",
+      "actinic",
+      "keratosis",
+      "scc",
+      "precancer",
+      "cancer",
+      "difference"
+    ],
+    "source": "https://www.cancer.gov/types/skin/patient/skin-treatment-pdq"
+  },
+  {
+    "id": "bcc_vs_scc",
+    "questions": [
+      "What is the difference between BCC and SCC?",
+      "Which cancer is basal cell?",
+      "Which cancer is squamous cell?"
+    ],
+    "answer": "BCC and SCC start in different types of skin cells. Both need medical assessment. SCC can have a greater risk of spreading in some cases; the appearance of a spot alone cannot confirm which kind it is.",
+    "keywords": [
+      "bcc",
+      "scc",
+      "basal",
+      "squamous",
+      "compare",
+      "difference"
+    ],
+    "source": "https://www.cancer.gov/types/skin/patient/skin-treatment-pdq"
+  },
+  {
+    "id": "skin_cancer_treatment",
+    "questions": [
+      "Can skin cancer be treated?",
+      "How do doctors treat skin cancer?",
+      "Is skin cancer curable?"
+    ],
+    "answer": "Many skin cancers can be treated successfully, especially when found early. Treatment depends on the type, size and location of the cancer. A clinician may discuss surgery or other treatments after an examination and any needed tests.",
+    "keywords": [
+      "treatment",
+      "treated",
+      "cure",
+      "surgery",
+      "skin-cancer"
+    ],
+    "source": "https://www.cancer.gov/types/skin/patient/skin-treatment-pdq"
+  },
+  {
+    "id": "ak_treatment",
+    "questions": [
+      "Does actinic keratosis need treatment?",
+      "How is AK treated?",
+      "Can I remove a rough patch myself?"
+    ],
+    "answer": "A clinician should decide whether an actinic keratosis needs treatment. Options vary and may include freezing or prescribed medicines. Do not cut, burn or apply harsh chemicals to a suspicious patch yourself.",
+    "keywords": [
+      "actinic",
+      "ak",
+      "treat",
+      "freezing",
+      "cream",
+      "remove"
+    ],
+    "source": "https://www.cancer.gov/types/skin/patient/skin-treatment-pdq"
+  },
+  {
+    "id": "biopsy_pain",
+    "questions": [
+      "Does a biopsy hurt?",
+      "What happens when doctors take a skin sample?",
+      "Why would I need a skin biopsy?"
+    ],
+    "answer": "A biopsy means taking a small piece of tissue for examination. A clinician usually explains how it is done and what pain relief is available. It helps establish a diagnosis when looking at the spot is not enough.",
+    "keywords": [
+      "biopsy",
+      "tissue",
+      "sample",
+      "sample-taking",
+      "pain"
+    ],
+    "source": "https://www.cancer.gov/types/skin/patient/skin-treatment-pdq"
+  },
+  {
+    "id": "after_biopsy",
+    "questions": [
+      "What happens after a biopsy?",
+      "When do biopsy results come?",
+      "What if biopsy shows skin cancer?"
+    ],
+    "answer": "The clinic should explain how and when your results will be shared. Ask whom to contact if you do not hear back. If a diagnosis is made, your clinician can discuss treatment and next steps.",
+    "keywords": [
+      "after",
+      "biopsy",
+      "results",
+      "laboratory",
+      "followup"
+    ],
+    "source": "https://www.cancer.gov/types/skin/patient/skin-treatment-pdq"
+  },
+  {
+    "id": "treatment_followup",
+    "questions": [
+      "Can skin cancer come back after treatment?",
+      "Do I still need checkups after surgery?",
+      "What is follow-up care?"
+    ],
+    "answer": "Some skin cancers can return, and new skin cancers can develop later. Follow the care plan given by your clinician, protect your skin from the sun and report new or changing spots.",
+    "keywords": [
+      "return",
+      "recur",
+      "surgery",
+      "after",
+      "treatment",
+      "follow-up",
+      "checkup"
+    ],
+    "source": "https://www.cancer.gov/types/skin/patient/skin-treatment-pdq"
+  },
+  {
+    "id": "self_check_frequency",
+    "questions": [
+      "Should I check my skin every day?",
+      "How often should I do a skin self-exam?",
+      "How often do I look for new spots?"
+    ],
+    "answer": "Try to become familiar with your skin and check it regularly, using mirrors or help from someone you trust. A health professional can suggest a check-up schedule based on your risk. Do not wait for a schedule if you notice a warning sign.",
+    "keywords": [
+      "check",
+      "frequency",
+      "daily",
+      "weekly",
+      "monthly",
+      "self-exam"
+    ],
+    "source": "https://www.aad.org/public/diseases/skin-cancer/check-skin"
+  },
+  {
+    "id": "keep_photos",
+    "questions": [
+      "Should I photograph a changing spot?",
+      "How can I track a lesion?",
+      "Can I compare skin pictures?"
+    ],
+    "answer": "A dated photo may help you remember how a spot has changed. Use good light and keep a note of the location and date. Photos are helpful records but do not replace a clinician’s examination.",
+    "keywords": [
+      "track",
+      "compare",
+      "dated",
+      "photos",
+      "lesion",
+      "record"
+    ],
+    "source": "https://www.aad.org/public/diseases/skin-cancer/check-skin"
+  },
+  {
+    "id": "photos_light",
+    "questions": [
+      "Should I use flash for skin photos?",
+      "How can I avoid blurry photos?",
+      "Why does SkinX need a clear picture?"
+    ],
+    "answer": "Try to use even, bright light without strong glare or shadows. Keep your camera steady and focus on the skin change. Avoid filters and beauty effects. A clearer photo may help the model process the image, but cannot make the result diagnostic.",
+    "keywords": [
+      "flash",
+      "light",
+      "blur",
+      "camera",
+      "focus",
+      "glare",
+      "shadow",
+      "filters"
+    ],
+    "source": ""
+  },
+  {
+    "id": "photos_distance",
+    "questions": [
+      "How close should I take a photo?",
+      "Should the whole lesion be visible?",
+      "Can I crop skin pictures?"
+    ],
+    "answer": "Keep the whole skin change visible and in focus with a little surrounding skin. Avoid being so close that the image blurs. Do not hide or edit parts of the lesion before screening.",
+    "keywords": [
+      "distance",
+      "closeup",
+      "crop",
+      "surrounding",
+      "photo"
+    ],
+    "source": ""
+  },
+  {
+    "id": "result_false_positive",
+    "questions": [
+      "Why does SkinX say suspicious for a harmless thing?",
+      "Can SkinX be wrong?",
+      "What is a false positive?"
+    ],
+    "answer": "SkinX can flag an image as Suspicious even when the photographed area is not cancer. It was trained on skin-lesion images and is not reliable for unrelated objects. A Suspicious result calls for professional assessment, not a diagnosis.",
+    "keywords": [
+      "false",
+      "positive",
+      "mistake",
+      "wrong",
+      "harmless",
+      "object",
+      "suspicious"
+    ],
+    "source": ""
+  },
+  {
+    "id": "result_false_negative",
+    "questions": [
+      "Can SkinX miss skin cancer?",
+      "What is a false negative?",
+      "Does less suspicious mean I am safe?"
+    ],
+    "answer": "Yes. SkinX can miss cancer and may give a Less suspicious result for a concerning lesion. Do not use the result as medical clearance. Ask for clinical review of any spot that changes, bleeds, grows or does not heal.",
+    "keywords": [
+      "false",
+      "negative",
+      "miss",
+      "safe",
+      "negative",
+      "less",
+      "suspicious"
+    ],
+    "source": ""
+  },
+  {
+    "id": "result_cannot_infer",
+    "questions": [
+      "Why does SkinX say Cannot infer?",
+      "What if the photo fails?",
+      "Why did screening reject my image?"
+    ],
+    "answer": "Cannot infer means the image could not be processed or did not meet a technical check. It does not mean the spot is harmless or dangerous. Try a clear, supported image and seek clinical care if the skin change concerns you.",
+    "keywords": [
+      "cannot",
+      "infer",
+      "failure",
+      "failed",
+      "invalid",
+      "retry"
+    ],
+    "source": ""
+  },
+  {
+    "id": "result_probability",
+    "questions": [
+      "What does the screening percentage mean?",
+      "Is the model confidence a diagnosis?",
+      "Why do I see a high score?"
+    ],
+    "answer": "The score is a number produced by the model, not the true chance that a person has cancer. Even a high or low score can be wrong. SkinX uses a fixed threshold to produce screening messages, not a diagnosis.",
+    "keywords": [
+      "score",
+      "probability",
+      "percentage",
+      "certainty",
+      "confidence",
+      "threshold"
+    ],
+    "source": ""
+  },
+  {
+    "id": "offline_chat",
+    "questions": [
+      "Does Ask SkinX work without internet?",
+      "Can I chat in airplane mode?",
+      "Is the chatbot available offline?"
+    ],
+    "answer": "Yes. Ask SkinX can answer questions from its saved skin-health information without internet. It cannot answer every question or diagnose a spot. If it cannot find a dependable answer, it should tell you.",
+    "keywords": [
+      "assistant",
+      "chat",
+      "chatbot",
+      "offline",
+      "questions",
+      "airplane"
+    ],
+    "source": ""
+  },
+  {
+    "id": "online_features",
+    "questions": [
+      "What changes when I have internet?",
+      "Which SkinX features need internet?",
+      "Can I use online AI?"
+    ],
+    "answer": "Screening and saved educational information can work offline. When internet and account services are available, extra features may include account access and optional online chat. Online AI is not needed to screen a photo.",
+    "keywords": [
+      "online",
+      "internet",
+      "features",
+      "connect",
+      "ai",
+      "account"
+    ],
+    "source": ""
+  },
+  {
+    "id": "local_history",
+    "questions": [
+      "Where are my screening results stored?",
+      "Can I see history without internet?",
+      "Does SkinX save my photos?"
+    ],
+    "answer": "Saved screening records can stay on your device and be opened without internet. The current history saves a result and time, not a copy of the photo. Avoid storing private information on shared devices.",
+    "keywords": [
+      "history",
+      "saved",
+      "record",
+      "local",
+      "storage",
+      "privacy",
+      "photos"
+    ],
+    "source": ""
+  },
+  {
+    "id": "shared_phone",
+    "questions": [
+      "Can someone else see my screening history?",
+      "Is it safe on a shared phone?",
+      "How do I protect my privacy?"
+    ],
+    "answer": "Anyone with access to an unlocked shared phone may be able to open locally saved app records. Use device screen protection and avoid saving information you do not want others to see. You can delete saved entries in History.",
+    "keywords": [
+      "shared",
+      "phone",
+      "device",
+      "lock",
+      "privacy",
+      "delete"
+    ],
+    "source": ""
+  },
+  {
+    "id": "child_screening",
+    "questions": [
+      "Can I screen a child using SkinX?",
+      "Does SkinX work for children?",
+      "Can the app diagnose a child?"
+    ],
+    "answer": "SkinX is a research screening tool and has not been shown to diagnose skin problems in children. If a child has a new, growing, bleeding or non-healing spot, seek advice from a qualified health professional rather than relying on the app.",
+    "keywords": [
+      "child",
+      "children",
+      "baby",
+      "pediatric",
+      "kid",
+      "screening"
+    ],
+    "source": ""
+  },
+  {
+    "id": "skin_bleeding_urgent",
+    "questions": [
+      "What if a wound is bleeding a lot?",
+      "My skin wound will not stop bleeding",
+      "What do I do for severe bleeding?"
+    ],
+    "answer": "If a wound is bleeding heavily or will not stop, seek urgent medical care. Apply gentle, steady pressure with a clean cloth while getting help. Do not wait for a screening result.",
+    "keywords": [
+      "severe",
+      "bleeding",
+      "emergency",
+      "heavy",
+      "stop",
+      "blood",
+      "wound"
+    ],
+    "source": "https://www.nhs.uk/conditions/non-melanoma-skin-cancer/symptoms/"
+  },
+  {
+    "id": "other_symptoms",
+    "questions": [
+      "Can SkinX tell me why I have a fever?",
+      "Can the app check any disease?",
+      "Can it tell if I have malaria?",
+      "Do you treat malaria?",
+      "Can you tell if someone has malaria?"
+    ],
+    "answer": "SkinX is focused on skin-health education and a limited skin-image screening task. It cannot assess fever, malaria or other diseases. Please contact a health professional for symptoms outside skin-health guidance.",
+    "keywords": [
+      "fever",
+      "malaria",
+      "disease",
+      "unrelated",
+      "sickness",
+      "other"
+    ],
+    "source": ""
+  },
+  {
+    "id": "skin_health_myths",
+    "questions": [
+      "Can herbs cure skin cancer?",
+      "Do home remedies remove skin cancer?",
+      "Can I burn off a worrying spot?",
+      "Can natural herbs cure skin cancer?"
+    ],
+    "answer": "Home remedies have not been shown to safely diagnose or cure skin cancer. Avoid cutting, burning or putting harsh substances on a changing or bleeding spot. Ask a clinician to examine it and discuss appropriate treatment.",
+    "keywords": [
+      "herbs",
+      "remedies",
+      "traditional",
+      "cure",
+      "burn",
+      "off"
+    ],
+    "source": "https://www.cancer.gov/types/skin/patient/skin-treatment-pdq"
+  },
+  {
+    "id": "skin_cancer_spread",
+    "questions": [
+      "Can skin cancer spread?",
+      "Can SCC spread to other body parts?",
+      "Is every skin cancer dangerous?"
+    ],
+    "answer": "Some skin cancers can spread or cause serious damage if not treated. The risks differ by type and situation. Early medical assessment and treatment are important; an app image cannot tell whether cancer has spread.",
+    "keywords": [
+      "spread",
+      "metastasis",
+      "serious",
+      "danger",
+      "scc"
+    ],
+    "source": "https://www.cancer.gov/types/skin/patient/skin-treatment-pdq"
+  },
+  {
+    "id": "ask_followup",
+    "questions": [
+      "What should I do if the chatbot cannot answer?",
+      "Why did the chatbot say it does not know?",
+      "How can I find more help?"
+    ],
+    "answer": "Try asking one clear skin-health question at a time or open the Learn guides. The offline assistant uses saved educational material, so it may not know everything. A health professional should assess worrying symptoms.",
+    "keywords": [
+      "chatbot",
+      "answer",
+      "unknown",
+      "fallback",
+      "understand",
+      "help"
     ],
     "source": ""
   }
