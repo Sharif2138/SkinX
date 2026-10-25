@@ -1,28 +1,39 @@
-"""Optional SkinX online educational chat API. Screening never calls this API."""
-import json
+"""SkinX online educational chat service."""
 import os
-import re
 import time
 from collections import defaultdict, deque
-from pathlib import Path
+from typing import Literal
 
 import httpx
-from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
-FAQ = json.loads((Path(__file__).parent / "skin_health_faq.json").read_text())
-INTRO = "Educational information only. SkinX cannot diagnose skin conditions."
-app = FastAPI(title="SkinX optional chat API", version="0.1.0")
-origins = [x.strip() for x in os.getenv("CORS_ORIGINS", "").split(",") if x.strip()]
+app = FastAPI(title="SkinX Chat API", version="1.0.0")
+origins = [value.strip() for value in os.getenv("CORS_ORIGINS", "").split(",") if value.strip()]
 if origins:
-    app.add_middleware(CORSMiddleware, allow_origins=origins, allow_methods=["GET", "POST"], allow_headers=["Authorization", "Content-Type"])
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_methods=["GET", "POST"],
+        allow_headers=["Authorization", "Content-Type"],
+    )
 
 _limits: dict[str, deque[float]] = defaultdict(deque)
 
 
+class ChatMessage(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    role: Literal["user", "assistant"]
+    content: str = Field(min_length=1, max_length=1500)
+
+
 class ChatRequest(BaseModel):
-    question: str = Field(min_length=3, max_length=500)
+    model_config = ConfigDict(extra="forbid")
+
+    question: str = Field(min_length=1, max_length=1500)
+    history: list[ChatMessage] = Field(default_factory=list, max_length=8)
 
 
 class ChatResponse(BaseModel):
@@ -31,96 +42,71 @@ class ChatResponse(BaseModel):
     mode: str = "online"
 
 
-def match_faq(question: str) -> dict | None:
-    """Small retrieval helper, not a medical triage or diagnosis classifier."""
-    terms = set(re.findall(r"[a-z]{3,}", question.lower()))
-    if not terms:
-        return None
-    best = None
-    score = 0
-    for entry in FAQ:
-        keys = entry["keywords"] + entry["questions"]
-        candidates = set(re.findall(r"[a-z]{3,}", " ".join(keys).lower()))
-        hits = len(terms & candidates)
-        if hits > score:
-            score, best = hits, entry
-    return best if score > 0 else None
-
-
-async def user_id_from_token(authorization: str | None = Header(default=None)) -> str:
-    """Validate the user's access token with Supabase Auth; never trust client claims."""
-    url = os.getenv("SUPABASE_URL", "").rstrip("/")
-    key = os.getenv("SUPABASE_PUBLISHABLE_KEY", "")
-    if not url or not key:
-        raise HTTPException(503, "Online chat authentication is not configured")
-    if not authorization or not authorization.startswith("Bearer "):
-        raise HTTPException(401, "Sign in to use online chat")
-    token = authorization[7:]
-    if len(token) > 8192:
-        raise HTTPException(401, "Invalid authorization")
-    try:
-        async with httpx.AsyncClient(timeout=8) as client:
-            response = await client.get(f"{url}/auth/v1/user", headers={"apikey": key, "Authorization": f"Bearer {token}"})
-    except httpx.HTTPError:
-        raise HTTPException(503, "Authentication unavailable") from None
-    if response.status_code != 200:
-        raise HTTPException(401, "Session expired or invalid")
-    uid = response.json().get("id")
-    if not uid:
-        raise HTTPException(401, "Invalid account")
-    return str(uid)
-
-
-def check_rate_limit(uid: str) -> None:
-    """Development-only per-process limit; replace with Redis for multiple workers."""
+def check_rate_limit(identity: str) -> None:
     now = time.monotonic()
-    bucket = _limits[uid]
+    bucket = _limits[identity]
     while bucket and now - bucket[0] > 3600:
         bucket.popleft()
-    if len(bucket) >= 20:
-        raise HTTPException(429, "Online chat limit reached. Try again later or use offline answers.")
+    # Application-level cost protection, not a limit on conversation topics.
+    if len(bucket) >= int(os.getenv("CHAT_HOURLY_LIMIT", "60")):
+        raise HTTPException(429, "Chat is busy for this connection. Try again shortly.")
     bucket.append(now)
 
 
 @app.get("/health")
 def health() -> dict:
-    return {"status": "ok", "chat_configured": bool(os.getenv("GROQ_API_KEY") and os.getenv("SUPABASE_URL") and os.getenv("SUPABASE_PUBLISHABLE_KEY"))}
+    return {"status": "ok", "chat_configured": bool(os.getenv("GROQ_API_KEY"))}
 
 
 @app.post("/chat", response_model=ChatResponse)
-async def chat(payload: ChatRequest, uid: str = Depends(user_id_from_token)) -> ChatResponse:
-    api_key = os.getenv("GROQ_API_KEY", "")
+async def chat(payload: ChatRequest, request: Request) -> ChatResponse:
+    api_key = os.getenv("GROQ_API_KEY", "").strip()
     if not api_key:
-        raise HTTPException(503, "Online AI not enabled. Use offline education instead.")
-    check_rate_limit(uid)
-    question = payload.question.strip()
-    # Do not take images or patient records. Only general education text is supported.
-    entry = match_faq(question)
-    if not entry:
-        return ChatResponse(answer=f"{INTRO} I don't have an approved source for that question. Please ask a health professional if you are concerned.", mode="offline_fallback")
+        raise HTTPException(503, "Online chat is unavailable")
+
+    # Never trust forwarding headers as a client identity without a trusted proxy.
+    remote = request.client.host if request.client else "unknown"
+    check_rate_limit(remote)
+
     system = (
-        "You are SkinX's cautious skin-health EDUCATION assistant for people with albinism. "
-        "Use only the approved reference below. Do not diagnose, prescribe, assign probabilities, "
-        "explain specific photos, or promise the user a lesion is harmless. "
-        "If the question asks for diagnosis or personalized assessment, say you cannot determine this and suggest a health professional. "
-        "For a changing, bleeding, growing, or non-healing lesion suggest prompt clinical assessment. "
-        "Write 2-4 short, plain-English sentences. Do not invent citations. "
-        f"Approved reference: {entry['answer']}"
+        "You are SkinX, a friendly, clear conversational assistant in a skin-health education app "
+        "used by people with albinism and community health workers in Rwanda. "
+        "You can answer everyday questions and general questions on health, skin cancer, albinism, "
+        "sun protection, education, and using the app. Do not limit answers to a predefined FAQ. "
+        "Explain in simple, natural language. Be open about uncertainty, and never invent sources. "
+        "Do not diagnose skin conditions or interpret someone's screening image, prescribe treatment, "
+        "claim a screening result rules out cancer, or give an assurance that a lesion is harmless. "
+        "For growing, bleeding or non-healing lesions, recommend prompt examination by a qualified "
+        "health professional. For emergency symptoms, advise local urgent care. "
+        "Screening itself happens on the phone and does not require this chat service. "
+        "No image, screening record or account details are provided to you. "
+        "Do not request identifying health details, and remind the user not to share them."
     )
+    history = [{"role": item.role, "content": item.content} for item in payload.history]
+    messages = [{"role": "system", "content": system}, *history,
+                {"role": "user", "content": payload.question.strip()}]
     try:
-        async with httpx.AsyncClient(timeout=20) as client:
-            result = await client.post(
+        async with httpx.AsyncClient(timeout=30) as client:
+            response = await client.post(
                 "https://api.groq.com/openai/v1/chat/completions",
                 headers={"Authorization": f"Bearer {api_key}"},
-                json={"model": os.getenv("GROQ_MODEL", "llama-3.1-8b-instant"),
-                      "temperature": 0.1, "max_tokens": 240,
-                      "messages": [{"role": "system", "content": system}, {"role": "user", "content": question}]},
+                json={
+                    "model": os.getenv("GROQ_MODEL", "llama-3.1-8b-instant"),
+                    "messages": messages,
+                    "temperature": 0.3,
+                    "max_tokens": 550,
+                },
             )
-            result.raise_for_status()
-            answer = result.json()["choices"][0]["message"]["content"].strip()
-    except (httpx.HTTPError, KeyError, IndexError, TypeError, ValueError):
-        # Safe, known content remains available when the provider fails.
-        return ChatResponse(answer=f"{entry['answer']}\n\n{INTRO}", source=entry['source'] or None, mode="offline_fallback")
+            if response.status_code == 429:
+                raise HTTPException(503, "Chat is temporarily busy. Please try again.")
+            if response.status_code >= 400:
+                raise HTTPException(503, "Online chat is temporarily unavailable")
+            answer = response.json()["choices"][0]["message"]["content"].strip()
+    except httpx.HTTPError:
+        raise HTTPException(503, "Online chat is temporarily unavailable") from None
+    except (ValueError, TypeError, KeyError, IndexError, AttributeError):
+        raise HTTPException(503, "Online chat returned an invalid response") from None
+
     if not answer:
-        answer = entry['answer']
-    return ChatResponse(answer=f"{answer}\n\n{INTRO}", source=entry['source'] or None)
+        raise HTTPException(503, "Online chat returned an empty response")
+    return ChatResponse(answer=answer)
