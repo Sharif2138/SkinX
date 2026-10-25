@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'services/auth_service.dart';
 import 'services/chatbot_service.dart';
 import 'services/connectivity_service.dart';
 import 'widgets/skinx_header.dart';
@@ -36,13 +35,7 @@ class _AskScreenState extends State<AskScreen> {
   final _scrollController = ScrollController();
   final _chat = ChatbotService();
   final List<({String question, ChatAnswer? answer})> _conversation = [];
-  bool _useOnline = false;
   bool _replying = false;
-
-  bool get _onlineChatAvailable => widget.onlineAvailable &&
-      AuthService.configured &&
-      AuthService.user != null &&
-      ChatbotService.apiBaseUrl.isNotEmpty;
 
   Future<void> _submitQuestion([String? suggestion]) async {
     final question = (suggestion ?? _questionController.text).trim();
@@ -55,9 +48,15 @@ class _AskScreenState extends State<AskScreen> {
       _replying = true;
     });
     _scrollToBottom();
+    final contextMessages = <ChatHistoryMessage>[];
+    for (final turn in _conversation.take(_conversation.length - 1)) {
+      if (turn.answer == null) continue;
+      contextMessages.add(ChatHistoryMessage(role: 'user', content: turn.question));
+      contextMessages.add(ChatHistoryMessage(role: 'assistant', content: turn.answer!.text));
+    }
     ChatAnswer answer;
     try {
-      answer = await _chat.answer(question, useOnline: _useOnline && _onlineChatAvailable);
+      answer = await _chat.answer(question, history: contextMessages);
     } catch (_) {
       answer = const ChatAnswer(
         'I cannot find an answer right now. If you have a worrying skin change, please speak to a health professional.',
@@ -133,21 +132,6 @@ class _AskScreenState extends State<AskScreen> {
                       'Simple answers about skin health and sun protection.',
                       style: TextStyle(color: _muted, fontSize: 13, height: 1.45),
                     ),
-                    if (_onlineChatAvailable) ...[
-                      const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          const Expanded(child: Text('Use online AI', style: TextStyle(
-                            color: _ink, fontSize: 13, fontWeight: FontWeight.w500,
-                          ))),
-                          Switch.adaptive(
-                            value: _useOnline,
-                            activeTrackColor: _teal,
-                            onChanged: (value) => setState(() => _useOnline = value),
-                          ),
-                        ],
-                      ),
-                    ],
                   ],
                 ),
               ),
@@ -322,7 +306,7 @@ class _AskScreenState extends State<AskScreen> {
                     ),
                     const SizedBox(height: 8),
                     const Text(
-                      'For education only, not a diagnosis.',
+                      'AI answers are educational. Avoid sharing personal medical details.',
                       style: TextStyle(fontSize: 11, color: _muted),
                     ),
                   ],

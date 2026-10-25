@@ -57,10 +57,10 @@ class _ScreeningResultScreenState extends State<ScreeningResultScreen> {
                   SizedBox(width: double.infinity, child: FilledButton(
                     onPressed: _saving || _saved ? null : _save,
                     style: FilledButton.styleFrom(backgroundColor: teal, minimumSize: const Size.fromHeight(48)),
-                    child: Text(_saved ? 'Saved on this device' : _saving ? 'Saving...' : 'Save anonymous result locally'),
+                    child: Text(_saved ? 'Result saved' : _saving ? 'Saving...' : 'Save result'),
                   )),
                   const SizedBox(height: 8),
-                  const Text('Optional: saves only the result and date. No photo or patient name is saved. Local records are not encrypted; avoid shared devices.',
+                  const Text('Optional: saves only the result and date, never the photo or patient name. Signed-in records sync to your account when online. Guest records stay on this device.',
                       style: TextStyle(fontSize: 12, color: Color(0xFF647D78), height: 1.5)),
                 ],
               ]),

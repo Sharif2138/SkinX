@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -9,7 +11,6 @@ import 'app_shell.dart';
 import 'services/auth_service.dart';
 import 'services/connectivity_service.dart';
 import 'widgets/offline_welcome.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 const _ink = Color(0xFF193B38);
 const _teal = Color(0xFF14665E);
@@ -41,6 +42,24 @@ class _SignInScreenState extends State<SignInScreen> {
   final _passwordController = TextEditingController();
   bool _hidePassword = true;
   bool _busy = false;
+  bool _navigating = false;
+  StreamSubscription<AuthState>? _authSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    if (AuthService.configured) {
+      _authSubscription = AuthService.client.auth.onAuthStateChange.listen((state) {
+        if (!mounted || _busy || _navigating || state.session == null) return;
+        if (state.event == AuthChangeEvent.signedIn ||
+            state.event == AuthChangeEvent.passwordRecovery) {
+          _navigating = true;
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (_) => const AppShell()), (_) => false);
+        }
+      }, onError: (Object error, StackTrace trace) {});
+    }
+  }
 
   Future<void> _submit() async {
     if (!(_formKey.currentState?.validate() ?? false) || _busy) return;
@@ -73,7 +92,7 @@ class _SignInScreenState extends State<SignInScreen> {
       return;
     }
     try {
-      await Supabase.instance.client.auth.resetPasswordForEmail(email);
+      await AuthService.requestPasswordReset(email);
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('If the account exists, check your email for reset instructions.')));
     } catch (_) {
@@ -98,6 +117,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   void dispose() {
+    _authSubscription?.cancel();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -201,7 +221,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                     ),
                                     const SizedBox(height: 12),
                                     Center(child: TextButton(onPressed: _continueOffline,
-                                      child: const Text('Use SkinX offline (no account)'),)),
+                                      child: const Text('Continue without an account'),)),
                                     const SizedBox(height: 12),
                                     Center(
                                       child: Wrap(

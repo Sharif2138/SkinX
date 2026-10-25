@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:typed_data';
+import 'dart:async';
 import 'package:image_picker/image_picker.dart';
 
 import 'account_screen.dart';
@@ -17,6 +18,8 @@ import 'screening_result_screen.dart';
 import 'sign_up_screen.dart';
 import 'sign_in_screen.dart';
 import 'services/connectivity_service.dart';
+import 'widgets/skinx_account_type_selector.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'data/offline_guides.dart';
 import 'education_guide_screen.dart';
 
@@ -61,17 +64,106 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   bool _screening = false;
   bool _confirmedSkinPhoto = false;
   List<ScreeningRecord> _records = [];
+  Map<String, dynamic>? _profile;
+  StreamSubscription<AuthState>? _authSubscription;
+  bool _passwordDialogOpen = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _loadHistory();
+    _loadProfile();
+    ConnectivityService.instance.addListener(_syncWhenOnline);
+    if (AuthService.configured) {
+      _authSubscription = AuthService.client.auth.onAuthStateChange.listen((_) {
+        _loadProfile();
+        _loadHistory();
+      }, onError: (Object error, StackTrace trace) {});
+    }
+    AuthService.passwordRecoveryPending.addListener(_maybeShowPasswordRecovery);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _maybeShowPasswordRecovery());
+  }
+
+  void _syncWhenOnline() {
+    if (ConnectivityService.instance.online) _loadHistory();
+  }
+
+  Future<void> _loadProfile() async {
+    if (AuthService.user == null) {
+      if (mounted) setState(() => _profile = null);
+      return;
+    }
+    try {
+      final profile = await AuthService.getProfile();
+      if (mounted && AuthService.user?.id == profile?['id']) {
+        setState(() => _profile = profile);
+      }
+    } catch (_) {}
+  }
+
+  Future<void> _updateRole(SkinXAccountType role) async {
+    if (AuthService.user == null) return;
+    try {
+      final type = role == SkinXAccountType.communityHealthWorker ? 'chw' : 'individual';
+      await AuthService.updateAccountType(type);
+      await _loadProfile();
+    } catch (_) {
+      _showError('Could not save account preference. Try again online.');
+    }
+  }
+
+  void _maybeShowPasswordRecovery() {
+    if (!mounted || _passwordDialogOpen || !AuthService.passwordRecoveryPending.value) return;
+    _passwordDialogOpen = true;
+    final password = TextEditingController();
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Set a new password'),
+        content: TextField(
+          controller: password,
+          obscureText: true,
+          decoration: const InputDecoration(labelText: 'New password (at least 8 characters)'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              AuthService.passwordRecoveryPending.value = false;
+              Navigator.pop(dialogContext);
+            },
+            child: const Text('Later'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              if (password.text.length < 8) {
+                _showError('Use at least 8 characters.');
+                return;
+              }
+              try {
+                await AuthService.updatePassword(password.text);
+                AuthService.passwordRecoveryPending.value = false;
+                if (dialogContext.mounted) Navigator.pop(dialogContext);
+              } catch (_) {
+                _showError('Could not update password. Try again.');
+              }
+            },
+            child: const Text('Update password'),
+          ),
+        ],
+      ),
+    ).whenComplete(() {
+      password.dispose();
+      _passwordDialogOpen = false;
+    });
   }
 
   Future<void> _loadHistory() async {
     try {
-      final data = await _history.getAll(AuthService.ownerId);
+      final owner = AuthService.ownerId;
+      final data = await _history.getAll(owner);
+      if (owner != AuthService.ownerId) return;
       if (!mounted) return;
       setState(() => _records = data.map((row) => ScreeningRecord(
         id: row['id'] as int,
@@ -165,7 +257,9 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      ConnectivityService.instance.refresh();
+      ConnectivityService.instance.refresh().then((_) {
+        if (ConnectivityService.instance.online && mounted) _loadHistory();
+      });
     }
   }
 
@@ -178,6 +272,9 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    ConnectivityService.instance.removeListener(_syncWhenOnline);
+    _authSubscription?.cancel();
+    AuthService.passwordRecoveryPending.removeListener(_maybeShowPasswordRecovery);
     _model.close();
     super.dispose();
   }
@@ -272,9 +369,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                     widget.accountScreen.name != null
                         ? widget.accountScreen
                         : AccountScreen(
-                            name: AuthService.user?.userMetadata?['full_name']
-                                    ?.toString() ??
-                                'Offline guest',
+                            name: _profile?['full_name']?.toString() ?? AuthService.user?.userMetadata?['full_name']?.toString() ?? 'Offline guest',
                             email: AuthService.user?.email ?? 'No account required',
                             profileTitle: AuthService.user == null
                                 ? (ConnectivityService.instance.online
@@ -284,16 +379,19 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                             profileSubtitle: AuthService.user == null
                                 ? 'Offline features are available without an account'
                                 : 'Signed in',
+                            initialRole: _profile?['account_type'] == 'chw'
+                                ? SkinXAccountType.communityHealthWorker
+                                : SkinXAccountType.individual,
+                            onRoleChanged: _updateRole,
                             actionLabel: AuthService.user == null
                                 ? 'Sign in (online)'
                                 : 'Sign out',
-                            accountActionAvailable:
-                                ConnectivityService.instance.online,
+                            accountActionAvailable: ConnectivityService.instance.online,
                             onSignOutTap:
                                 AuthService.user == null ? _openSignIn : _signOut,
                             onPrivacyConsentTap: () => _showGuide(
                               'Privacy & consent',
-                              'Offline screening stays on this device. Screening results are saved only when selected, without images or patient names. Local history is not encrypted, so avoid using shared devices for private records. Consult a health professional for concerning skin changes.',
+                              'Screening photos are never uploaded or saved in history. Results and dates are saved only when you choose Save. If signed in, these anonymous records can sync to your account when internet is available. Guest history remains on this device. Local history is not encrypted; avoid shared devices. Ask a health professional about concerning skin changes.',
                             ),
                           ),
                   ],

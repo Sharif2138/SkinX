@@ -114,7 +114,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   children: [
                     Expanded(child: Text('Account role', style: _type(14, weight: FontWeight.w600, height: 1.3))),
                     const SizedBox(width: 10),
-                    Text('Example selection', style: _type(12, color: _muted, height: 1.3)),
+                    Text('Account preference', style: _type(12, color: _muted, height: 1.3)),
                   ],
                 ),
                 const SizedBox(height: 8),

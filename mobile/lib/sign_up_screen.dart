@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -42,6 +44,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _confirmController = TextEditingController();
   late SkinXAccountType _accountType = widget.initialAccountType;
   bool _busy = false;
+  bool _navigating = false;
+  StreamSubscription<AuthState>? _authSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    if (AuthService.configured) {
+      _authSubscription = AuthService.client.auth.onAuthStateChange.listen((state) {
+        if (!mounted || _busy || _navigating || state.session == null) return;
+        if (state.event == AuthChangeEvent.signedIn ||
+            state.event == AuthChangeEvent.passwordRecovery) {
+          _navigating = true;
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (_) => const AppShell()), (_) => false);
+        }
+      }, onError: (Object error, StackTrace trace) {});
+    }
+  }
   bool _hidePassword = true;
   bool _hideConfirmation = true;
 
@@ -56,7 +76,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     setState(() => _busy = true);
     try {
       final active = await AuthService.signUp(_nameController.text.trim(),
-          _emailController.text.trim(), _passwordController.text, _accountType.name);
+          _emailController.text.trim(), _passwordController.text, _accountType == SkinXAccountType.communityHealthWorker ? 'chw' : 'individual');
       if (!mounted) return;
       if (active) {
         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const AppShell()));
@@ -88,6 +108,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   void dispose() {
+    _authSubscription?.cancel();
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
@@ -203,7 +224,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         const SizedBox(height: 10),
                         Center(child: TextButton(onPressed: _continueOffline,
-                          child: const Text('Use SkinX offline (no account)'),)),
+                          child: const Text('Continue without an account'),)),
                         const SizedBox(height: 12),
                         Center(
                           child: Wrap(
