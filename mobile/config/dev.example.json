@@ -1,0 +1,5 @@
+{
+  "SUPABASE_URL": "https://example.supabase.co",
+  "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_example",
+  "SKINX_API_URL": "http://192.168.1.10:8000"
+}

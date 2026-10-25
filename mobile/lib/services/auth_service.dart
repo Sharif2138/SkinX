@@ -67,6 +67,7 @@ class AuthService {
   static Future<void> updateAccountType(String type) async {
     if (user == null) return;
     await client.from('profiles').update({'account_type': type}).eq('id', user!.id);
+    await client.auth.updateUser(UserAttributes(data: {'account_type': type}));
   }
 
   static Future<void> signOut() async {
