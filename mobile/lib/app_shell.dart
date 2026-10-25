@@ -17,6 +17,8 @@ import 'screening_result_screen.dart';
 import 'sign_up_screen.dart';
 import 'sign_in_screen.dart';
 import 'services/connectivity_service.dart';
+import 'data/offline_guides.dart';
+import 'education_guide_screen.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({
@@ -195,6 +197,14 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     );
   }
 
+  void _openGuide(String id) {
+    final guide = offlineGuideById(id);
+    if (guide == null) return;
+    Navigator.of(context).push(MaterialPageRoute<void>(
+      builder: (_) => EducationGuideScreen(guide: guide),
+    ));
+  }
+
   void _selectDestination(SkinXDestination destination) {
     FocusScope.of(context).unfocus();
     setState(() => _selectedDestination = destination);
@@ -219,35 +229,6 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
           backgroundColor: Colors.white,
           body: Column(
             children: [
-              if (!ConnectivityService.instance.online)
-                Material(
-                  color: const Color(0xFFEAF2E9),
-                  child: SafeArea(
-                    top: false,
-                    bottom: false,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.wifi_off, color: Color(0xFF14665E), size: 18),
-                          const SizedBox(width: 8),
-                          const Expanded(
-                            child: Text(
-                              'Offline mode · Screening, Ask, Learn and History are available',
-                              style: TextStyle(fontSize: 12, color: Color(0xFF193B38)),
-                            ),
-                          ),
-                          IconButton(
-                            tooltip: 'Check connection',
-                            constraints: const BoxConstraints(minWidth: 34, minHeight: 34),
-                            icon: const Icon(Icons.refresh, size: 19),
-                            onPressed: ConnectivityService.instance.refresh,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
               Expanded(
                 child: IndexedStack(
                   index: switch (_selectedDestination) {
@@ -260,18 +241,9 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                   children: [
                     LearnScreen(
                       offline: !ConnectivityService.instance.online,
-                      onFeaturedGuideTap: () => _showGuide(
-                        'Protect your skin',
-                        'Seek shade, especially around midday. Wear long sleeves, a wide-brimmed hat and UV-protective sunglasses. Use broad-spectrum SPF 30 or higher and reapply it regularly outdoors. Sun protection is especially important for people with albinism.',
-                      ),
-                      onSkinChangesTap: () => _showGuide(
-                        'Notice changes in your skin',
-                        'Look for new spots, changes in size or appearance, bleeding, or wounds that do not heal. A photograph cannot confirm what a skin change is. Ask a health professional about any concerning or persistent spot.',
-                      ),
-                      onSeekCareTap: () => _showGuide(
-                        'When to seek care',
-                        'Contact a qualified health professional promptly if a skin change grows, bleeds repeatedly or does not heal. A suspicious screening result is not a diagnosis, and a less suspicious result does not rule out cancer.',
-                      ),
+                      onFeaturedGuideTap: () => _openGuide('sun_protection'),
+                      onSkinChangesTap: () => _openGuide('skin_changes'),
+                      onSeekCareTap: () => _openGuide('seek_care'),
                     ),
                     HistoryScreen(records: _records, onRecordTap: _showRecord),
                     ScreeningScreen(

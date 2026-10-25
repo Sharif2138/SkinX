@@ -26,7 +26,7 @@ class OfflineKnowledgeBase {
     'why', 'when', 'where', 'how', 'can', 'could', 'should', 'would',
     'about', 'this', 'that', 'your', 'their', 'they', 'them', 'are',
     'was', 'were', 'does', 'did', 'into', 'some', 'skin', 'there',
-    'want', 'need', 'please', 'tell', 'you', 'all', 'will', 'does',
+    'want', 'need', 'please', 'tell', 'you', 'all',
     'is', 'it', 'to', 'do', 'of', 'in', 'on', 'at', 'an', 'a', 'i', 'my',
     'me', 'we', 'our', 'or', 'if', 'be', 'so', 'very', 'really',
     'someone', 'something', 'other', 'many', 'much', 'meaning',

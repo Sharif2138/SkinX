@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'services/chatbot_service.dart';
-import 'services/auth_service.dart';
-import 'services/connectivity_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'services/auth_service.dart';
+import 'services/chatbot_service.dart';
+import 'services/connectivity_service.dart';
 import 'widgets/skinx_header.dart';
-import 'widgets/skinx_icon.dart';
 
 const _ink = Color(0xFF193B38);
 const _teal = Color(0xFF14665E);
@@ -35,10 +33,16 @@ class AskScreen extends StatefulWidget {
 
 class _AskScreenState extends State<AskScreen> {
   final _questionController = TextEditingController();
+  final _scrollController = ScrollController();
   final _chat = ChatbotService();
   final List<({String question, ChatAnswer? answer})> _conversation = [];
   bool _useOnline = false;
   bool _replying = false;
+
+  bool get _onlineChatAvailable => widget.onlineAvailable &&
+      AuthService.configured &&
+      AuthService.user != null &&
+      ChatbotService.apiBaseUrl.isNotEmpty;
 
   Future<void> _submitQuestion([String? suggestion]) async {
     final question = (suggestion ?? _questionController.text).trim();
@@ -50,26 +54,41 @@ class _AskScreenState extends State<AskScreen> {
       _conversation.add((question: question, answer: null));
       _replying = true;
     });
-    ChatAnswer response;
+    _scrollToBottom();
+    ChatAnswer answer;
     try {
-      response = await _chat.answer(question, useOnline: _useOnline);
+      answer = await _chat.answer(question, useOnline: _useOnline && _onlineChatAvailable);
     } catch (_) {
-      response = const ChatAnswer('I cannot answer that right now. Please ask a health professional if you have a concerning skin change.');
+      answer = const ChatAnswer(
+        'I cannot find an answer right now. If you have a worrying skin change, please speak to a health professional.',
+      );
     }
     if (!mounted) return;
     setState(() {
-      _conversation[_conversation.length - 1] = (question: question, answer: response);
+      _conversation[_conversation.length - 1] = (question: question, answer: answer);
       _replying = false;
+    });
+    _scrollToBottom();
+  }
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_scrollController.hasClients) return;
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 240),
+        curve: Curves.easeOut,
+      );
     });
   }
 
   Future<void> _openSource(String url) async {
     final uri = Uri.tryParse(url);
-    if (uri == null || !(uri.scheme == 'https' || uri.scheme == 'http')) return;
+    if (uri == null || !uri.hasScheme || uri.scheme != 'https') return;
     if (!ConnectivityService.instance.online) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('This source is available when you are online.'),
-      ));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Source links can be opened when internet is available.')),
+      );
       return;
     }
     if (widget.onSourceTap != null) {
@@ -82,6 +101,7 @@ class _AskScreenState extends State<AskScreen> {
   @override
   void dispose() {
     _questionController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -92,313 +112,226 @@ class _AskScreenState extends State<AskScreen> {
       child: Align(
         alignment: Alignment.topCenter,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 600),
-          child: SingleChildScrollView(
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            padding: const EdgeInsets.fromLTRB(24, 16, 24, 28),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SkinXHeader(
-                  languageCode: widget.languageCode,
-                  onLanguageTap: widget.onLanguageTap,
-                ),
-                const SizedBox(height: 24),
-                Text(
-                  'Ask about skin health',
-                  style: _type(24, weight: FontWeight.w700, height: 1.2),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Skin-health questions, grounded in sources.',
-                  style: _type(14, color: _muted, height: 1.4),
-                ),
-                const SizedBox(height: 18),
-                Row(
+          constraints: const BoxConstraints(maxWidth: 660),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 14, 20, 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SkinXIcon(SkinXIconType.info, size: 14, color: _muted),
-                    const SizedBox(width: 6),
-                    Expanded(
-                      child: Text(
-                        widget.onlineAvailable ? 'Skin-health answers available offline' :
-                          'Offline assistant · Ask about skin health without internet',
-                        style: _type(12, color: _muted, height: 1.4),
-                      ),
+                    SkinXHeader(
+                      languageCode: widget.languageCode,
+                      onLanguageTap: widget.onLanguageTap,
                     ),
-                  ],
-                ),
-                const SizedBox(height: 14),
-                _SunProtectionCard(onSourceTap: (uri) => _openSource(uri.toString())),
-                if (_conversation.isNotEmpty) ...[
-                  const SizedBox(height: 18),
-                  for (final turn in _conversation) ...[
-                    Align(alignment: Alignment.centerRight,
-                      child: Container(
-                        constraints: const BoxConstraints(maxWidth: 440),
-                        padding: const EdgeInsets.all(14),
-                        decoration: BoxDecoration(color: const Color(0xFFDFF0DE),
-                          borderRadius: BorderRadius.circular(15)),
-                        child: Text(turn.question, style: _type(14)),
-                      )),
-                    const SizedBox(height: 8),
-                    Container(width: double.infinity,
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(color: const Color(0xFFF3F6F3),
-                        borderRadius: BorderRadius.circular(15)),
-                      child: turn.answer == null
-                          ? const Text('Finding an answer...')
-                          : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                              Text(turn.answer!.text, style: _type(13, height: 1.5)),
-                              if (turn.answer!.source != null) TextButton(
-                                onPressed: () => _openSource(turn.answer!.source!),
-                                child: const Text('Read source')),
-                              Text(turn.answer!.online ? 'Online AI response' : 'Offline information',
-                                  style: _type(11, color: _muted)),
-                            ]),
+                    const SizedBox(height: 20),
+                    const Text('Ask SkinX', style: TextStyle(
+                      color: _ink, fontSize: 25, fontWeight: FontWeight.w700,
+                    )),
+                    const SizedBox(height: 5),
+                    const Text(
+                      'Simple answers about skin health and sun protection.',
+                      style: TextStyle(color: _muted, fontSize: 13, height: 1.45),
                     ),
-                    const SizedBox(height: 14),
-                  ],
-                ],
-                if (widget.onlineAvailable && AuthService.configured && AuthService.user != null && ChatbotService.apiBaseUrl.isNotEmpty)
-                  SwitchListTile.adaptive(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text('Use online AI (optional)', style: _type(13)),
-                    subtitle: Text('Only use for general questions. Do not include patient names or private details.',
-                      style: _type(11, color: _muted)),
-                    value: _useOnline,
-                    onChanged: (value) => setState(() => _useOnline = value),
-                  ),
-                if (!widget.onlineAvailable) ...[
-                  const SizedBox(height: 10),
-                  Text('Advanced AI chat is available in online mode.',
-                      style: _type(12, color: _muted)),
-                ],
-                const SizedBox(height: 18),
-                Material(
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    side: const BorderSide(color: _border),
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: InkWell(
-                    onTap: () => _submitQuestion('When should I seek care?'),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                      child: Row(
+                    if (_onlineChatAvailable) ...[
+                      const SizedBox(height: 12),
+                      Row(
                         children: [
-                          const SkinXIcon(SkinXIconType.chat, size: 18),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Text('When should I seek care?', style: _type(14, height: 1.4)),
+                          const Expanded(child: Text('Use online AI', style: TextStyle(
+                            color: _ink, fontSize: 13, fontWeight: FontWeight.w500,
+                          ))),
+                          Switch.adaptive(
+                            value: _useOnline,
+                            activeTrackColor: _teal,
+                            onChanged: (value) => setState(() => _useOnline = value),
                           ),
-                          const SizedBox(width: 10),
-                          const SkinXIcon(SkinXIconType.chevronRight, size: 12, color: _muted),
                         ],
                       ),
-                    ),
-                  ),
+                    ],
+                  ],
                 ),
-                const SizedBox(height: 18),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(14, 4, 4, 4),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: _border),
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _questionController,
-                          keyboardType: TextInputType.multiline,
-                          textInputAction: TextInputAction.send,
-                          minLines: 1,
-                          maxLines: 4,
-                          cursorColor: _teal,
-                          style: _type(14, height: 1.4),
-                          onSubmitted: (value) => _submitQuestion(value),
-                          onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                          decoration: InputDecoration(
-                            isDense: true,
-                            border: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                            hintText: 'Ask a skin-health question...',
-                            hintStyle: _type(14, color: const Color(0xFF9CADAA), height: 1.4),
-                          ),
+              ),
+              const Divider(color: _border, height: 1),
+              Expanded(
+                child: ListView(
+                  controller: _scrollController,
+                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+                  children: [
+                    if (_conversation.isEmpty) ...[
+                      Container(
+                        padding: const EdgeInsets.all(18),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF1F6F1),
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        child: const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(Icons.forum_outlined, size: 28, color: _teal),
+                            SizedBox(height: 10),
+                            Text('What would you like to know?', style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w600, color: _ink,
+                            )),
+                            SizedBox(height: 7),
+                            Text('Choose a question below or type your own. Basic skin-health answers are available offline.',
+                              style: TextStyle(fontSize: 13, height: 1.5, color: _muted)),
+                          ],
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      Semantics(
-                        label: 'Send question',
-                        button: true,
-                        enabled: !_replying,
+                      const SizedBox(height: 20),
+                      ...[
+                        'What are the warning signs of skin cancer?',
+                        'How do I protect my skin from the sun?',
+                        'What does a suspicious result mean?',
+                        'How do I check my skin?',
+                      ].map((question) => Padding(
+                        padding: const EdgeInsets.only(bottom: 9),
                         child: Material(
-                          color: _teal,
-                          borderRadius: BorderRadius.circular(12),
-                          clipBehavior: Clip.antiAlias,
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            side: const BorderSide(color: _border),
+                            borderRadius: BorderRadius.circular(13),
+                          ),
                           child: InkWell(
-                            onTap: _replying ? null : () => _submitQuestion(),
-                            child: const SizedBox.square(
-                              dimension: 44,
-                              child: Center(
-                                child: SkinXIcon(SkinXIconType.arrowUp, size: 20, color: Colors.white),
+                            borderRadius: BorderRadius.circular(13),
+                            onTap: () => _submitQuestion(question),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+                              child: Row(
+                                children: [
+                                  Expanded(child: Text(question, style: const TextStyle(
+                                    fontSize: 13.5, color: _ink,
+                                  ))),
+                                  const SizedBox(width: 8),
+                                  const Icon(Icons.arrow_forward_ios_rounded, color: _teal, size: 14),
+                                ],
                               ),
                             ),
                           ),
                         ),
-                      ),
+                      )),
                     ],
-                  ),
+                    for (final turn in _conversation) ...[
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                          constraints: const BoxConstraints(maxWidth: 460),
+                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFE3F1E1),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Text(turn.question, style: const TextStyle(
+                            color: _ink, fontSize: 14, height: 1.5,
+                          )),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          constraints: const BoxConstraints(maxWidth: 540),
+                          padding: const EdgeInsets.all(15),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF4F6F4),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: turn.answer == null
+                              ? const Text('Finding an answer...', style: TextStyle(color: _muted))
+                              : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(turn.answer!.text, style: const TextStyle(
+                                      color: _ink, fontSize: 14, height: 1.55,
+                                    )),
+                                    if (turn.answer!.source != null) ...[
+                                      const SizedBox(height: 8),
+                                      InkWell(
+                                        onTap: () => _openSource(turn.answer!.source!),
+                                        child: const Text('View source', style: TextStyle(
+                                          color: _teal, fontSize: 12, fontWeight: FontWeight.w600,
+                                        )),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                        ),
+                      ),
+                      const SizedBox(height: 19),
+                    ],
+                  ],
                 ),
-                const SizedBox(height: 10),
-                Text(
-                  'Education, not a diagnosis. See a health professional for a new or changing skin spot.',
-                  style: _type(12, color: _muted, height: 1.45),
+              ),
+              Container(
+                padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  border: Border(top: BorderSide(color: _border)),
                 ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _SunProtectionCard extends StatelessWidget {
-  const _SunProtectionCard({this.onSourceTap});
-
-  final ValueChanged<Uri>? onSourceTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: _border),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const SkinXIcon(SkinXIconType.book, size: 18),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  'Everyday sun protection',
-                  style: _type(14, color: _teal, weight: FontWeight.w700, height: 1.4),
+                child: Column(
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _questionController,
+                            keyboardType: TextInputType.multiline,
+                            textInputAction: TextInputAction.send,
+                            minLines: 1,
+                            maxLines: 4,
+                            onSubmitted: (value) => _submitQuestion(value),
+                            decoration: InputDecoration(
+                              hintText: 'Ask a question...',
+                              hintStyle: const TextStyle(color: _muted, fontSize: 14),
+                              filled: true,
+                              fillColor: const Color(0xFFF8FAF8),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 13,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                                borderSide: const BorderSide(color: _border),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                                borderSide: const BorderSide(color: _border),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                                borderSide: const BorderSide(color: _teal),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 9),
+                        IconButton.filled(
+                          tooltip: 'Send question',
+                          onPressed: _replying ? null : () => _submitQuestion(),
+                          style: IconButton.styleFrom(
+                            backgroundColor: _teal,
+                            minimumSize: const Size(48, 48),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                          icon: const Icon(Icons.arrow_upward_rounded, color: Colors.white),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'For education only, not a diagnosis.',
+                      style: TextStyle(fontSize: 11, color: _muted),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          const _ProtectionStep('1', 'Seek shade, especially at midday. [1]'),
-          const SizedBox(height: 10),
-          const _ProtectionStep('2', 'Cover up with a wide-brimmed hat and long sleeves. [1]'),
-          const SizedBox(height: 10),
-          const _ProtectionStep('3', 'Use broad-spectrum SPF 30+. Reapply every 2 hours outdoors. [2]'),
-          const SizedBox(height: 14),
-          Container(height: 1, color: const Color(0xFFEDF1EC)),
-          const SizedBox(height: 12),
-          Text(
-            'REFERENCE SOURCES',
-            style: _type(9, color: _muted, weight: FontWeight.w700, height: 1.4).copyWith(letterSpacing: 0.8),
-          ),
-          const SizedBox(height: 6),
-          _SourceLink(
-            text: '[1] WHO · Ultraviolet radiation (2022)',
-            url: 'https://www.who.int/news-room/fact-sheets/detail/ultraviolet-radiation',
-            onTap: onSourceTap,
-          ),
-          const SizedBox(height: 4),
-          _SourceLink(
-            text: '[2] American Academy of Dermatology · Sunscreen FAQs',
-            url: 'https://www.aad.org/media/stats-sunscreen',
-            onTap: onSourceTap,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Reference examples only. No live source retrieval.',
-            style: _type(10, color: _muted, height: 1.4),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ProtectionStep extends StatelessWidget {
-  const _ProtectionStep(this.number, this.text);
-
-  final String number;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          constraints: const BoxConstraints(minWidth: 20, minHeight: 20),
-          padding: const EdgeInsets.all(3),
-          decoration: const BoxDecoration(color: Color(0xFFEAF2E9), shape: BoxShape.circle),
-          alignment: Alignment.center,
-          child: Text(number, style: _type(11, color: _teal, weight: FontWeight.w700, height: 1)),
-        ),
-        const SizedBox(width: 10),
-        Expanded(child: Text(text, style: _type(14, height: 1.4))),
-      ],
-    );
-  }
-}
-
-class _SourceLink extends StatelessWidget {
-  const _SourceLink({required this.text, required this.url, this.onTap});
-
-  final String text;
-  final String url;
-  final ValueChanged<Uri>? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      link: true,
-      child: InkWell(
-        onTap: onTap == null ? null : () => onTap!(Uri.parse(url)),
-        borderRadius: BorderRadius.circular(6),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2),
-          child: Row(
-            children: [
-              Expanded(child: Text(text, style: _type(12.5, color: _teal, height: 1.35))),
-              const SizedBox(width: 8),
-              const SkinXIcon(SkinXIconType.externalLink, size: 14),
-            ],
-          ),
         ),
       ),
     );
   }
-}
-
-TextStyle _type(
-  double size, {
-  Color color = _ink,
-  FontWeight weight = FontWeight.w400,
-  double height = 1.4,
-}) {
-  return TextStyle(
-    fontFamily: 'Roboto',
-    fontSize: size,
-    fontWeight: weight,
-    color: color,
-    height: height,
-  );
 }
