@@ -60,6 +60,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   final _picker = ImagePicker();
   final _model = SkinXModelService();
   final _history = ScreeningHistoryService();
+  final _patientNameController = TextEditingController();
   Uint8List? _photoBytes;
   bool _screening = false;
   bool _confirmedSkinPhoto = false;
@@ -67,6 +68,10 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   Map<String, dynamic>? _profile;
   StreamSubscription<AuthState>? _authSubscription;
   bool _passwordDialogOpen = false;
+
+  bool get _isCommunityHealthWorker => AuthService.user != null &&
+      (_profile?['account_type'] == 'chw' ||
+       (_profile == null && AuthService.user?.userMetadata?['account_type'] == 'chw'));
 
   @override
   void initState() {
@@ -104,6 +109,10 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
 
   Future<void> _updateRole(SkinXAccountType role) async {
     if (AuthService.user == null) return;
+    if (_records.isNotEmpty) {
+      _showError('Account type cannot change after screening records have been saved.');
+      return;
+    }
     try {
       final type = role == SkinXAccountType.communityHealthWorker ? 'chw' : 'individual';
       await AuthService.updateAccountType(type);
@@ -167,7 +176,9 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       if (!mounted) return;
       setState(() => _records = data.map((row) => ScreeningRecord(
         id: row['id'] as int,
-        patientName: 'Anonymous screening',
+        patientName: (row['patient_name'] as String?)?.trim().isNotEmpty == true
+            ? row['patient_name'] as String
+            : (_isCommunityHealthWorker ? 'Unnamed earlier screening' : 'My screening'),
         savedAt: DateTime.parse(row['created_at'] as String).toLocal(),
         savedDetails: row['result'] as String,
         thumbnailAsset: '',
@@ -220,8 +231,16 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     await Navigator.of(context).push(MaterialPageRoute<void>(
       builder: (_) => ScreeningResultScreen(
         result: result,
-        onSave: () async {
-          await _history.save(ownerId: AuthService.ownerId, result: result.status);
+        communityHealthWorker: _isCommunityHealthWorker,
+        initialPatientName: _isCommunityHealthWorker ? _patientNameController.text : '',
+        onSave: (name) async {
+          await _history.save(
+            ownerId: AuthService.ownerId,
+            result: result.status,
+            patientName: name,
+            communityHealthWorker: _isCommunityHealthWorker,
+          );
+          _patientNameController.clear();
           await _loadHistory();
         },
       ),
@@ -231,7 +250,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   Future<void> _showRecord(ScreeningRecord record) async {
     final delete = await showDialog<bool>(context: context, builder: (dialogContext) => AlertDialog(
       title: const Text('Saved screening'),
-      content: Text('${record.savedDetails} • ${record.savedAt.toLocal()}\n\nThis result is not a diagnosis. No photo or patient name was saved.'),
+      content: Text('${record.patientName}\n${record.savedDetails} • ${record.savedAt.toLocal()}\n\nThis result is not a diagnosis. No photo was saved.'),
       actions: [
         TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: const Text('Close')),
         TextButton(onPressed: () => Navigator.pop(dialogContext, true), child: const Text('Delete record')),
@@ -276,6 +295,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     _authSubscription?.cancel();
     AuthService.passwordRecoveryPending.removeListener(_maybeShowPasswordRecovery);
     _model.close();
+    _patientNameController.dispose();
     super.dispose();
   }
 
@@ -344,6 +364,8 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                     ),
                     HistoryScreen(records: _records, onRecordTap: _showRecord),
                     ScreeningScreen(
+                      showPatientName: _isCommunityHealthWorker,
+                      patientNameController: _patientNameController,
                       onPatientNameChanged: widget.onPatientNameChanged,
                       onTakePhoto: widget.onTakePhoto ?? () => _pickPhoto(ImageSource.camera),
                       onUploadPhoto: widget.onUploadPhoto ?? () => _pickPhoto(ImageSource.gallery),
@@ -379,7 +401,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                             profileSubtitle: AuthService.user == null
                                 ? 'Offline features are available without an account'
                                 : 'Signed in',
-                            initialRole: _profile?['account_type'] == 'chw'
+                            initialRole: _isCommunityHealthWorker
                                 ? SkinXAccountType.communityHealthWorker
                                 : SkinXAccountType.individual,
                             onRoleChanged: _updateRole,
@@ -391,7 +413,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                                 AuthService.user == null ? _openSignIn : _signOut,
                             onPrivacyConsentTap: () => _showGuide(
                               'Privacy & consent',
-                              'Screening photos are never uploaded or saved in history. Results and dates are saved only when you choose Save. If signed in, these anonymous records can sync to your account when internet is available. Guest history remains on this device. Local history is not encrypted; avoid shared devices. Ask a health professional about concerning skin changes.',
+                              'Screening photos are never uploaded or saved in history. Results and dates are saved only when Save is selected. Community health worker accounts also save the patient name with permission. Individual screenings do not store a patient name. Signed-in records may sync to the account. Guest history remains on this device. Local history is not encrypted; avoid shared devices.',
                             ),
                           ),
                   ],

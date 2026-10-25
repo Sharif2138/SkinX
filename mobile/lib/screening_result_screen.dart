@@ -2,9 +2,17 @@ import 'package:flutter/material.dart';
 import 'models/screening_result.dart';
 
 class ScreeningResultScreen extends StatefulWidget {
-  const ScreeningResultScreen({super.key, required this.result, required this.onSave});
+  const ScreeningResultScreen({
+    super.key,
+    required this.result,
+    required this.onSave,
+    this.communityHealthWorker = false,
+    this.initialPatientName = '',
+  });
   final ScreeningResult result;
-  final Future<void> Function() onSave;
+  final Future<void> Function(String? patientName) onSave;
+  final bool communityHealthWorker;
+  final String initialPatientName;
 
   @override
   State<ScreeningResultScreen> createState() => _ScreeningResultScreenState();
@@ -13,11 +21,32 @@ class ScreeningResultScreen extends StatefulWidget {
 class _ScreeningResultScreenState extends State<ScreeningResultScreen> {
   bool _saving = false;
   bool _saved = false;
+  late final TextEditingController _name = TextEditingController(text: widget.initialPatientName);
+  bool _permissionConfirmed = false;
+
+  @override
+  void dispose() {
+    _name.dispose();
+    super.dispose();
+  }
   Future<void> _save() async {
     if (_saving || _saved) return;
+    final patientName = _name.text.trim();
+    if (widget.communityHealthWorker && patientName.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Enter the patient name to save this screening.')),
+      );
+      return;
+    }
+    if (widget.communityHealthWorker && !_permissionConfirmed) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Confirm permission to save the patient record.')),
+      );
+      return;
+    }
     setState(() => _saving = true);
     try {
-      await widget.onSave();
+      await widget.onSave(widget.communityHealthWorker ? patientName : null);
       if (mounted) setState(() => _saved = true);
     } catch (_) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Could not save the result on this device.')));
@@ -54,14 +83,38 @@ class _ScreeningResultScreenState extends State<ScreeningResultScreen> {
                     style: TextStyle(fontSize: 13, height: 1.5, color: Color(0xFF647D78))),
                 const SizedBox(height: 30),
                 if (status != ScreeningResult.cannotInfer) ...[
+                  if (widget.communityHealthWorker) ...[
+                    TextField(
+                      controller: _name,
+                      maxLength: 120,
+                      textCapitalization: TextCapitalization.words,
+                      decoration: const InputDecoration(
+                        labelText: 'Patient name',
+                        helperText: 'Required to save the screening',
+                      ),
+                    ),
+                    CheckboxListTile(
+                      contentPadding: EdgeInsets.zero,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      value: _permissionConfirmed,
+                      onChanged: (value) => setState(() => _permissionConfirmed = value ?? false),
+                      title: const Text('I have permission to save this person’s name and screening result on this device and in my account when online.',
+                        style: TextStyle(fontSize: 13)),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
                   SizedBox(width: double.infinity, child: FilledButton(
                     onPressed: _saving || _saved ? null : _save,
                     style: FilledButton.styleFrom(backgroundColor: teal, minimumSize: const Size.fromHeight(48)),
                     child: Text(_saved ? 'Result saved' : _saving ? 'Saving...' : 'Save result'),
                   )),
                   const SizedBox(height: 8),
-                  const Text('Optional: saves only the result and date, never the photo or patient name. Signed-in records sync to your account when online. Guest records stay on this device.',
-                      style: TextStyle(fontSize: 12, color: Color(0xFF647D78), height: 1.5)),
+                  Text(
+                    widget.communityHealthWorker
+                        ? 'The patient name, result and date are saved. Signed-in records sync to the account when online. Photos are never uploaded.'
+                        : 'Only the result and date are saved, never the photo or a patient name. Signed-in records sync when online; guest records stay on this device.',
+                    style: const TextStyle(fontSize: 12, color: Color(0xFF647D78), height: 1.5),
+                  ),
                 ],
               ]),
             ),

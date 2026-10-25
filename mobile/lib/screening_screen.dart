@@ -15,6 +15,8 @@ class ScreeningScreen extends StatelessWidget {
   const ScreeningScreen({
     super.key,
     this.initialPatientName = '',
+    this.patientNameController,
+    this.showPatientName = false,
     this.onPatientNameChanged,
     this.onTakePhoto,
     this.onUploadPhoto,
@@ -29,6 +31,8 @@ class ScreeningScreen extends StatelessWidget {
   });
 
   final String initialPatientName;
+  final TextEditingController? patientNameController;
+  final bool showPatientName;
   final ValueChanged<String>? onPatientNameChanged;
   final VoidCallback? onTakePhoto;
   final VoidCallback? onUploadPhoto;
@@ -75,52 +79,56 @@ class ScreeningScreen extends StatelessWidget {
                   style: _textStyle(14, color: _muted, height: 1.4),
                 ),
                 const SizedBox(height: 20),
-                Text(
-                  'Patient name',
-                  style: _textStyle(13, weight: FontWeight.w600, height: 1.3),
-                ),
-                const SizedBox(height: 8),
-                Semantics(
-                  label: 'Patient name',
-                  child: TextFormField(
-                    initialValue: initialPatientName,
-                    onChanged: onPatientNameChanged,
-                    keyboardType: TextInputType.name,
-                    textCapitalization: TextCapitalization.words,
-                    textInputAction: TextInputAction.done,
-                    onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
-                    onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                    style: _textStyle(14, height: 1.4),
-                    cursorColor: _teal,
-                    decoration: const InputDecoration(
-                      isDense: true,
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                      prefixIcon: Padding(
-                        padding: EdgeInsets.only(left: 16, right: 10),
-                        child: SkinXIcon(
-                          SkinXIconType.account,
-                          size: 18,
-                          color: Color(0xFF647D78),
+                if (showPatientName) ...[
+                  Text(
+                    'Patient name',
+                    style: _textStyle(13, weight: FontWeight.w600, height: 1.3),
+                  ),
+                  const SizedBox(height: 8),
+                  Semantics(
+                    label: 'Patient name',
+                    child: TextFormField(
+                      controller: patientNameController,
+                      initialValue: patientNameController == null ? initialPatientName : null,
+                      onChanged: onPatientNameChanged,
+                      keyboardType: TextInputType.name,
+                      textCapitalization: TextCapitalization.words,
+                      textInputAction: TextInputAction.done,
+                      maxLength: 120,
+                      onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
+                      onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                      style: _textStyle(14, height: 1.4),
+                      cursorColor: _teal,
+                      decoration: const InputDecoration(
+                        isDense: true,
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        prefixIcon: Padding(
+                          padding: EdgeInsets.only(left: 16, right: 10),
+                          child: SkinXIcon(
+                            SkinXIconType.account,
+                            size: 18,
+                            color: Color(0xFF647D78),
+                          ),
                         ),
-                      ),
-                      prefixIconConstraints: BoxConstraints(minWidth: 44, minHeight: 24),
-                      border: _inputBorder,
-                      enabledBorder: _inputBorder,
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(16)),
-                        borderSide: BorderSide(color: _teal),
+                        prefixIconConstraints: BoxConstraints(minWidth: 44, minHeight: 24),
+                        border: _inputBorder,
+                        enabledBorder: _inputBorder,
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(16)),
+                          borderSide: BorderSide(color: _teal),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Name is optional and is not stored. Confirm consent before taking a photo.',
-                  style: _textStyle(11, color: _muted, height: 1.4),
-                ),
-                const SizedBox(height: 18),
+                  const SizedBox(height: 8),
+                  Text(
+                    'A name is required to save a patient screening. Get permission before recording it.',
+                    style: _textStyle(11, color: _muted, height: 1.4),
+                  ),
+                  const SizedBox(height: 18),
+                ],
                 if (photo == null)
                   Text(
                     'Photo',
