@@ -32,7 +32,6 @@ class HistoryScreen extends StatefulWidget {
     this.languageCode = 'EN',
   });
 
-  // Supply your real records here later. Without them, the reference samples show.
   final List<ScreeningRecord>? records;
   final ValueChanged<ScreeningRecord>? onRecordTap;
   final VoidCallback? onLanguageTap;

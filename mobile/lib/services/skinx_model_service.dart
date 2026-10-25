@@ -9,8 +9,6 @@ import 'package:tflite_flutter/tflite_flutter.dart';
 
 import '../models/screening_result.dart';
 
-/// Converts an image into the Python Notebook 06 input contract.
-/// Flutter↔TensorFlow resize parity still needs to be checked on real Android.
 List<List<List<double>>> _preprocess(Uint8List bytes) {
   final decoded = img.decodeImage(bytes);
   if (decoded == null || decoded.numFrames != 1) {
@@ -20,6 +18,24 @@ List<List<List<double>>> _preprocess(Uint8List bytes) {
   if (image.width < 32 || image.height < 32 ||
       image.width * image.height > 20000000) {
     throw const FormatException('Unsupported image dimensions.');
+  }
+  var minBrightness = 255.0;
+  var maxBrightness = 0.0;
+  var brightnessTotal = 0.0;
+  var sampled = 0;
+  for (var y = 0; y < image.height; y += math.max(1, image.height ~/ 40)) {
+    for (var x = 0; x < image.width; x += math.max(1, image.width ~/ 40)) {
+      final color = image.getPixel(x, y);
+      final value = (color.r + color.g + color.b) / 3.0;
+      minBrightness = math.min(minBrightness, value);
+      maxBrightness = math.max(maxBrightness, value);
+      brightnessTotal += value;
+      sampled++;
+    }
+  }
+  final average = brightnessTotal / sampled;
+  if (average < 8 || average > 248 || maxBrightness - minBrightness < 4) {
+    throw const FormatException('This photo is too dark, too bright or has too little visible detail. Take another photo in even light.');
   }
   const target = 224;
   final scale = math.min(target / image.width, target / image.height);

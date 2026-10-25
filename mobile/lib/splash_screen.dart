@@ -1,12 +1,11 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'sign_up_screen.dart';
 import 'app_shell.dart';
-import 'services/auth_service.dart'; 
+import 'services/auth_service.dart';
+import 'services/connectivity_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key, this.statusText = 'Getting ready...'});
@@ -18,23 +17,22 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
-    _timer = Timer(const Duration(seconds: 3), () {
-      if (!mounted) return;
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => AuthService.user == null ? const SignUpScreen() : const AppShell()),
-      );
-    });
+    _openApp();
   }
 
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
+  Future<void> _openApp() async {
+    await ConnectivityService.instance.initialize();
+    if (!mounted) return;
+    final online = ConnectivityService.instance.online;
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+      builder: (_) => !online || AuthService.user != null
+          ? const AppShell()
+          : const SignUpScreen(),
+    ));
   }
 
   @override

@@ -22,6 +22,8 @@ class ScreeningScreen extends StatelessWidget {
     this.onChangePhoto,
     this.photo,
     this.isIllustrativePhoto = false,
+    this.photoConfirmed = false,
+    this.onPhotoConfirmedChanged,
     this.languageCode = 'EN',
     this.onLanguageTap,
   });
@@ -32,10 +34,10 @@ class ScreeningScreen extends StatelessWidget {
   final VoidCallback? onUploadPhoto;
   final VoidCallback? onScreenPhoto;
   final VoidCallback? onChangePhoto;
-  // Supply a MemoryImage, FileImage or another ImageProvider after selection.
   final ImageProvider<Object>? photo;
-  // Use true for a sample photo to show the reference's illustrative badge.
   final bool isIllustrativePhoto;
+  final bool photoConfirmed;
+  final ValueChanged<bool>? onPhotoConfirmedChanged;
   final String languageCode;
   final VoidCallback? onLanguageTap;
 
@@ -46,7 +48,6 @@ class ScreeningScreen extends StatelessWidget {
       child: Align(
         alignment: Alignment.topCenter,
         child: ConstrainedBox(
-          // A centered form keeps the same proportions on larger screens.
           constraints: const BoxConstraints(maxWidth: 600),
           child: SingleChildScrollView(
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -163,9 +164,21 @@ class ScreeningScreen extends StatelessWidget {
                     'Check the area is clear before screening.',
                     style: _textStyle(11, color: _muted, height: 1.4),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 12),
+                  CheckboxListTile(
+                    value: photoConfirmed,
+                    onChanged: (value) => onPhotoConfirmedChanged?.call(value ?? false),
+                    contentPadding: EdgeInsets.zero,
+                    activeColor: _teal,
+                    controlAffinity: ListTileControlAffinity.leading,
+                    title: Text('This photo shows a visible change on human skin.',
+                      style: _textStyle(13, height: 1.4)),
+                    subtitle: Text('Keep the affected area in focus. SkinX cannot screen objects or ordinary photos.',
+                      style: _textStyle(11, color: _muted)),
+                  ),
+                  const SizedBox(height: 12),
                   _PhotoButton(
-                    label: 'Screen photo',
+                    label: photoConfirmed ? 'Screen photo' : 'Confirm photo to screen',
                     icon: SkinXIconType.scan,
                     filled: true,
                     elevation: 3,

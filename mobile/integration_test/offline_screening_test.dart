@@ -1,5 +1,3 @@
-// Run on a physical Android phone, not a Dart/Flutter widget-test host:
-// flutter test integration_test/offline_screening_test.dart -d <device-id>
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/services.dart';

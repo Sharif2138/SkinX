@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'services/chatbot_service.dart';
 import 'services/auth_service.dart';
+import 'services/connectivity_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'widgets/skinx_header.dart';
@@ -19,13 +20,14 @@ class AskScreen extends StatefulWidget {
     this.onSourceTap,
     this.onLanguageTap,
     this.languageCode = 'EN',
+    this.onlineAvailable = false,
   });
 
-  // Connect these callbacks to your chat service and source-link handler.
   final ValueChanged<String>? onQuestionSubmitted;
   final ValueChanged<Uri>? onSourceTap;
   final VoidCallback? onLanguageTap;
   final String languageCode;
+  final bool onlineAvailable;
 
   @override
   State<AskScreen> createState() => _AskScreenState();
@@ -64,6 +66,12 @@ class _AskScreenState extends State<AskScreen> {
   Future<void> _openSource(String url) async {
     final uri = Uri.tryParse(url);
     if (uri == null || !(uri.scheme == 'https' || uri.scheme == 'http')) return;
+    if (!ConnectivityService.instance.online) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('This source is available when you are online.'),
+      ));
+      return;
+    }
     if (widget.onSourceTap != null) {
       widget.onSourceTap!(uri);
     } else {
@@ -84,7 +92,6 @@ class _AskScreenState extends State<AskScreen> {
       child: Align(
         alignment: Alignment.topCenter,
         child: ConstrainedBox(
-          // Keep the conversation readable on both phones and tablets.
           constraints: const BoxConstraints(maxWidth: 600),
           child: SingleChildScrollView(
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -113,42 +120,14 @@ class _AskScreenState extends State<AskScreen> {
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
-                        'Example conversation · not a live response',
+                        widget.onlineAvailable ? 'Skin-health answers available offline' :
+                          'Offline assistant · Ask about skin health without internet',
                         style: _type(12, color: _muted, height: 1.4),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Flexible(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                        decoration: const BoxDecoration(
-                          color: Color(0xFFDFF0DE),
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(22),
-                            topRight: Radius.circular(6),
-                            bottomLeft: Radius.circular(22),
-                            bottomRight: Radius.circular(22),
-                          ),
-                        ),
-                        child: Text(
-                          'How can I protect my skin from the sun?',
-                          style: _type(13, weight: FontWeight.w500, height: 1.4),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    ExcludeSemantics(
-                      child: SvgPicture.asset('assets/skinx_logo.svg', width: 28, height: 28),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 14),
                 _SunProtectionCard(onSourceTap: (uri) => _openSource(uri.toString())),
                 if (_conversation.isNotEmpty) ...[
                   const SizedBox(height: 18),
@@ -180,7 +159,7 @@ class _AskScreenState extends State<AskScreen> {
                     const SizedBox(height: 14),
                   ],
                 ],
-                if (AuthService.configured && ChatbotService.apiBaseUrl.isNotEmpty)
+                if (widget.onlineAvailable && AuthService.configured && AuthService.user != null && ChatbotService.apiBaseUrl.isNotEmpty)
                   SwitchListTile.adaptive(
                     contentPadding: EdgeInsets.zero,
                     title: Text('Use online AI (optional)', style: _type(13)),
@@ -189,6 +168,11 @@ class _AskScreenState extends State<AskScreen> {
                     value: _useOnline,
                     onChanged: (value) => setState(() => _useOnline = value),
                   ),
+                if (!widget.onlineAvailable) ...[
+                  const SizedBox(height: 10),
+                  Text('Advanced AI chat is available in online mode.',
+                      style: _type(12, color: _muted)),
+                ],
                 const SizedBox(height: 18),
                 Material(
                   color: Colors.white,

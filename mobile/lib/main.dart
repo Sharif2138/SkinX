@@ -11,7 +11,6 @@ Future<void> main() async {
 class SkinX extends StatelessWidget {
   const SkinX({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

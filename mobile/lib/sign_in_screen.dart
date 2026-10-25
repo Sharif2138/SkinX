@@ -7,6 +7,8 @@ import 'widgets/skinx_header.dart';
 import 'widgets/skinx_icon.dart';
 import 'app_shell.dart';
 import 'services/auth_service.dart';
+import 'services/connectivity_service.dart';
+import 'widgets/offline_welcome.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 const _ink = Color(0xFF193B38);
@@ -103,7 +105,13 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
+    return AnimatedBuilder(
+      animation: ConnectivityService.instance,
+      builder: (context, _) {
+        if (!ConnectivityService.instance.online) {
+          return OfflineWelcome(onContinue: _continueOffline);
+        }
+        return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.white,
         statusBarIconBrightness: Brightness.dark,
@@ -193,7 +201,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                     ),
                                     const SizedBox(height: 12),
                                     Center(child: TextButton(onPressed: _continueOffline,
-                                      child: const Text('Continue without an account (offline)'),)),
+                                      child: const Text('Use SkinX offline (no account)'),)),
                                     const SizedBox(height: 12),
                                     Center(
                                       child: Wrap(
@@ -233,7 +241,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                         children: [
                                           Text('Small steps for healthier skin', style: _type(12.5, weight: FontWeight.w600, height: 1.4)),
                                           const SizedBox(height: 3),
-                                          Text('Explore skin-health guides in Learn after you sign in.', style: _type(12.5, color: _muted, height: 1.45)),
+                                          Text('Explore skin-health guides in Learn, even without an account.', style: _type(12.5, color: _muted, height: 1.45)),
                                         ],
                                       ),
                                     ),
@@ -252,6 +260,8 @@ class _SignInScreenState extends State<SignInScreen> {
           ),
         ),
       ),
+    );
+      },
     );
   }
 }

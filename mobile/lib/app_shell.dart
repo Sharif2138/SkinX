@@ -15,6 +15,8 @@ import 'services/auth_service.dart';
 import 'models/screening_result.dart';
 import 'screening_result_screen.dart';
 import 'sign_up_screen.dart';
+import 'sign_in_screen.dart';
+import 'services/connectivity_service.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({
@@ -42,25 +44,26 @@ class AppShell extends StatefulWidget {
   final bool isIllustrativePhoto;
   final ValueChanged<String>? onAskQuestionSubmitted;
   final ValueChanged<Uri>? onAskSourceTap;
-  // Supply account details and action callbacks through this screen.
   final AccountScreen accountScreen;
 
   @override
   State<AppShell> createState() => _AppShellState();
 }
 
-class _AppShellState extends State<AppShell> {
+class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   SkinXDestination _selectedDestination = SkinXDestination.learn;
   final _picker = ImagePicker();
   final _model = SkinXModelService();
   final _history = ScreeningHistoryService();
   Uint8List? _photoBytes;
   bool _screening = false;
+  bool _confirmedSkinPhoto = false;
   List<ScreeningRecord> _records = [];
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadHistory();
   }
 
@@ -95,7 +98,10 @@ class _AppShellState extends State<AppShell> {
       }
       final bytes = await file.readAsBytes();
       if (!mounted) return;
-      setState(() => _photoBytes = bytes);
+      setState(() {
+        _photoBytes = bytes;
+        _confirmedSkinPhoto = false;
+      });
       _selectDestination(SkinXDestination.screen);
     } catch (_) {
       _showError('Unable to open your camera or selected photo.');
@@ -104,10 +110,9 @@ class _AppShellState extends State<AppShell> {
 
   Future<void> _screenPhoto() async {
     final bytes = _photoBytes;
-    if (bytes == null || _screening) return;
+    if (bytes == null || _screening || !_confirmedSkinPhoto) return;
     setState(() => _screening = true);
-    // Show progress while inference runs locally; no HTTP request is made.
-    showDialog<void>(context: context, barrierDismissible: false,
+      showDialog<void>(context: context, barrierDismissible: false,
       builder: (_) => const Center(child: CircularProgressIndicator()));
     ScreeningResult result;
     try {
@@ -156,11 +161,39 @@ class _AppShellState extends State<AppShell> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      ConnectivityService.instance.refresh();
+    }
+  }
+
+  void _openSignIn() {
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+      builder: (_) => const SignInScreen(),
+    ));
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _model.close();
     super.dispose();
   }
 
+
+  void _showGuide(String title, String content) {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(title),
+        content: SingleChildScrollView(child: Text(content)),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('Close')),
+        ],
+      ),
+    );
+  }
 
   void _selectDestination(SkinXDestination destination) {
     FocusScope.of(context).unfocus();
@@ -171,55 +204,135 @@ class _AppShellState extends State<AppShell> {
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        statusBarColor: Colors.white,
-        statusBarIconBrightness: Brightness.dark,
-        statusBarBrightness: Brightness.light,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
-        systemNavigationBarContrastEnforced: false,
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: IndexedStack(
-          index: switch (_selectedDestination) {
-            SkinXDestination.history => 1,
-            SkinXDestination.screen => 2,
-            SkinXDestination.ask => 3,
-            SkinXDestination.account => 4,
-            _ => 0,
-          },
-          children: [
-            const LearnScreen(),
-            HistoryScreen(records: _records, onRecordTap: _showRecord),
-            ScreeningScreen(
-              onPatientNameChanged: widget.onPatientNameChanged,
-              onTakePhoto: widget.onTakePhoto ?? () => _pickPhoto(ImageSource.camera),
-              onUploadPhoto: widget.onUploadPhoto ?? () => _pickPhoto(ImageSource.gallery),
-              onScreenPhoto: _screening ? null : (widget.onScreenPhoto ?? _screenPhoto),
-              onChangePhoto: widget.onChangePhoto ?? () => setState(() => _photoBytes = null),
-              photo: widget.screeningPhoto ?? (_photoBytes == null ? null : MemoryImage(_photoBytes!)),
-              isIllustrativePhoto: widget.isIllustrativePhoto,
-            ),
-            AskScreen(
-              onQuestionSubmitted: widget.onAskQuestionSubmitted,
-              onSourceTap: widget.onAskSourceTap,
-            ),
-            widget.accountScreen.name != null
-                ? widget.accountScreen
-                : AccountScreen(
-                    name: AuthService.user?.userMetadata?['full_name']?.toString() ?? 'Offline guest',
-                    email: AuthService.user?.email ?? 'No account required',
-                    profileTitle: AuthService.user == null ? 'Offline mode' : 'SkinX account',
-                    profileSubtitle: AuthService.user == null ? 'You can screen without internet' : 'Signed in',
-                    onSignOutTap: _signOut,
-                  ),
-          ],
+    return AnimatedBuilder(
+      animation: ConnectivityService.instance,
+      builder: (context, _) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarColor: Colors.white,
+          statusBarIconBrightness: Brightness.dark,
+          statusBarBrightness: Brightness.light,
+          systemNavigationBarColor: Colors.white,
+          systemNavigationBarIconBrightness: Brightness.dark,
+          systemNavigationBarContrastEnforced: false,
         ),
-        bottomNavigationBar: SkinXBottomNavigationBar(
-          selectedDestination: _selectedDestination,
-          onTap: _selectDestination,
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          body: Column(
+            children: [
+              if (!ConnectivityService.instance.online)
+                Material(
+                  color: const Color(0xFFEAF2E9),
+                  child: SafeArea(
+                    top: false,
+                    bottom: false,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.wifi_off, color: Color(0xFF14665E), size: 18),
+                          const SizedBox(width: 8),
+                          const Expanded(
+                            child: Text(
+                              'Offline mode · Screening, Ask, Learn and History are available',
+                              style: TextStyle(fontSize: 12, color: Color(0xFF193B38)),
+                            ),
+                          ),
+                          IconButton(
+                            tooltip: 'Check connection',
+                            constraints: const BoxConstraints(minWidth: 34, minHeight: 34),
+                            icon: const Icon(Icons.refresh, size: 19),
+                            onPressed: ConnectivityService.instance.refresh,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              Expanded(
+                child: IndexedStack(
+                  index: switch (_selectedDestination) {
+                    SkinXDestination.history => 1,
+                    SkinXDestination.screen => 2,
+                    SkinXDestination.ask => 3,
+                    SkinXDestination.account => 4,
+                    _ => 0,
+                  },
+                  children: [
+                    LearnScreen(
+                      offline: !ConnectivityService.instance.online,
+                      onFeaturedGuideTap: () => _showGuide(
+                        'Protect your skin',
+                        'Seek shade, especially around midday. Wear long sleeves, a wide-brimmed hat and UV-protective sunglasses. Use broad-spectrum SPF 30 or higher and reapply it regularly outdoors. Sun protection is especially important for people with albinism.',
+                      ),
+                      onSkinChangesTap: () => _showGuide(
+                        'Notice changes in your skin',
+                        'Look for new spots, changes in size or appearance, bleeding, or wounds that do not heal. A photograph cannot confirm what a skin change is. Ask a health professional about any concerning or persistent spot.',
+                      ),
+                      onSeekCareTap: () => _showGuide(
+                        'When to seek care',
+                        'Contact a qualified health professional promptly if a skin change grows, bleeds repeatedly or does not heal. A suspicious screening result is not a diagnosis, and a less suspicious result does not rule out cancer.',
+                      ),
+                    ),
+                    HistoryScreen(records: _records, onRecordTap: _showRecord),
+                    ScreeningScreen(
+                      onPatientNameChanged: widget.onPatientNameChanged,
+                      onTakePhoto: widget.onTakePhoto ?? () => _pickPhoto(ImageSource.camera),
+                      onUploadPhoto: widget.onUploadPhoto ?? () => _pickPhoto(ImageSource.gallery),
+                      onScreenPhoto: _screening || !_confirmedSkinPhoto
+                          ? null
+                          : (widget.onScreenPhoto ?? _screenPhoto),
+                      onChangePhoto: widget.onChangePhoto ?? () => setState(() {
+                        _photoBytes = null;
+                        _confirmedSkinPhoto = false;
+                      }),
+                      photoConfirmed: _confirmedSkinPhoto,
+                      onPhotoConfirmedChanged: (confirmed) =>
+                          setState(() => _confirmedSkinPhoto = confirmed),
+                      photo: widget.screeningPhoto ??
+                          (_photoBytes == null ? null : MemoryImage(_photoBytes!)),
+                      isIllustrativePhoto: widget.isIllustrativePhoto,
+                    ),
+                    AskScreen(
+                      onlineAvailable: ConnectivityService.instance.online,
+                      onQuestionSubmitted: widget.onAskQuestionSubmitted,
+                      onSourceTap: widget.onAskSourceTap,
+                    ),
+                    widget.accountScreen.name != null
+                        ? widget.accountScreen
+                        : AccountScreen(
+                            name: AuthService.user?.userMetadata?['full_name']
+                                    ?.toString() ??
+                                'Offline guest',
+                            email: AuthService.user?.email ?? 'No account required',
+                            profileTitle: AuthService.user == null
+                                ? (ConnectivityService.instance.online
+                                    ? 'Guest mode'
+                                    : 'Offline mode')
+                                : 'SkinX account',
+                            profileSubtitle: AuthService.user == null
+                                ? 'Offline features are available without an account'
+                                : 'Signed in',
+                            actionLabel: AuthService.user == null
+                                ? 'Sign in (online)'
+                                : 'Sign out',
+                            accountActionAvailable:
+                                ConnectivityService.instance.online,
+                            onSignOutTap:
+                                AuthService.user == null ? _openSignIn : _signOut,
+                            onPrivacyConsentTap: () => _showGuide(
+                              'Privacy & consent',
+                              'Offline screening stays on this device. Screening results are saved only when selected, without images or patient names. Local history is not encrypted, so avoid using shared devices for private records. Consult a health professional for concerning skin changes.',
+                            ),
+                          ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          bottomNavigationBar: SkinXBottomNavigationBar(
+            selectedDestination: _selectedDestination,
+            onTap: _selectDestination,
+          ),
         ),
       ),
     );

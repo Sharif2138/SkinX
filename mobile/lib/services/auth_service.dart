@@ -12,12 +12,12 @@ class AuthService {
       await Supabase.initialize(url: url, anonKey: publishableKey);
       _initialized = true;
     } catch (_) {
-      // A misconfigured or temporarily unavailable cloud service must not stop offline screening.
       _initialized = false;
     }
   }
 
   static User? get user => configured ? Supabase.instance.client.auth.currentUser : null;
+  static String? get accessToken => configured ? Supabase.instance.client.auth.currentSession?.accessToken : null;
   static String get ownerId => user?.id ?? 'offline_guest';
 
   static Future<void> signIn(String email, String password) async {
@@ -32,7 +32,6 @@ class AuthService {
       password: password,
       data: {'full_name': name, 'role': role},
     );
-    // Supabase can require email confirmation before creating a session.
     return response.session != null;
   }
 

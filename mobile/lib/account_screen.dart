@@ -24,6 +24,8 @@ class AccountScreen extends StatefulWidget {
     this.onLanguageTap,
     this.onPrivacyConsentTap,
     this.onSignOutTap,
+    this.actionLabel = 'Sign out',
+    this.accountActionAvailable = true,
   });
 
   final String? name;
@@ -37,6 +39,8 @@ class AccountScreen extends StatefulWidget {
   final VoidCallback? onLanguageTap;
   final VoidCallback? onPrivacyConsentTap;
   final VoidCallback? onSignOutTap;
+  final String actionLabel;
+  final bool accountActionAvailable;
 
   @override
   State<AccountScreen> createState() => _AccountScreenState();
@@ -104,6 +108,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     ],
                   ),
                 ),
+                if (widget.accountActionAvailable) ...[
                 const SizedBox(height: 20),
                 Row(
                   children: [
@@ -131,6 +136,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     ],
                   ),
                 ),
+                ],
                 const SizedBox(height: 20),
                 Material(
                   color: Colors.white,
@@ -157,7 +163,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Material(
+                if (widget.accountActionAvailable) Material(
                   color: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
@@ -177,13 +183,19 @@ class _AccountScreenState extends State<AccountScreen> {
                           children: [
                             const SkinXIcon(SkinXIconType.signOut, size: 20),
                             const SizedBox(width: 10),
-                            Text('Sign out', style: _type(14, color: _teal, weight: FontWeight.w600)),
+                            Text(widget.actionLabel, style: _type(14, color: _teal, weight: FontWeight.w600)),
                           ],
                         ),
                       ),
                     ),
                   ),
                 ),
+                if (!widget.accountActionAvailable)
+                  const Padding(
+                    padding: EdgeInsets.only(top: 8, bottom: 16),
+                    child: Text('Account sign-in and cloud syncing are available in online mode.',
+                      style: TextStyle(fontSize: 12, color: _muted)),
+                  ),
                 const SizedBox(height: 18),
                 Center(
                   child: Text(
@@ -246,7 +258,7 @@ class _PreferenceRow extends StatelessWidget {
               Flexible(child: Text(value!, textAlign: TextAlign.right, style: _type(13.5, color: _muted, height: 1.3))),
             ],
             const SizedBox(width: 12),
-            const SkinXIcon(SkinXIconType.chevronRight, size: 14),
+            if (onTap != null) const SkinXIcon(SkinXIconType.chevronRight, size: 14),
           ],
         ),
       ),

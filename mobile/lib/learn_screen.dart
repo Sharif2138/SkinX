@@ -18,6 +18,7 @@ class LearnScreen extends StatelessWidget {
     this.onSeekCareTap,
     this.onAllVideosTap,
     this.onVideoTap,
+    this.offline = false,
     this.languageCode = 'EN',
     this.heroAsset = 'assets/person_with_albinism.png',
     this.videoAsset = 'assets/skin_care_conversation.png',
@@ -29,6 +30,7 @@ class LearnScreen extends StatelessWidget {
   final VoidCallback? onSeekCareTap;
   final VoidCallback? onAllVideosTap;
   final VoidCallback? onVideoTap;
+  final bool offline;
   final String languageCode;
   final String heroAsset;
   final String videoAsset;
@@ -39,7 +41,6 @@ class LearnScreen extends StatelessWidget {
       bottom: false,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          // Tablets use two columns. Text, icons and spacing keep their sizes.
           final useTwoColumns = constraints.maxWidth >= 600;
           final featuredGuide = _FeaturedGuide(
             imageAsset: heroAsset,
@@ -47,6 +48,7 @@ class LearnScreen extends StatelessWidget {
           );
           final resources = _LearnResources(
             videoAsset: videoAsset,
+            offline: offline,
             onSkinChangesTap: onSkinChangesTap,
             onSeekCareTap: onSeekCareTap,
             onAllVideosTap: onAllVideosTap,
@@ -110,6 +112,7 @@ class LearnScreen extends StatelessWidget {
 class _LearnResources extends StatelessWidget {
   const _LearnResources({
     required this.videoAsset,
+    required this.offline,
     this.onSkinChangesTap,
     this.onSeekCareTap,
     this.onAllVideosTap,
@@ -117,6 +120,7 @@ class _LearnResources extends StatelessWidget {
   });
 
   final String videoAsset;
+  final bool offline;
   final VoidCallback? onSkinChangesTap;
   final VoidCallback? onSeekCareTap;
   final VoidCallback? onAllVideosTap;
@@ -158,29 +162,36 @@ class _LearnResources extends StatelessWidget {
           onTap: onSeekCareTap,
         ),
         const SizedBox(height: 27),
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                'Watch & learn',
-                style: _type(22, weight: FontWeight.w700, height: 1.15),
-              ),
-            ),
-            InkWell(
-              onTap: onAllVideosTap,
-              borderRadius: BorderRadius.circular(6),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6),
+        if (offline)
+          Text(
+            'Videos are available in online mode.',
+            style: _type(12, color: _muted, height: 1.5),
+          )
+        else ...[
+          Row(
+            children: [
+              Expanded(
                 child: Text(
-                  'All videos',
-                  style: _type(11, color: _teal, weight: FontWeight.w600),
+                  'Watch & learn',
+                  style: _type(22, weight: FontWeight.w700, height: 1.15),
                 ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        _VideoCard(imageAsset: videoAsset, onTap: onVideoTap),
+              InkWell(
+                onTap: onAllVideosTap,
+                borderRadius: BorderRadius.circular(6),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  child: Text(
+                    'All videos',
+                    style: _type(11, color: _teal, weight: FontWeight.w600),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          _VideoCard(imageAsset: videoAsset, onTap: onVideoTap),
+        ],
       ],
     );
   }
@@ -225,13 +236,21 @@ class _FeaturedGuide extends StatelessWidget {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Image.asset(imageAsset, fit: BoxFit.cover, filterQuality: FilterQuality.high),
+                  Image.asset(
+                    imageAsset,
+                    fit: BoxFit.cover,
+                    filterQuality: FilterQuality.high,
+                  ),
                   const DecoratedBox(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: [Color(0x00000000), Color(0x10000000), Color(0xA8000000)],
+                        colors: [
+                          Color(0x00000000),
+                          Color(0x10000000),
+                          Color(0xA8000000),
+                        ],
                         stops: [0.25, 0.48, 1],
                       ),
                     ),
@@ -245,12 +264,22 @@ class _FeaturedGuide extends StatelessWidget {
                       children: [
                         Text(
                           'FEATURED GUIDE',
-                          style: _type(9, color: const Color(0xFFD6E8D6), weight: FontWeight.w700, tracking: 0.8),
+                          style: _type(
+                            9,
+                            color: const Color(0xFFD6E8D6),
+                            weight: FontWeight.w700,
+                            tracking: 0.8,
+                          ),
                         ),
                         const SizedBox(height: 7),
                         Text(
                           'Small habits.\nStronger protection.',
-                          style: _type(21, color: Colors.white, weight: FontWeight.w700, height: 1.08),
+                          style: _type(
+                            21,
+                            color: Colors.white,
+                            weight: FontWeight.w700,
+                            height: 1.08,
+                          ),
                         ),
                       ],
                     ),
@@ -268,7 +297,12 @@ class _FeaturedGuide extends StatelessWidget {
                       Expanded(
                         child: Text(
                           'EVERYDAY PROTECTION',
-                          style: _type(10, color: _teal, weight: FontWeight.w700, tracking: 0.65),
+                          style: _type(
+                            10,
+                            color: _teal,
+                            weight: FontWeight.w700,
+                            tracking: 0.65,
+                          ),
                         ),
                       ),
                       Text('4 min read', style: _type(11, color: _muted)),
@@ -280,16 +314,26 @@ class _FeaturedGuide extends StatelessWidget {
                       Expanded(
                         child: Text(
                           'Make sun protection a habit',
-                          style: _type(18.5, weight: FontWeight.w700, height: 1.2),
+                          style: _type(
+                            18.5,
+                            weight: FontWeight.w700,
+                            height: 1.2,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 8),
                       Container(
                         width: 28,
                         height: 28,
-                        decoration: BoxDecoration(color: _softGreen, borderRadius: BorderRadius.circular(8)),
+                        decoration: BoxDecoration(
+                          color: _softGreen,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                         alignment: Alignment.center,
-                        child: const SkinXIcon(SkinXIconType.arrowUpRight, size: 17),
+                        child: const SkinXIcon(
+                          SkinXIconType.arrowUpRight,
+                          size: 17,
+                        ),
                       ),
                     ],
                   ),
@@ -336,7 +380,10 @@ class _GuideRow extends StatelessWidget {
             Container(
               width: 42,
               height: 42,
-              decoration: BoxDecoration(color: _softGreen, borderRadius: BorderRadius.circular(12)),
+              decoration: BoxDecoration(
+                color: _softGreen,
+                borderRadius: BorderRadius.circular(12),
+              ),
               alignment: Alignment.center,
               child: SkinXIcon(symbol, size: 23),
             ),
@@ -346,11 +393,22 @@ class _GuideRow extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: _type(15.5, weight: FontWeight.w600, height: 1.2)),
+                  Text(
+                    title,
+                    style: _type(15.5, weight: FontWeight.w600, height: 1.2),
+                  ),
                   const SizedBox(height: 3),
                   Text(subtitle, style: _type(12, color: _muted, height: 1.25)),
                   const SizedBox(height: 2),
-                  Text(category, style: _type(9, color: _teal, weight: FontWeight.w700, tracking: 0.5)),
+                  Text(
+                    category,
+                    style: _type(
+                      9,
+                      color: _teal,
+                      weight: FontWeight.w700,
+                      tracking: 0.5,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -394,14 +452,24 @@ class _VideoCard extends StatelessWidget {
                     child: Stack(
                       fit: StackFit.expand,
                       children: [
-                        Image.asset(imageAsset, fit: BoxFit.cover, filterQuality: FilterQuality.high),
+                        Image.asset(
+                          imageAsset,
+                          fit: BoxFit.cover,
+                          filterQuality: FilterQuality.high,
+                        ),
                         Center(
                           child: Container(
                             width: 30,
                             height: 30,
-                            decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
                             alignment: Alignment.center,
-                            child: const SkinXIcon(SkinXIconType.play, size: 17),
+                            child: const SkinXIcon(
+                              SkinXIconType.play,
+                              size: 17,
+                            ),
                           ),
                         ),
                       ],
@@ -416,10 +484,17 @@ class _VideoCard extends StatelessWidget {
                     children: [
                       Text(
                         'Protecting your skin outdoors',
-                        style: _type(15.5, weight: FontWeight.w600, height: 1.25),
+                        style: _type(
+                          15.5,
+                          weight: FontWeight.w600,
+                          height: 1.25,
+                        ),
                       ),
                       const SizedBox(height: 5),
-                      Text('Short video • 2:40', style: _type(12, color: _muted)),
+                      Text(
+                        'Short video • 2:40',
+                        style: _type(12, color: _muted),
+                      ),
                     ],
                   ),
                 ),

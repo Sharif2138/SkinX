@@ -7,6 +7,8 @@ import 'widgets/skinx_auth_field.dart';
 import 'widgets/skinx_header.dart';
 import 'app_shell.dart';
 import 'services/auth_service.dart';
+import 'services/connectivity_service.dart';
+import 'widgets/offline_welcome.dart';
 
 const _ink = Color(0xFF193B38);
 const _teal = Color(0xFF14665E);
@@ -95,7 +97,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
+    return AnimatedBuilder(
+      animation: ConnectivityService.instance,
+      builder: (context, _) {
+        if (!ConnectivityService.instance.online) {
+          return OfflineWelcome(onContinue: _continueOffline);
+        }
+        return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.white,
         statusBarIconBrightness: Brightness.dark,
@@ -195,7 +203,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         const SizedBox(height: 10),
                         Center(child: TextButton(onPressed: _continueOffline,
-                          child: const Text('Continue without an account (offline)'),)),
+                          child: const Text('Use SkinX offline (no account)'),)),
                         const SizedBox(height: 12),
                         Center(
                           child: Wrap(
@@ -224,6 +232,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
         ),
       ),
+    );
+      },
     );
   }
 }
