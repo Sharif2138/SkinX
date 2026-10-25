@@ -27,14 +27,18 @@ class ConnectivityService extends ChangeNotifier {
       final types = await _connectivity.checkConnectivity()
           .timeout(const Duration(seconds: 2));
       if (types.any((type) => type != ConnectivityResult.none)) {
-        for (final address in [
+        const backend = String.fromEnvironment('SKINX_API_URL');
+        final checks = [
+          if (backend.isNotEmpty) '${backend.replaceAll(RegExp(r"/+$"), "")}/health',
           'https://www.google.com/generate_204',
           'https://connectivitycheck.gstatic.com/generate_204',
-        ]) {
+        ];
+        for (final address in checks) {
           try {
             final response = await http.get(Uri.parse(address))
                 .timeout(const Duration(seconds: 2));
-            if (response.statusCode == 204) {
+            if (response.statusCode == 204 ||
+                (address.endsWith('/health') && response.statusCode == 200)) {
               reachable = true;
               break;
             }

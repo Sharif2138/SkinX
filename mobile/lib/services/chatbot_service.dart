@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
-import 'auth_service.dart';
 import 'connectivity_service.dart';
 
 class ChatAnswer {
@@ -194,6 +193,13 @@ class OfflineKnowledgeBase {
   );
 }
 
+class ChatHistoryMessage {
+  const ChatHistoryMessage({required this.role, required this.content});
+
+  final String role;
+  final String content;
+}
+
 class ChatbotService {
   static const apiBaseUrl = String.fromEnvironment('SKINX_API_URL');
   OfflineKnowledgeBase? _knowledge;
@@ -209,34 +215,29 @@ class ChatbotService {
     );
   }
 
-  Future<ChatAnswer> answer(String question, {bool useOnline = false}) async {
+  Future<ChatAnswer> answer(String question, {List<ChatHistoryMessage> history = const []}) async {
     await load();
     final offline = _knowledge!.search(question, previousTopic: _previousTopic);
     if (offline.topic != null) _previousTopic = offline.topic;
-    if (!useOnline || !ConnectivityService.instance.online ||
-        apiBaseUrl.isEmpty || !AuthService.configured) {
-      return offline;
-    }
-    final session = AuthService.user == null ? null : AuthService.accessToken;
-    if (session == null) return offline;
+    if (!ConnectivityService.instance.online || apiBaseUrl.isEmpty) return offline;
+
     try {
       final response = await http.post(
         Uri.parse('${apiBaseUrl.replaceAll(RegExp(r"/+$"), "")}/chat'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $session',
-        },
-        body: jsonEncode({'question': question}),
-      ).timeout(const Duration(seconds: 15));
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'question': question,
+          'history': history.reversed.take(8).toList().reversed.map((message) => {
+            'role': message.role,
+            'content': message.content,
+          }).toList(),
+        }),
+      ).timeout(const Duration(seconds: 30));
       if (response.statusCode != 200) return offline;
       final data = jsonDecode(response.body) as Map<String, dynamic>;
       final message = (data['answer'] as String?)?.trim();
       if (message == null || message.isEmpty) return offline;
-      return ChatAnswer(
-        message,
-        source: data['source'] as String?,
-        online: data['mode'] == 'online',
-      );
+      return ChatAnswer(message, source: data['source'] as String?, online: true);
     } catch (_) {
       return offline;
     }
