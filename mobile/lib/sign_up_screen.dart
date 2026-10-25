@@ -6,6 +6,7 @@ import 'widgets/skinx_account_type_selector.dart';
 import 'widgets/skinx_auth_field.dart';
 import 'widgets/skinx_header.dart';
 import 'app_shell.dart';
+import 'services/auth_service.dart';
 
 const _ink = Color(0xFF193B38);
 const _teal = Color(0xFF14665E);
@@ -38,18 +39,39 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _passwordController = TextEditingController();
   final _confirmController = TextEditingController();
   late SkinXAccountType _accountType = widget.initialAccountType;
+  bool _busy = false;
   bool _hidePassword = true;
   bool _hideConfirmation = true;
 
-  void _submit() {
-    if (!(_formKey.currentState?.validate() ?? false)) return;
+  Future<void> _submit() async {
+    if (!(_formKey.currentState?.validate() ?? false) || _busy) return;
     FocusScope.of(context).unfocus();
-    widget.onSignUp?.call(
-      _nameController.text.trim(),
-      _emailController.text.trim(),
-      _passwordController.text,
-      _accountType,
-    );
+    if (widget.onSignUp != null) {
+      widget.onSignUp!(_nameController.text.trim(), _emailController.text.trim(),
+          _passwordController.text, _accountType);
+      return;
+    }
+    setState(() => _busy = true);
+    try {
+      final active = await AuthService.signUp(_nameController.text.trim(),
+          _emailController.text.trim(), _passwordController.text, _accountType.name);
+      if (!mounted) return;
+      if (active) {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const AppShell()));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Check your email to confirm the account, then sign in.')));
+        _openSignIn();
+      }
+    } catch (error) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$error')));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  void _continueOffline() {
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const AppShell()));
   }
 
   void _openSignIn() {
@@ -160,9 +182,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         SizedBox(
                           width: double.infinity,
                           child: FilledButton(
-                            onPressed: () => Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(builder: (_) => const AppShell()),
-                            ),
+                            onPressed: _busy ? null : _submit,
                             style: FilledButton.styleFrom(
                               backgroundColor: _teal,
                               foregroundColor: Colors.white,
@@ -170,10 +190,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               shape: const StadiumBorder(),
                               textStyle: _type(14, weight: FontWeight.w600),
                             ),
-                            child: const Text('Sign up'),
+                            child: Text(_busy ? 'Creating account...' : 'Sign up'),
                           ),
                         ),
-                        const SizedBox(height: 22),
+                        const SizedBox(height: 10),
+                        Center(child: TextButton(onPressed: _continueOffline,
+                          child: const Text('Continue without an account (offline)'),)),
+                        const SizedBox(height: 12),
                         Center(
                           child: Wrap(
                             alignment: WrapAlignment.center,

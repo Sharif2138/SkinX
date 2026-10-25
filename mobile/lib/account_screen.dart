@@ -165,7 +165,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: InkWell(
-                    onTap: () => Navigator.of(context).pushReplacement(
+                    onTap: widget.onSignOutTap ?? () => Navigator.of(context).pushReplacement(
                       MaterialPageRoute(builder: (_) => const SplashScreen()),
                     ),
                     child: ConstrainedBox(

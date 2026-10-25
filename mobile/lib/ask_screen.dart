@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'services/chatbot_service.dart';
+import 'services/auth_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'widgets/skinx_header.dart';
 import 'widgets/skinx_icon.dart';
@@ -30,22 +33,42 @@ class AskScreen extends StatefulWidget {
 
 class _AskScreenState extends State<AskScreen> {
   final _questionController = TextEditingController();
+  final _chat = ChatbotService();
+  final List<({String question, ChatAnswer? answer})> _conversation = [];
+  bool _useOnline = false;
+  bool _replying = false;
 
-  void _submitQuestion([String? suggestion]) {
+  Future<void> _submitQuestion([String? suggestion]) async {
     final question = (suggestion ?? _questionController.text).trim();
-    if (question.isEmpty) return;
-
-    if (widget.onQuestionSubmitted == null) {
-      if (suggestion != null) {
-        _questionController.text = question;
-        _questionController.selection = TextSelection.collapsed(offset: question.length);
-      }
-      return;
-    }
-
+    if (question.isEmpty || _replying) return;
     FocusScope.of(context).unfocus();
-    widget.onQuestionSubmitted!(question);
+    widget.onQuestionSubmitted?.call(question);
     _questionController.clear();
+    setState(() {
+      _conversation.add((question: question, answer: null));
+      _replying = true;
+    });
+    ChatAnswer response;
+    try {
+      response = await _chat.answer(question, useOnline: _useOnline);
+    } catch (_) {
+      response = const ChatAnswer('I cannot answer that right now. Please ask a health professional if you have a concerning skin change.');
+    }
+    if (!mounted) return;
+    setState(() {
+      _conversation[_conversation.length - 1] = (question: question, answer: response);
+      _replying = false;
+    });
+  }
+
+  Future<void> _openSource(String url) async {
+    final uri = Uri.tryParse(url);
+    if (uri == null || !(uri.scheme == 'https' || uri.scheme == 'http')) return;
+    if (widget.onSourceTap != null) {
+      widget.onSourceTap!(uri);
+    } else {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
   }
 
   @override
@@ -126,7 +149,46 @@ class _AskScreenState extends State<AskScreen> {
                   ],
                 ),
                 const SizedBox(height: 10),
-                _SunProtectionCard(onSourceTap: widget.onSourceTap),
+                _SunProtectionCard(onSourceTap: (uri) => _openSource(uri.toString())),
+                if (_conversation.isNotEmpty) ...[
+                  const SizedBox(height: 18),
+                  for (final turn in _conversation) ...[
+                    Align(alignment: Alignment.centerRight,
+                      child: Container(
+                        constraints: const BoxConstraints(maxWidth: 440),
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(color: const Color(0xFFDFF0DE),
+                          borderRadius: BorderRadius.circular(15)),
+                        child: Text(turn.question, style: _type(14)),
+                      )),
+                    const SizedBox(height: 8),
+                    Container(width: double.infinity,
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(color: const Color(0xFFF3F6F3),
+                        borderRadius: BorderRadius.circular(15)),
+                      child: turn.answer == null
+                          ? const Text('Finding an answer...')
+                          : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                              Text(turn.answer!.text, style: _type(13, height: 1.5)),
+                              if (turn.answer!.source != null) TextButton(
+                                onPressed: () => _openSource(turn.answer!.source!),
+                                child: const Text('Read source')),
+                              Text(turn.answer!.online ? 'Online AI response' : 'Offline information',
+                                  style: _type(11, color: _muted)),
+                            ]),
+                    ),
+                    const SizedBox(height: 14),
+                  ],
+                ],
+                if (AuthService.configured && ChatbotService.apiBaseUrl.isNotEmpty)
+                  SwitchListTile.adaptive(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text('Use online AI (optional)', style: _type(13)),
+                    subtitle: Text('Only use for general questions. Do not include patient names or private details.',
+                      style: _type(11, color: _muted)),
+                    value: _useOnline,
+                    onChanged: (value) => setState(() => _useOnline = value),
+                  ),
                 const SizedBox(height: 18),
                 Material(
                   color: Colors.white,
@@ -190,13 +252,13 @@ class _AskScreenState extends State<AskScreen> {
                       Semantics(
                         label: 'Send question',
                         button: true,
-                        enabled: widget.onQuestionSubmitted != null,
+                        enabled: !_replying,
                         child: Material(
                           color: _teal,
                           borderRadius: BorderRadius.circular(12),
                           clipBehavior: Clip.antiAlias,
                           child: InkWell(
-                            onTap: widget.onQuestionSubmitted == null ? null : () => _submitQuestion(),
+                            onTap: _replying ? null : () => _submitQuestion(),
                             child: const SizedBox.square(
                               dimension: 44,
                               child: Center(

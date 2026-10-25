@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'sign_up_screen.dart'; 
+import 'sign_up_screen.dart';
+import 'app_shell.dart';
+import 'services/auth_service.dart'; 
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key, this.statusText = 'Getting ready...'});
@@ -24,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
     _timer = Timer(const Duration(seconds: 3), () {
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const SignUpScreen()),
+        MaterialPageRoute(builder: (_) => AuthService.user == null ? const SignUpScreen() : const AppShell()),
       );
     });
   }

@@ -14,7 +14,7 @@ const _inputBorder = OutlineInputBorder(
 class ScreeningScreen extends StatelessWidget {
   const ScreeningScreen({
     super.key,
-    this.initialPatientName = 'Sharif Kiviiri',
+    this.initialPatientName = '',
     this.onPatientNameChanged,
     this.onTakePhoto,
     this.onUploadPhoto,
@@ -116,7 +116,7 @@ class ScreeningScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Illustrative name • confirm consent before taking a photo.',
+                  'Name is optional and is not stored. Confirm consent before taking a photo.',
                   style: _textStyle(11, color: _muted, height: 1.4),
                 ),
                 const SizedBox(height: 18),

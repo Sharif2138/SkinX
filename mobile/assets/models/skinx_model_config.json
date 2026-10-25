@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "model_name": "SkinX offline binary screening",
+  "selected_variant": "float16",
+  "source_architecture": "EfficientNetB0",
+  "source_stage": "EfficientNetB0__head",
+  "source_model_sha256": "e5247daddbac75a10acd0d4dfc84d67fad3a58f4519f978fcef44b6c0378f5a5",
+  "tflite_sha256": "648b09e1e113c013109eadb83347cf3214dc002dae7a66e34fb8df32435e43eb",
+  "model_size_mib": 7.754,
+  "input_shape": [
+    1,
+    224,
+    224,
+    3
+  ],
+  "input_color_order": "RGB",
+  "external_normalization": "NONE; pixel values are float32 0..255 before tensor quantization",
+  "resize": "tf.image.resize_with_pad, bilinear, preserve aspect ratio, black padding, centered",
+  "input_dtype": "float32",
+  "output_dtype": "float32",
+  "input_quantization": {
+    "scale": 0.0,
+    "zero_point": 0
+  },
+  "output_quantization": {
+    "scale": 0.0,
+    "zero_point": 0
+  },
+  "positive_label": 1,
+  "labels": {
+    "0": "NON_TARGET",
+    "1": "TARGET"
+  },
+  "target_probability_threshold": 0.374953031539917,
+  "decision_rule": "TARGET when probability >= target_probability_threshold; otherwise NON_TARGET",
+  "cannot_infer": "Only technical failures e.g. file cannot be decoded; no validated uncertainty or quality cutoff exists",
+  "validation_metrics": {
+    "variant": "float16",
+    "size_mb": 7.754,
+    "median_colab_inference_ms": 10.39,
+    "max_probability_difference": 0.004998624324798584,
+    "accepted": true,
+    "n": 339,
+    "tp": 269,
+    "fn": 17,
+    "tn": 43,
+    "fp": 10,
+    "sensitivity": 0.9405594405594405,
+    "specificity": 0.8113207547169812,
+    "auroc": 0.9472885604961077
+  },
+  "tensorflow_version": "2.21.0",
+  "limitations": "Research pilot; not diagnostic; PWA data sparse and source-reported; do not hide clinical warning for non-target predictions.",
+  "connectivity": "Screening inference is entirely offline when this model and preprocessing are bundled in the Android app.",
+  "max_upload_bytes": 12582912,
+  "max_image_pixels": 20000000,
+  "allowed_image_formats": [
+    "JPEG",
+    "PNG"
+  ],
+  "technical_image_checks": "File validity, format, dimensions, payload size; no clinical image-quality gate.",
+  "exif_orientation": "Normalize when needed before RGB resize; verify Flutter parity separately.",
+  "uncertainty_abstention_enabled": false,
+  "cannot_infer_reasons": [
+    "EMPTY_IMAGE",
+    "IMAGE_TOO_LARGE_BYTES",
+    "IMAGE_DIMENSIONS_UNSUPPORTED",
+    "UNSUPPORTED_IMAGE_FORMAT",
+    "ANIMATED_IMAGE_UNSUPPORTED",
+    "INVALID_OR_CORRUPT_IMAGE",
+    "UNABLE_TO_PREPROCESS_IMAGE",
+    "INFERENCE_ERROR"
+  ],
+  "threshold_origin": "Notebook 04 conventional validation; locked, never updated using PWA/test.",
+  "display_messages": {
+    "Suspicious": "Suspicious pattern. Seek clinical assessment.",
+    "Less suspicious": "This does not rule out cancer. Seek assessment for persistent or changing lesions.",
+    "Cannot infer": "Could not screen this image. Please retake or choose another supported image."
+  }
+}

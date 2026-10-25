@@ -6,6 +6,8 @@ import 'widgets/skinx_auth_field.dart';
 import 'widgets/skinx_header.dart';
 import 'widgets/skinx_icon.dart';
 import 'app_shell.dart';
+import 'services/auth_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 const _ink = Color(0xFF193B38);
 const _teal = Color(0xFF14665E);
@@ -36,11 +38,50 @@ class _SignInScreenState extends State<SignInScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _hidePassword = true;
+  bool _busy = false;
 
-  void _submit() {
-    if (!(_formKey.currentState?.validate() ?? false)) return;
+  Future<void> _submit() async {
+    if (!(_formKey.currentState?.validate() ?? false) || _busy) return;
     FocusScope.of(context).unfocus();
-    widget.onSignIn?.call(_emailController.text.trim(), _passwordController.text);
+    if (widget.onSignIn != null) {
+      widget.onSignIn!(_emailController.text.trim(), _passwordController.text);
+      return;
+    }
+    setState(() => _busy = true);
+    try {
+      await AuthService.signIn(_emailController.text.trim(), _passwordController.text);
+      if (!mounted) return;
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const AppShell()));
+    } catch (error) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$error')));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _forgotPassword() async {
+    if (widget.onForgotPasswordTap != null) {
+      widget.onForgotPasswordTap!();
+      return;
+    }
+    final email = _emailController.text.trim();
+    if (!AuthService.configured || _validateEmail(email) != null) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Enter a valid email. Password reset requires a configured online account.')));
+      return;
+    }
+    try {
+      await Supabase.instance.client.auth.resetPasswordForEmail(email);
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('If the account exists, check your email for reset instructions.')));
+    } catch (_) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Could not request a reset right now. Please try again online.')));
+    }
+  }
+
+  void _continueOffline() {
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const AppShell()));
   }
 
   void _openSignUp() {
@@ -127,7 +168,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                     Align(
                                       alignment: Alignment.centerRight,
                                       child: InkWell(
-                                        onTap: widget.onForgotPasswordTap,
+                                        onTap: _forgotPassword,
                                         borderRadius: BorderRadius.circular(6),
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(vertical: 8),
@@ -139,9 +180,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                     SizedBox(
                                       width: double.infinity,
                                       child: FilledButton(
-                                        onPressed: () => Navigator.of(context).pushReplacement(
-                                          MaterialPageRoute(builder: (_) => const AppShell()),
-                                        ),
+                                        onPressed: _busy ? null : _submit,
                                         style: FilledButton.styleFrom(
                                           backgroundColor: _teal,
                                           foregroundColor: Colors.white,
@@ -149,10 +188,13 @@ class _SignInScreenState extends State<SignInScreen> {
                                           shape: const StadiumBorder(),
                                           textStyle: _type(14, weight: FontWeight.w600),
                                         ),
-                                        child: const Text('Sign in'),
+                                        child: Text(_busy ? 'Signing in...' : 'Sign in'),
                                       ),
                                     ),
-                                    const SizedBox(height: 24),
+                                    const SizedBox(height: 12),
+                                    Center(child: TextButton(onPressed: _continueOffline,
+                                      child: const Text('Continue without an account (offline)'),)),
+                                    const SizedBox(height: 12),
                                     Center(
                                       child: Wrap(
                                         alignment: WrapAlignment.center,

@@ -13,12 +13,14 @@ class ScreeningRecord {
     required this.savedAt,
     required this.savedDetails,
     required this.thumbnailAsset,
+    this.id,
   });
 
   final String patientName;
   final DateTime savedAt;
   final String savedDetails;
   final String thumbnailAsset;
+  final int? id;
 }
 
 class HistoryScreen extends StatefulWidget {
@@ -324,7 +326,10 @@ class _RecordCard extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(9),
-                  child: Image.asset(record.thumbnailAsset, width: 56, height: 64, fit: BoxFit.cover),
+                  child: record.thumbnailAsset.isEmpty
+                    ? Container(width: 56, height: 64, color: const Color(0xFFEAF2E9),
+                        alignment: Alignment.center, child: const Icon(Icons.notes_rounded, color: _teal))
+                    : Image.asset(record.thumbnailAsset, width: 56, height: 64, fit: BoxFit.cover),
                 ),
                 const SizedBox(width: 14),
                 Expanded(

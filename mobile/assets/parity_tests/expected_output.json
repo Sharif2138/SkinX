@@ -1,0 +1,17 @@
+{
+  "source_fixture": "synthetic_source.png",
+  "expected_tensor_file": "expected_input_rgb_float32.npy",
+  "expected_shape": [
+    224,
+    224,
+    3
+  ],
+  "expected_dtype": "float32",
+  "input_min": 0.0,
+  "input_max": 254.89511108398438,
+  "expected_target_probability": 0.4174785315990448,
+  "expected_decision": "Suspicious",
+  "test_input_sha256": "af2786eaa1c458cd48c226372558346cd68f90aa1ae6763b033b9d506a1bbae0",
+  "mean_absolute_float_difference_tolerance_for_native_resize": 1.0,
+  "note": "Synthetic only. Android must also compare output score and decision at locked threshold. Resize tolerance is an engineering guide, not a clinical equivalence proof."
+}
