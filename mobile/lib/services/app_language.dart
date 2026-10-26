@@ -67,6 +67,15 @@ class AppLanguage extends ChangeNotifier {
   }
 
   static const Map<String, String> _kinyarwanda = {
+    'Checking photo...': 'Ifoto iri gusuzumwa...',
+    'Saved screening': 'Isuzuma ryabitswe',
+    'Close': 'Funga',
+    'Delete record': 'Siba ibyabitswe',
+    'Could not delete this screening record.': 'Ntibyashobotse gusiba aya makuru y’isuzuma.',
+    'Result saved': 'Igisubizo cyabitswe',
+    'SkinX · AI-assisted skin screening': 'SkinX · Isuzuma ry’uruhu rifashijwe na AI',
+    'Your information matters': 'Amakuru yawe ni ay’ingenzi',
+
     'Can SkinX diagnose skin cancer?': 'SkinX ishobora kwemeza kanseri y’uruhu?',
     'What should I do if a sore does not heal?': 'Nakora iki niba igisebe kidakira?',
     'How can a person with albinism protect their skin?': 'Umuntu ufite albinisme yarinda ate uruhu rwe?',
@@ -208,11 +217,7 @@ class AppLanguage extends ChangeNotifier {
     'Less suspicious': 'Ntibikekwa cyane',
     'Cannot infer': 'Ntibishoboka gutanga igisubizo',
     'Save result': 'Bika igisubizo',
-    'Result saved': 'Igisubizo cyabitswe',
     'Saving...': 'Kubika...',
-    'Saved screening': 'Isuzuma ryabitswe',
-    'Close': 'Funga',
-    'Delete record': 'Siba iki gisubizo',
     'Later': 'Nyuma',
     'Set a new password': 'Shyiraho ijambo ry’ibanga rishya',
     'Update password': 'Hindura ijambo ry’ibanga',
@@ -223,7 +228,6 @@ class AppLanguage extends ChangeNotifier {
     'My screening': 'Isuzuma ryanjye',
     'Offline guest': 'Ukoresha nta konti',
     'Online AI is unavailable. Showing an offline answer.': 'AI yo kuri interineti ntiri gukora. Dore igisubizo kiboneka nta interineti.',
-    'SkinX · AI-assisted skin screening\\nCapstone by Sharif Kiviiri': 'SkinX · Isuzuma ry’uruhu rifashijwe na AI\\nUmushinga wa Sharif Kiviiri',
     'No account required': 'Konti si ngombwa',
     'Guest mode': 'Ukoresha nta konti',
     'Offline mode': 'Nta interineti',

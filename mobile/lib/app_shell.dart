@@ -25,6 +25,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'data/offline_guides.dart';
 import 'education_guide_screen.dart';
 import 'videos_screen.dart';
+import 'privacy_consent_screen.dart';
+import 'widgets/skinx_feedback.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({
@@ -118,8 +120,9 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     showDialog<void>(
       context: context,
       barrierDismissible: false,
-      builder: (dialogContext) => AlertDialog(
-        title: const SkinXText('Set a new password'),
+      builder: (dialogContext) => SkinXDialog(
+        title: 'Set a new password',
+        icon: Icons.lock_reset_rounded,
         content: TextField(
           controller: password,
           obscureText: true,
@@ -187,7 +190,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
 
   void _showError(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: SkinXText(message)));
+    SkinXNotice.show(context, message, error: true);
   }
 
   Future<void> _pickPhoto(ImageSource source) async {
@@ -214,8 +217,19 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     final bytes = _photoBytes;
     if (bytes == null || _screening || !_confirmedSkinPhoto) return;
     setState(() => _screening = true);
-      showDialog<void>(context: context, barrierDismissible: false,
-      builder: (_) => const Center(child: CircularProgressIndicator()));
+    showDialog<void>(context: context, barrierDismissible: false,
+      builder: (_) => const Dialog(
+        backgroundColor: Colors.white,
+        child: Padding(
+          padding: EdgeInsets.all(24),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            CircularProgressIndicator(color: Color(0xFF14665E)),
+            SizedBox(width: 18),
+            Expanded(child: SkinXText('Checking photo...', style: TextStyle(
+              fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xFF193B38)))),
+          ]),
+        ),
+      ));
     ScreeningResult result;
     try {
       result = await _model.screen(bytes);
@@ -249,26 +263,67 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   }
 
   Future<void> _showRecord(ScreeningRecord record) async {
-    final delete = await showDialog<bool>(context: context, builder: (dialogContext) => AlertDialog(
-      title: const SkinXText('Saved screening'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SkinXText(record.patientName),
-          SkinXText('${record.savedDetails} • ${record.savedAt.toLocal()}'),
-          const SizedBox(height: 12),
-          const SkinXText('This result is not a diagnosis. No photo was saved.'),
+    final isSuspicious = record.savedDetails == ScreeningResult.suspicious;
+    final delete = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => SkinXDialog(
+        title: 'Saved screening',
+        icon: Icons.assignment_outlined,
+        content: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 360),
+          child: Column(mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start, children: [
+              SkinXText(record.patientName, style: const TextStyle(
+                fontWeight: FontWeight.w700, fontSize: 16)),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: isSuspicious ? const Color(0xFFFFF2E8) : const Color(0xFFEAF2E9),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(children: [
+                  Icon(isSuspicious ? Icons.warning_amber_rounded : Icons.info_outline_rounded,
+                    color: isSuspicious ? const Color(0xFFA85E22) : const Color(0xFF14665E)),
+                  const SizedBox(width: 10),
+                  Expanded(child: SkinXText(record.savedDetails,
+                    style: const TextStyle(fontWeight: FontWeight.w600))),
+                ]),
+              ),
+              const SizedBox(height: 12),
+              Row(children: [
+                const Icon(Icons.event_outlined, size: 18, color: Color(0xFF647D78)),
+                const SizedBox(width: 8),
+                Expanded(child: SkinXText(
+                  MaterialLocalizations.of(dialogContext).formatMediumDate(record.savedAt) +
+                    ' · ' + MaterialLocalizations.of(dialogContext).formatTimeOfDay(
+                      TimeOfDay.fromDateTime(record.savedAt)),
+                  style: const TextStyle(color: Color(0xFF647D78), fontSize: 13))),
+              ]),
+              const SizedBox(height: 14),
+              const SkinXText('This result is not a diagnosis. No photo was saved.',
+                style: TextStyle(fontSize: 12.5, color: Color(0xFF647D78))),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(dialogContext, false),
+            child: const SkinXText('Close')),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            style: TextButton.styleFrom(foregroundColor: const Color(0xFF9B4238)),
+            child: const SkinXText('Delete record'),
+          ),
         ],
       ),
-      actions: [
-        TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: const SkinXText('Close')),
-        TextButton(onPressed: () => Navigator.pop(dialogContext, true), child: const SkinXText('Delete record')),
-      ],
-    ));
+    );
     if (delete == true && record.id != null) {
-      await _history.remove(ownerId: AuthService.ownerId, id: record.id!);
-      await _loadHistory();
+      try {
+        await _history.remove(ownerId: AuthService.ownerId, id: record.id!);
+        await _loadHistory();
+      } catch (_) {
+        _showError('Could not delete this screening record.');
+      }
     }
   }
 
@@ -310,18 +365,10 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   }
 
 
-  void _showGuide(String title, String content) {
-    showDialog<void>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: SkinXText(title),
-        content: SingleChildScrollView(child: SkinXText(content)),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(dialogContext),
-              child: const SkinXText('Close')),
-        ],
-      ),
-    );
+  void _openPrivacyConsent() {
+    Navigator.of(context).push(MaterialPageRoute<void>(
+      builder: (_) => const PrivacyConsentScreen(),
+    ));
   }
 
   void _openGuide(String id) {
@@ -421,6 +468,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                     widget.accountScreen.name != null
                         ? widget.accountScreen
                         : AccountScreen(
+                            isGuest: AuthService.user == null,
                             name: _profile?['full_name']?.toString() ?? AuthService.user?.userMetadata?['full_name']?.toString() ?? 'Offline guest',
                             email: AuthService.user?.email ?? 'No account required',
                             profileTitle: AuthService.user == null
@@ -441,10 +489,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                             accountActionAvailable: ConnectivityService.instance.online,
                             onSignOutTap:
                                 AuthService.user == null ? _openSignIn : _signOut,
-                            onPrivacyConsentTap: () => _showGuide(
-                              'Privacy & consent',
-                              'Screening photos are never uploaded or saved in history. Results and dates are saved only when Save is selected. Community health worker accounts also save the patient name with permission. Individual screenings do not store a patient name. Signed-in records may sync to the account. Guest history remains on this device. Local history is not encrypted; avoid shared devices.',
-                            ),
+                            onPrivacyConsentTap: _openPrivacyConsent,
                           ),
                   ],
                 ),

@@ -1,4 +1,5 @@
 import 'services/app_language.dart';
+import 'widgets/skinx_feedback.dart';
 import 'dart:async';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
@@ -82,12 +83,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
       if (active) {
         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const AppShell()));
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: SkinXText('Check your email to confirm the account, then sign in.')));
+        SkinXNotice.show(context, 'Check your email to confirm the account, then sign in.');
         _openSignIn();
       }
     } catch (error) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: SkinXText('$error')));
+      if (mounted) SkinXNotice.show(context, '$error', error: true);
     } finally {
       if (mounted) setState(() => _busy = false);
     }

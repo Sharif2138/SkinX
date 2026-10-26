@@ -15,6 +15,7 @@ class AccountScreen extends StatefulWidget {
   const AccountScreen({
     super.key,
     this.name,
+    this.isGuest = false,
     this.email,
     this.profileTitle = 'Example account',
     this.profileSubtitle = 'Illustrative profile · no personal data',
@@ -29,6 +30,7 @@ class AccountScreen extends StatefulWidget {
   });
 
   final String? name;
+  final bool isGuest;
   final String? email;
   final String profileTitle;
   final String profileSubtitle;
@@ -86,9 +88,12 @@ class _AccountScreenState extends State<AccountScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SkinXText(widget.profileTitle, style: _type(16, weight: FontWeight.w700, height: 1.3)),
+                            SkinXText(widget.name?.trim().isNotEmpty == true ? widget.name! : widget.profileTitle, style: _type(16, weight: FontWeight.w700, height: 1.3)),
                             const SizedBox(height: 2),
-                            SkinXText(widget.profileSubtitle, style: _type(12, color: _muted, height: 1.35)),
+                            SkinXText(widget.name?.trim().isNotEmpty == true && !widget.isGuest
+                                ? (widget.initialRole == SkinXAccountType.communityHealthWorker
+                                    ? 'Community health worker' : 'Individual')
+                                : widget.profileSubtitle, style: _type(12, color: _muted, height: 1.35)),
                           ],
                         ),
                       ),
@@ -193,7 +198,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 const SizedBox(height: 18),
                 Center(
                   child: SkinXText(
-                    'SkinX · AI-assisted skin screening\nCapstone by Sharif Kiviiri',
+                    'SkinX · AI-assisted skin screening',
                     textAlign: TextAlign.center,
                     style: _type(12, color: _muted, height: 1.55),
                   ),

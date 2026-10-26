@@ -1,4 +1,5 @@
 import 'services/app_language.dart';
+import 'widgets/skinx_feedback.dart';
 import 'package:flutter/material.dart';
 import 'models/screening_result.dart';
 
@@ -34,23 +35,22 @@ class _ScreeningResultScreenState extends State<ScreeningResultScreen> {
     if (_saving || _saved) return;
     final patientName = _name.text.trim();
     if (widget.communityHealthWorker && patientName.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: SkinXText('Enter the patient name to save this screening.')),
-      );
+      SkinXNotice.show(context, 'Enter the patient name to save this screening.', error: true);
       return;
     }
     if (widget.communityHealthWorker && !_permissionConfirmed) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: SkinXText('Confirm permission to save the patient record.')),
-      );
+      SkinXNotice.show(context, 'Confirm permission to save the patient record.', error: true);
       return;
     }
     setState(() => _saving = true);
     try {
       await widget.onSave(widget.communityHealthWorker ? patientName : null);
-      if (mounted) setState(() => _saved = true);
+      if (mounted) {
+        setState(() => _saved = true);
+        SkinXNotice.show(context, 'Result saved');
+      }
     } catch (_) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: SkinXText('Could not save the result on this device.')));
+      if (mounted) SkinXNotice.show(context, 'Could not save the result on this device.', error: true);
     } finally {
       if (mounted) setState(() => _saving = false);
     }

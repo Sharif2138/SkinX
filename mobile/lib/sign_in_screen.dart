@@ -1,4 +1,5 @@
 import 'services/app_language.dart';
+import 'widgets/skinx_feedback.dart';
 import 'dart:async';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
@@ -75,7 +76,7 @@ class _SignInScreenState extends State<SignInScreen> {
       if (!mounted) return;
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const AppShell()));
     } catch (error) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: SkinXText('$error')));
+      if (mounted) SkinXNotice.show(context, '$error', error: true);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -88,17 +89,14 @@ class _SignInScreenState extends State<SignInScreen> {
     }
     final email = _emailController.text.trim();
     if (!AuthService.configured || _validateEmail(email) != null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: SkinXText('Enter a valid email. Password reset requires a configured online account.')));
+      SkinXNotice.show(context, 'Enter a valid email. Password reset requires a configured online account.', error: true);
       return;
     }
     try {
       await AuthService.requestPasswordReset(email);
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: SkinXText('If the account exists, check your email for reset instructions.')));
+      if (mounted) SkinXNotice.show(context, 'If the account exists, check your email for reset instructions.');
     } catch (_) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: SkinXText('Could not request a reset right now. Please try again online.')));
+      if (mounted) SkinXNotice.show(context, 'Could not request a reset right now. Please try again online.', error: true);
     }
   }
 

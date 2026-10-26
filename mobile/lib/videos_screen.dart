@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'services/app_language.dart';
+import 'widgets/skinx_feedback.dart';
 
 class VideosScreen extends StatelessWidget {
   const VideosScreen({super.key});
@@ -22,9 +23,7 @@ class VideosScreen extends StatelessWidget {
   static Future<void> openVideo(BuildContext context, String url) async {
     final opened = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
     if (!opened && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: SkinXText('Could not open YouTube.')),
-      );
+      SkinXNotice.show(context, 'Could not open YouTube.', error: true);
     }
   }
 

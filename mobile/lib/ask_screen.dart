@@ -1,4 +1,5 @@
 import 'services/app_language.dart';
+import 'widgets/skinx_feedback.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -87,9 +88,7 @@ class _AskScreenState extends State<AskScreen> {
     final uri = Uri.tryParse(url);
     if (uri == null || !uri.hasScheme || uri.scheme != 'https') return;
     if (!ConnectivityService.instance.online) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: SkinXText('Source links can be opened when internet is available.')),
-      );
+      SkinXNotice.show(context, 'Source links can be opened when internet is available.', error: true);
       return;
     }
     if (widget.onSourceTap != null) {

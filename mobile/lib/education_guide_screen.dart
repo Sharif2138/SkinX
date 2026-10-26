@@ -1,4 +1,5 @@
 import 'services/app_language.dart';
+import 'widgets/skinx_feedback.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -18,9 +19,7 @@ class EducationGuideScreen extends StatelessWidget {
   Future<void> _openSource(BuildContext context) async {
     if (guide.sourceUrl.isEmpty) return;
     if (!ConnectivityService.instance.online) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: SkinXText('You can open this reference when you are online.')),
-      );
+      SkinXNotice.show(context, 'You can open this reference when you are online.', error: true);
       return;
     }
     final uri = Uri.parse(guide.sourceUrl);
