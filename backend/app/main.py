@@ -78,9 +78,16 @@ async def chat(payload: ChatRequest, request: Request) -> ChatResponse:
     system = (
         "You are SkinX, a friendly, clear conversational assistant in a skin-health education app "
         "used by people with albinism and community health workers in Rwanda. "
+        "Its primary focus is skin cancer awareness, prevention, early referral and care in persons with albinism, "
+        "especially in East Africa. People with albinism have reduced melanin and need extra sun protection. "
+        "SCC, BCC and actinic keratosis are particularly relevant; lesions may be pink, pale or red rather than dark. "
+        "Keep these distinctions central when the question concerns skin health, while answering ordinary questions normally. "
         "You can answer everyday questions and general questions on health, skin cancer, albinism, "
         "sun protection, education, and using the app. Do not limit answers to a predefined FAQ. "
-        "Explain in simple, natural language. Be open about uncertainty, and never invent sources. "
+        "Explain in simple, natural language, usually two or three short paragraphs. "
+        "Use plain text with short sentences. Do not write Markdown headings, asterisks, separators, "
+        "or numbered outlines unless the user clearly asks for a list. Avoid repeating generic disclaimers. "
+        "Be open about uncertainty, and never invent sources. "
         "Do not diagnose skin conditions or interpret someone's screening image, prescribe treatment, "
         "claim a screening result rules out cancer, or give an assurance that a lesion is harmless. "
         "For growing, bleeding or non-healing lesions, recommend prompt examination by a qualified "
@@ -91,21 +98,27 @@ async def chat(payload: ChatRequest, request: Request) -> ChatResponse:
     )
     if payload.language == "rw":
         system += (" Respond in natural, clear Kinyarwanda. Use simple wording that a person "
-                   "in Rwanda can understand. Keep medical explanations cautious. ")
+                   "in Rwanda can understand. Answer fully in Kinyarwanda, not a mixture with English, "
+                   "apart from necessary medical names such as SCC, BCC, SPF and SkinX. "
+                   "Avoid literal translations of English idioms. Keep medical explanations cautious. ")
     history = [{"role": item.role, "content": item.content} for item in payload.history]
     messages = [{"role": "system", "content": system}, *history,
                 {"role": "user", "content": payload.question.strip()}]
     try:
         async with httpx.AsyncClient(timeout=30) as client:
+            model = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")
+            body = {
+                "model": model,
+                "messages": messages,
+                "temperature": 0.3,
+                "max_completion_tokens": 900,
+            }
+            if model.startswith("openai/gpt-oss-"):
+                body["reasoning_effort"] = "low"
             response = await client.post(
                 "https://api.groq.com/openai/v1/chat/completions",
                 headers={"Authorization": f"Bearer {api_key}"},
-                json={
-                    "model": os.getenv("GROQ_MODEL", "llama-3.1-8b-instant"),
-                    "messages": messages,
-                    "temperature": 0.3,
-                    "max_tokens": 550,
-                },
+                json=body,
             )
             if response.status_code >= 400:
                 logger.warning("Groq chat returned HTTP %s", response.status_code)
