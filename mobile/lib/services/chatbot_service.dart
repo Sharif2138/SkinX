@@ -225,9 +225,17 @@ class ChatbotService {
 
   Future<ChatAnswer> answer(String question, {List<ChatHistoryMessage> history = const []}) async {
     await load();
-    final offline = AppLanguage.instance.code == 'rw'
-        ? _kinyarwandaOfflineAnswer(question)
-        : _knowledge!.search(question, previousTopic: _previousTopic);
+    final whoIsSkinX = RegExp(
+      r'^(who are you|what is skinx|who is skinx|uri nde|skinx ni iki)[?!. ]*$',
+      caseSensitive: false,
+    ).hasMatch(question.trim());
+    final offline = whoIsSkinX
+        ? ChatAnswer(AppLanguage.instance.code == 'rw'
+            ? 'Ndi SkinX, umufasha utanga amakuru ku kwita ku ruhu rw’abantu bafite albinisme, kurinda izuba no kumenya ibimenyetso bishobora gusaba kujya kwa muganga. Sinshobora kwemeza indwara.'
+            : 'I am SkinX, an educational assistant focused on skin cancer awareness and sun protection for people with albinism. I can explain warning signs and the app’s screening results, but I cannot diagnose a skin condition.')
+        : AppLanguage.instance.code == 'rw'
+            ? _kinyarwandaOfflineAnswer(question)
+            : _knowledge!.search(question, previousTopic: _previousTopic);
     if (offline.topic != null) _previousTopic = offline.topic;
     if (!ConnectivityService.instance.online) return offline;
     if (apiBaseUrl.isEmpty) {
@@ -242,9 +250,11 @@ class ChatbotService {
         body: jsonEncode({
           'question': question,
           'language': AppLanguage.instance.code,
-          'history': history.reversed.take(8).toList().reversed.map((message) => {
+          'history': history.reversed.take(6).toList().reversed.map((message) => {
             'role': message.role,
-            'content': message.content,
+            'content': message.content.length > 1000
+                ? message.content.substring(0, 1000)
+                : message.content,
           }).toList(),
         }),
       ).timeout(const Duration(seconds: 30));
@@ -261,7 +271,10 @@ class ChatbotService {
             'GROQ_TIMEOUT' => 'Groq timed out. Try again.',
             'GROQ_NETWORK_ERROR' => 'FastAPI cannot reach Groq.',
             'GROQ_REQUEST_REJECTED' => 'Groq rejected this request. Check the backend logs.',
-            _ => reason,
+            'GROQ_VALIDATION_ERROR' => 'The online request could not be processed.',
+            _ => response.statusCode == 422
+                ? 'The request was too long for online chat.'
+                : reason,
           };
         } catch (_) {}
         return ChatAnswer(offline.text, source: offline.source,
@@ -294,20 +307,20 @@ ChatAnswer _kinyarwandaOfflineAnswer(String question) {
       'Irinde izuba rikaze uko bishoboka. Ambara ingofero nini n’imyenda ipfuka uruhu, jya mu gicucu, kandi ukoreshe amavuta arinda UVA na UVB afite SPF 30 cyangwa irenze. Ongera uyisige buri masaha abiri uri hanze.'
       + ending, topic: 'sun_protection');
   }
-  if (RegExp(r'albinism|albinisme|umuntu ufite|abafite').hasMatch(text)) {
-    return ChatAnswer(
-      'Albinisme ni imiterere y’umubiri ituma umuntu agira melanin nke mu ruhu, umusatsi no mu maso. Abantu bafite albinisme bakenera kurinda uruhu izuba no kwita ku buzima bw’amaso.'
-      + ending, topic: 'albinism');
-  }
-  if (RegExp(r'kanseri|cancer|scc|bcc|ak\b|melanoma').hasMatch(text)) {
-    return ChatAnswer(
-      'Kanseri y’uruhu ishobora kugaragara nk’ikibyimba, agace k’uruhu kahindutse cyangwa igisebe kidakira. Ibimenyetso bishobora gusa n’izindi ndwara. Umukozi w’ubuzima ni we ushobora gukora isuzuma rikenewe.'
-      + ending, topic: 'skin_cancer');
-  }
-  if (RegExp(r'igisubizo|skinx|suzuma|suspicious|infer').hasMatch(text)) {
+  if (RegExp(r'igisubizo|skinx|suspicious|infer').hasMatch(text)) {
     return ChatAnswer(
       'Igisubizo cya SkinX ni icy’isuzuma ry’ibanze gusa. Nta gisubizo cyayo cyemeza ko umuntu afite kanseri cyangwa ko atayifite. Niba uruhu rufite impinduka iguhangayikishije, gisha inama umukozi w’ubuzima.'
       + ending, topic: 'using_skinx');
+  }
+  if (RegExp(r'kanseri|cancer|scc|bcc|ak\b|melanoma').hasMatch(text)) {
+    return ChatAnswer(
+      'Ku bantu bafite albinisme, kanseri y’uruhu ishobora kugaragara nk’agace k’uruhu keruruka cyangwa gatukura, ikibyimba, cyangwa igisebe kidakira. Umukozi w’ubuzima ni we ugomba gusuzuma impinduka z’uruhu, kuko ifoto yonyine idashobora kwemeza kanseri.'
+      + ending, topic: 'skin_cancer');
+  }
+  if (RegExp(r'albinism|albinisme|albinizime|abantu bafite albinisme').hasMatch(text)) {
+    return ChatAnswer(
+      'Albinisme ni imiterere y’umubiri ituma umuntu agira melanin nke mu ruhu, umusatsi no mu maso. Abantu bafite albinisme bakenera kurinda uruhu izuba no kwita ku buzima bw’amaso.'
+      + ending, topic: 'albinism');
   }
   if (RegExp(r'nisuzuma|kwisuzuma|nareba|nahora').hasMatch(text)) {
     return ChatAnswer(

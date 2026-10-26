@@ -61,10 +61,57 @@ class AppLanguage extends ChangeNotifier {
         ]),
       ),
     );
-    if (chosen != null) await instance.setLanguage(chosen);
+    if (chosen != null) {
+      instance.setLanguage(chosen);
+    }
   }
 
   static const Map<String, String> _kinyarwanda = {
+    'Can SkinX diagnose skin cancer?': 'SkinX ishobora kwemeza kanseri y’uruhu?',
+    'What should I do if a sore does not heal?': 'Nakora iki niba igisebe kidakira?',
+    'How can a person with albinism protect their skin?': 'Umuntu ufite albinisme yarinda ate uruhu rwe?',
+    'What are signs of skin cancer in people with albinism?': 'Ni ibihe bimenyetso bya kanseri y’uruhu ku bantu bafite albinisme?',
+    'Could not open YouTube.': 'Ntibyashobotse gufungura YouTube.',
+    'Internet is required to watch these videos.': 'Bisaba interineti kugira ngo urebe aya mashusho.',
+    'Preventing skin cancer in people with albinism': 'Kwirinda kanseri y’uruhu ku bantu bafite albinisme',
+    'Understanding albinism: skin cancer prevention tips': 'Albinisme: inama zo kwirinda kanseri y’uruhu',
+    'By Newzroom Afrika': 'Byateguwe na Newzroom Afrika',
+    'By Aga Khan University Hospital, Nairobi': 'Byateguwe n’Ibitaro bya Kaminuza ya Aga Khan i Nairobi',
+    'Watch video': 'Reba amashusho',
+    'Videos open in YouTube.': 'Amashusho afungukira kuri YouTube.',
+    'Medical education videos': 'Amashusho yigisha ku buzima',
+    'Videos about skin cancer and albinism': 'Amashusho kuri kanseri y’uruhu na albinisme',
+    'Watch on YouTube': 'Reba kuri YouTube',
+    'Skin cancer prevention in albinism': 'Kwirinda kanseri y’uruhu ku bantu bafite albinisme',
+    'This answer is for education, not a diagnosis.': 'Iki gisubizo ni icyo kwigisha, si isuzuma rya muganga.',
+    'The online assistant is unavailable right now.': 'Ubufasha bwo kuri interineti ntibuboneka ubu.',
+    'Could not reach online chat. Here is the offline answer.': 'Ikiganiro cyo kuri interineti nticyabonetse. Dore igisubizo cyo mu bubiko.',
+    'Explore common questions': 'Reba ibibazo bikunze kubazwa',
+    'Ask about skin care for people with albinism.': 'Baza ku kwita ku ruhu rw’abantu bafite albinisme.',
+    'Ask about albinism, skin changes, protection and care.': 'Baza ibibazo kuri albinisme, impinduka z’uruhu, kwirinda izuba no kwivuza.',
+    'Skin cancer prevention for people with albinism.': 'Uko abantu bafite albinisme bakwirinda kanseri y’uruhu.',
+    'Notice changes in your skin': 'Menya impinduka ku ruhu rwawe',
+    'What to look for • 3 min read': 'Ibyo kwitondera • iminota 3',
+    'SKIN CHANGES': 'IMPINDUKA KU RUHU',
+    'When to seek care': 'Igihe cyo kugana kwa muganga',
+    'Getting support • 3 min read': 'Gushaka ubufasha • iminota 3',
+    'CARE & SUPPORT': 'UBUVUZI N’UBUFASHA',
+    'Show password': 'Erekana ijambo ry’ibanga',
+    'Hide password': 'Hisha ijambo ry’ibanga',
+    'Online chat could not respond (HTTP 422).': 'Ikiganiro cyo kuri interineti nticyasubije.',
+    'The request was too long for online chat.': 'Ubutumwa bwoherejwe bwari burebure cyane.',
+    'Screening photos are never uploaded or saved in history. Results and dates are saved only when Save is selected. Community health worker accounts also save the patient name with permission. Individual screenings do not store a patient name. Signed-in records may sync to the account. Guest history remains on this device. Local history is not encrypted; avoid shared devices.': 'Amafoto y’isuzuma ntiyoherezwa kuri interineti kandi ntabikwa mu mateka. Ibisubizo n’amatariki bibikwa iyo uhisemo kubibika. Umujyanama w’ubuzima ashobora kubika izina ry’usuzumwa amaze kubyemererwa. Konti y’umuntu ku giti cye ntibika izina ry’usuzumwa. Amakuru y’abafite konti ashobora guhuzwa kuri interineti. Amakuru y’udafite konti abikwa kuri iyi telefoni. Amakuru abitswe muri telefoni ntabwo yashyizwe mu buryo bwo kuyahisha; irinde kuyasiga kuri telefoni ikoreshwa n’abantu benshi.',
+    'Cloud history is not up to date.': 'Amakuru yo kuri interineti ntarahuzwa neza.',
+    'Could not save screening history.': 'Ntibyashobotse kubika amateka y’isuzuma.',
+    'Could not update password. Try again.': 'Ntibyashobotse guhindura ijambo ry’ibanga. Ongera ugerageze.',
+    'This result is not a diagnosis. No photo was saved.': 'Iki gisubizo si isuzuma rya muganga. Nta foto yabitswe.',
+    'Could not sign out. Check your connection and try again.': 'Ntibyashobotse gusohoka muri konti. Reba interineti wongere ugerageze.',
+    'Unable to open your camera or selected photo.': 'Ntibyashobotse gufungura kamera cyangwa ifoto wahisemo.',
+    'Image is too large. Use a JPEG or PNG under 12 MB.': 'Ifoto ni nini cyane. Koresha JPEG cyangwa PNG iri munsi ya MB 12.',
+    'Could not open local screening history.': 'Ntibyashobotse gufungura amateka y’isuzuma yabitswe.',
+    'Cloud sync unavailable.': 'Kohereza amakuru kuri interineti ntibishoboka ubu.',
+    'Unnamed earlier screening': 'Isuzuma rya mbere ridafite izina',
+    'Offline features are available without an account': 'Serivisi zikora nta interineti ziboneka n’iyo udafite konti',
     'Learn': 'Iga',
     'History': 'Amateka',
     'Screen': 'Suzuma',
@@ -248,9 +295,19 @@ class SkinXText extends StatelessWidget {
   final String? semanticsLabel;
 
   @override
-  Widget build(BuildContext context) => Text(AppLanguage.text(data),
-    style: style, textAlign: textAlign, overflow: overflow, maxLines: maxLines,
-    softWrap: softWrap, textDirection: textDirection,
-    textWidthBasis: textWidthBasis, textHeightBehavior: textHeightBehavior,
-    semanticsLabel: semanticsLabel);
+  Widget build(BuildContext context) => AnimatedBuilder(
+    animation: AppLanguage.instance,
+    builder: (context, _) => Text(
+      AppLanguage.text(data),
+      style: style,
+      textAlign: textAlign,
+      overflow: overflow,
+      maxLines: maxLines,
+      softWrap: softWrap,
+      textDirection: textDirection,
+      textWidthBasis: textWidthBasis,
+      textHeightBehavior: textHeightBehavior,
+      semanticsLabel: semanticsLabel,
+    ),
+  );
 }

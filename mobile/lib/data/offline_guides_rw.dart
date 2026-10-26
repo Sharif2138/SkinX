@@ -5,7 +5,7 @@ const offlineGuidesRw = <OfflineGuide>[
     id: 'sun_protection',
     category: 'Kwirinda izuba',
     title: 'Rinda uruhu rwawe buri munsi',
-    introduction: 'Kurinda uruhu izuba ni ingenzi kuri bose, cyane cyane ku bantu bafite albinisme kuko uruhu rwabo rufite melanin nke.',
+    introduction: 'Abantu bafite albinisme bafite melanin nke mu ruhu. Ibi bituma izuba ribangiriza uruhu byoroshye kandi bikongera ibyago bya kanseri y’uruhu. Ni ngombwa kwirinda imirasire y’izuba buri munsi.',
     keyPoint: 'Koresha igicucu, imyambaro ikingira uruhu n’amavuta arinda izuba. Bikoreshereze hamwe.',
     sections: [
       GuideSection('Irinde izuba rikaze', 'Shaka igicucu cyane cyane mu masaha y’amanywa izuba rikaze. Mu gihe ukorera hanze, jya ufata akaruhuko ahantu hari igicucu.'),
@@ -20,10 +20,10 @@ const offlineGuidesRw = <OfflineGuide>[
     id: 'skin_changes',
     category: 'Impinduka ku ruhu',
     title: 'Menya impinduka ku ruhu rwawe',
-    introduction: 'Ikimenyetso gishya cyangwa gihinduka ku ruhu gikwiye kwitabwaho. Hari ibitari ikibazo, ariko kureba gusa ntibihagije kugira ngo umenye icyo ari cyo.',
+    introduction: 'Ku bantu bafite albinisme, kanseri y’uruhu ishobora kugaragara nk’ikibyimba cyeruruka, agace gatukura, cyangwa igisebe kidakira. Kureba gusa ntibihagije kugira ngo umenye icyo impinduka isobanura.',
     keyPoint: 'Igisebe kidakira, ikibyimba gikura cyangwa ahantu hakunze kuva amaraso bigomba gusuzumwa n’umukozi w’ubuzima.',
     sections: [
-      GuideSection('Reba ibihinduka', 'Itondere ikibyimba gishya, ibara cyangwa imiterere bihinduka, ahantu hakomeye, hababaza cyangwa havaho udusebe. N’akabyimba k’umuhondo cyangwa k’umutuku gashobora kuba ingenzi.'),
+      GuideSection('Reba ibihinduka', 'Itondere ikibyimba gishya, agace k’uruhu gahinduka, ahantu hababaza cyangwa havaho udusebe. N’akabyimba keruruka cyangwa gatukura kagomba kwitabwaho.'),
       GuideSection('Itondere ibisebe bidakira', 'Niba igisebe kidakira cyangwa gisubira kuvaho amaraso, gisha inama umukozi w’ubuzima. Ntutegereze igisubizo cya porogaramu.'),
       GuideSection('Kurikirana igihe', 'Andika igihe waboneye impinduka n’uko yagiye ihinduka. Ifoto ifite itariki ishobora gufasha muganga, ariko ntisimbura isuzuma.'),
       GuideSection('Shaka ubufasha', 'Niba impinduka ikugahangayikishije, jya ku kigo nderabuzima, nubwo SkinX yaba yavuze ko bidakekwaho cyane.'),
@@ -69,7 +69,7 @@ const offlineGuidesRw = <OfflineGuide>[
     sections: [
       GuideSection('Actinic keratosis (AK)', 'Ni agace k’uruhu kangijwe n’izuba, gashobora kuzavamo kanseri yitwa SCC. Umukozi w’ubuzima agomba kugasuzuma.'),
       GuideSection('Squamous cell carcinoma (SCC)', 'Ni ubwoko bwa kanseri y’uruhu. Ishobora kugaragara nk’ikibyimba gikura cyangwa igisebe kidakira.'),
-      GuideSection('Basal cell carcinoma (BCC)', 'Ni ubundi bwoko bwa kanseri y’uruhu. Ishobora kugaragara nk’agahinda k’uruhu, akabyimba cyangwa igisebe kiva amaraso.'),
+      GuideSection('Basal cell carcinoma (BCC)', 'Ni ubundi bwoko bwa kanseri y’uruhu. Ishobora kugaragara nk’akabyimba keruruka, agace gatukura, cyangwa igisebe gikunda kuva amaraso.'),
       GuideSection('Melanoma n’ibindi bibara', 'Hari ibibara bitari kanseri, ariko melanoma ni kanseri ikomeye. Ntibishoboka kubitandukanya neza hakoreshejwe ifoto gusa.'),
     ],
     sourceName: 'National Cancer Institute · Skin cancer treatment',
@@ -84,7 +84,7 @@ const offlineGuidesRw = <OfflineGuide>[
     sections: [
       GuideSection('Mbere yo gufata ifoto', 'Fata ifoto isobanutse y’uruhu rwahindutse, ukoreshe urumuri rwiza kandi wirinde gushungura ifoto.'),
       GuideSection('Birakekwaho ikibazo', 'AI yabonye ibimenyetso bishobora gukenera kwitabwaho. Si gihamya ya kanseri. Gisha inama umukozi w’ubuzima.'),
-      GuideSection('Ntibikekwahho cyane', 'AI ntiyabonye ibimenyetso bihagije ku gipimo ikoresha. Ishobora kwibeshya, ni yo mpamvu impinduka zikomeye zigomba gusuzumwa n’umukozi w’ubuzima.'),
+      GuideSection('Ntibikekwa cyane', 'AI ntiyabonye ibimenyetso bihagije ku gipimo ikoresha. Ishobora kwibeshya, ni yo mpamvu impinduka zikomeye zigomba gusuzumwa n’umukozi w’ubuzima.'),
       GuideSection('Ntibishoboka gutanga igisubizo', 'Porogaramu ntiyashoboye gutunganya ifoto. Gerageza indi foto isobanutse. Ibi ntibivuga ko uruhu rudafite ikibazo.'),
     ],
     sourceName: 'SkinX · Screening model information',

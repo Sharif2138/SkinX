@@ -33,7 +33,7 @@ const offlineGuides = <OfflineGuide>[
     id: 'sun_protection',
     category: 'Everyday protection',
     title: 'Protect your skin every day',
-    introduction: 'Sun protection is important for everyone. It matters even more for people with albinism because their skin has less melanin to help protect it from ultraviolet (UV) light.',
+    introduction: 'People with albinism have less melanin to protect their skin from ultraviolet (UV) light, which increases the risk of sun damage and skin cancer. This guide focuses on everyday protection in Rwanda and other sunny places.',
     keyPoint: 'Use shade, protective clothing and sunscreen together. None of them works perfectly on its own.',
     sections: [
       GuideSection('Plan your time outdoors', 'Try to stay in the shade when sunlight is strongest, especially around midday. If you work or travel outdoors, plan breaks in shaded places whenever possible.'),
@@ -48,7 +48,7 @@ const offlineGuides = <OfflineGuide>[
     id: 'skin_changes',
     category: 'Skin changes',
     title: 'Notice changes in your skin',
-    introduction: 'A new or changing mark is worth paying attention to. Many marks are harmless, but appearance alone cannot tell you for certain what they are.',
+    introduction: 'For people with albinism, skin cancer may appear as a pink or pale growth, a rough patch, or an open sore, not only as a dark mark. Many skin changes are harmless, but appearance alone cannot tell you the cause.',
     keyPoint: 'A sore that does not heal, grows or repeatedly bleeds should be checked by a health professional.',
     sections: [
       GuideSection('Look for changes', 'Notice any new lump or patch, a spot that grows or changes shape, or an area that becomes rough, crusted or painful. A pink or pale spot can also be important.'),
@@ -63,7 +63,7 @@ const offlineGuides = <OfflineGuide>[
     id: 'seek_care',
     category: 'Care and support',
     title: 'When to seek medical care',
-    introduction: 'SkinX can support early awareness, but it cannot diagnose or rule out skin cancer. A qualified health professional is needed to examine a concerning change.',
+    introduction: 'Early assessment is particularly important for a person with albinism who notices a growing, bleeding or non-healing area. SkinX is designed to support referral awareness, not to diagnose or rule out skin cancer.',
     keyPoint: 'Seek assessment promptly for persistent, growing, bleeding or changing skin lesions, regardless of the app result.',
     sections: [
       GuideSection('Do not ignore warning signs', 'Ask for a medical review if a spot is growing, keeps bleeding, becomes crusty, or a sore does not heal. Sudden severe bleeding, rapidly worsening symptoms or signs of infection may need urgent care.'),
@@ -93,7 +93,7 @@ const offlineGuides = <OfflineGuide>[
     id: 'lesion_types',
     category: 'Understanding skin cancer',
     title: 'Understand common skin lesions',
-    introduction: 'Different skin conditions can look alike. Learning the names can help you follow a conversation with a clinician, but only an assessment can identify the cause of a spot.',
+    introduction: 'People with albinism are especially vulnerable to long-term sun damage and non-melanoma skin cancers such as SCC and BCC. Different conditions can still look alike. Knowing the names helps, but only a clinical assessment can identify the cause.',
     keyPoint: 'A mark does not have to be dark to be important. Skin cancers in people with albinism may appear pink, pale or red.',
     sections: [
       GuideSection('Actinic keratosis (AK)', 'AK is a rough, sun-damaged patch that is considered precancerous. Some AKs can develop into squamous cell carcinoma. A clinician should assess suspicious patches.'),
