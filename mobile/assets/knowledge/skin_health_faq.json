@@ -9,9 +9,11 @@
       "My spot is bleeding",
       "My skin lesion is growing",
       "What are early symptoms of skin cancer?",
-      "What are the early warning signs of skin cancer?"
+      "What are the early warning signs of skin cancer?",
+      "What are signs of skin cancer in people with albinism?",
+      "What signs of skin cancer should a person with albinism notice?"
     ],
-    "answer": "A new growth, a sore that does not heal, or a spot that grows, bleeds, crusts or changes needs assessment by a trained health professional. This is especially important for people with albinism. Please seek care promptly; an app cannot diagnose the cause.",
+    "answer": "For a person with albinism, a new lump, a rough or crusted patch, a pink or pale growth, or a sore that grows, bleeds or does not heal deserves medical attention. Skin cancers can be light-colored, not only dark. Visit a health centre promptly instead of relying on a photo or SkinX result.",
     "keywords": [
       "wound",
       "bleed",
@@ -35,9 +37,11 @@
       "Do I need sunscreen?",
       "How to prevent skin cancer?",
       "What can I do to avoid skin cancer?",
-      "How can I stop sun damage?"
+      "How can I stop sun damage?",
+      "How can a person with albinism protect their skin?",
+      "How can people with albinism avoid sun damage?"
     ],
-    "answer": "Try to stay in the shade, especially around midday. Wear a wide-brimmed hat, protective clothing and sunglasses. Use broad-spectrum sunscreen SPF 30 or higher and reapply it as directed, especially outdoors. Sunscreen is one part of protection, not a reason to stay in strong sun longer.",
+    "answer": "People with albinism have reduced natural protection from UV light. Use shade, a wide-brimmed hat, long sleeves, UV-protective sunglasses, and broad-spectrum SPF 30+ sunscreen together. Reapply sunscreen about every two hours while outdoors and after swimming or sweating. If sunscreen is hard to obtain, shade and protective clothing are still important.",
     "keywords": [
       "sun",
       "sunscreen",
@@ -57,7 +61,7 @@
       "Why is skin cancer a risk for people with albinism?",
       "What is albinism?"
     ],
-    "answer": "Albinism reduces the amount of melanin that protects skin from sunlight. People with albinism can therefore develop sun damage and skin cancers, especially when sun protection or early treatment is difficult to access. Regular skin checks and sun protection are important.",
+    "answer": "Albinism is an inherited condition involving reduced melanin. It is not skin cancer, and it affects people of every ethnic background. Reduced melanin increases UV damage and skin cancer risk. In Rwanda, protecting the skin, recognizing non-healing wounds early, and accessing health workers are especially important.",
     "keywords": [
       "albinism",
       "melanin",
@@ -73,9 +77,11 @@
     "questions": [
       "What does suspicious mean?",
       "What does less suspicious mean?",
-      "Is SkinX a diagnosis?"
+      "Is SkinX a diagnosis?",
+      "Can SkinX diagnose skin cancer?",
+      "Does SkinX confirm that I have skin cancer?"
     ],
-    "answer": "SkinX is an experimental screening tool, not a diagnosis. A 'Suspicious' result means you should seek clinical assessment. A 'Less suspicious' result does not rule out cancer. A changing, painful, bleeding or non-healing spot should still be checked by a professional. 'Cannot infer' currently means the image could not be processed.",
+    "answer": "SkinX is a research screening tool focused on concerning lesions in persons with albinism. Suspicious means seek clinical assessment; Less suspicious does not rule out skin cancer. Cannot infer means the image could not be assessed reliably. The app does not diagnose SCC, BCC or AK.",
     "keywords": [
       "suspicious",
       "less suspicious",
@@ -94,7 +100,7 @@
       "What is squamous cell carcinoma?",
       "What is SCC?"
     ],
-    "answer": "Squamous cell carcinoma (SCC) is a type of skin cancer that may look like a growing lump, scaly patch or sore that does not heal. It needs assessment by a health professional; appearance alone cannot confirm it.",
+    "answer": "Squamous cell carcinoma (SCC) is an important skin cancer in people with albinism. It may look like a growing lump, a rough crusted area, or a wound that keeps bleeding or will not heal. It needs prompt clinical assessment; a photo or an AI score cannot confirm it.",
     "keywords": [
       "scc",
       "squamous",
@@ -108,7 +114,7 @@
       "What is basal cell carcinoma?",
       "What is BCC?"
     ],
-    "answer": "Basal cell carcinoma (BCC) is a type of skin cancer. It can appear as a new bump, a shiny or pink area, or a sore that repeatedly heals and returns. A clinician needs to examine any concerning spot.",
+    "answer": "Basal cell carcinoma (BCC) can occur in people with albinism. It may look like a shiny or pink bump, a pale raised area, or an ulcer that repeatedly bleeds. Similar changes can have other causes, so a health professional needs to examine it.",
     "keywords": [
       "bcc",
       "basal",
@@ -122,7 +128,7 @@
       "What is actinic keratosis?",
       "Is AK cancer?"
     ],
-    "answer": "Actinic keratosis (AK) is a sun-damaged patch that may feel rough or scaly. Some patches can progress to skin cancer, so a health professional should assess and treat them appropriately. SkinX cannot confirm AK from a photo.",
+    "answer": "Actinic keratosis (AK) is a rough, sun-damaged patch and a precancerous condition. People with albinism may develop extensive sun damage, so rough or scaly patches should be assessed by a clinician. Some AKs can progress to squamous cell carcinoma.",
     "keywords": [
       "actinic",
       "keratosis",
@@ -141,7 +147,7 @@
       "What is the meaning of melanoma?",
       "Tell me about melanoma"
     ],
-    "answer": "Melanoma is a type of skin cancer. It can sometimes have little or no dark pigment. Any new, changing or concerning lesion should be examined. SkinX cannot identify melanoma as a separate diagnosis.",
+    "answer": "Melanoma is a serious skin cancer. It is less typical than non-melanoma skin cancers in many African albinism settings, but it can still occur and may appear pink or pale. New, changing or bleeding areas need a clinician’s assessment.",
     "keywords": [
       "melanoma",
       "pigment",
@@ -156,7 +162,7 @@
       "Who should I visit?",
       "Is a yearly dermatologist check helpful?"
     ],
-    "answer": "Regularly look for new or changing areas of skin. If possible, ask a trained health professional how often you need a full skin check. If a sore is not healing or a spot is changing, do not wait for a routine check.",
+    "answer": "People with albinism should check their skin regularly for new or changing patches and sores. Pay attention to sun-exposed areas such as the face, neck, ears, arms and scalp, as well as other body areas. Professional examinations are particularly important when a spot changes or fails to heal.",
     "keywords": [
       "check",
       "doctor",
@@ -175,9 +181,11 @@
       "I have a sore that will not heal",
       "My skin has had a wound for weeks",
       "My wound has not healed for weeks",
-      "Why is a skin wound taking so long to heal?"
+      "Why is a skin wound taking so long to heal?",
+      "What should I do if a sore does not heal?",
+      "Why does a sore on my skin not heal?"
     ],
-    "answer": "A sore or wound that does not heal needs assessment by a health professional. Persistent sores can have several causes, including skin cancer. Arrange a clinical check promptly even if an app says Less suspicious.",
+    "answer": "A sore that does not heal or repeatedly opens needs prompt attention, particularly for a person with albinism. It may have several causes, including skin cancer. A health worker can examine it and arrange referral or biopsy if needed.",
     "keywords": [
       "nonhealing",
       "non healing",
@@ -235,7 +243,7 @@
       "What if I get a burn in the sun?",
       "What should I do if I got sunburned?"
     ],
-    "answer": "Move out of the sun and protect the affected skin. Keep the skin cool and hydrated. Seek medical care for severe burns, widespread blistering, fever, or feeling unwell. Prevent further exposure using clothing, shade and sunscreen.",
+    "answer": "Sunburn can happen quickly in people with albinism because their skin has less protective melanin. Move out of direct sun and cool the skin gently. Seek medical care for severe blistering, fever, dehydration, worsening pain or concerning wounds; protect the area from further sun exposure.",
     "keywords": [
       "sunburn",
       "burned",
@@ -305,7 +313,7 @@
       "Can a rough patch turn into cancer?",
       "What does precancer mean?"
     ],
-    "answer": "Some sun-damaged skin changes, such as actinic keratosis, can develop into cancer. They should be assessed by a health professional. SkinX cannot confirm whether a patch is precancerous.",
+    "answer": "Some sun-damaged skin changes, such as actinic keratosis, can develop into cancer. They should be assessed by a health professional. SkinX cannot confirm whether a patch is precancerous. Long-term sun exposure can cause precancerous skin changes in people with albinism. A clinician should check new rough patches.",
     "keywords": [
       "precancer",
       "precancerous",
@@ -322,7 +330,7 @@
       "How can I check for skin cancer?",
       "What should I watch for on my skin?"
     ],
-    "answer": "Look for new, changing, bleeding or non-healing spots. Ask someone you trust to help check areas that are difficult to see, if you are comfortable. A health worker can advise on a professional skin examination.",
+    "answer": "Look for new, changing, bleeding or non-healing spots. Ask someone you trust to help check areas that are difficult to see, if you are comfortable. A health worker can advise on a professional skin examination. For people with albinism, pay special attention to sun-exposed skin and remember that a concerning growth may be pale or pink.",
     "keywords": [
       "examine",
       "self check",
@@ -340,7 +348,7 @@
       "Should I visit a clinic or dermatologist?",
       "What happens at a skin consultation?"
     ],
-    "answer": "A clinician at a health centre or hospital can examine a concerning skin change and refer you to a dermatologist when needed. Explain how long the spot has been there and whether it has grown, bled or failed to heal.",
+    "answer": "A clinician at a health centre or hospital can examine a concerning skin change and refer you to a dermatologist when needed. Explain how long the spot has been there and whether it has grown, bled or failed to heal. For a person with albinism, new growths and non-healing sores should not wait for an app result; a health centre can advise on referral.",
     "keywords": [
       "clinic",
       "health centre",
@@ -358,7 +366,7 @@
       "How is skin cancer diagnosed?",
       "Can a picture confirm skin cancer?"
     ],
-    "answer": "A clinician may need to examine a skin spot and take a small tissue sample called a biopsy. Laboratory assessment can help confirm the diagnosis. SkinX photographs cannot replace a biopsy or clinical examination.",
+    "answer": "A clinician may need to examine a skin spot and take a small tissue sample called a biopsy. Laboratory assessment can help confirm the diagnosis. SkinX photographs cannot replace a biopsy or clinical examination. For a concerning lesion in a person with albinism, biopsy may help a clinician confirm the cause when examination alone is not enough.",
     "keywords": [
       "biopsy",
       "histology",
@@ -431,7 +439,7 @@
       "How to take a good lesion photo?",
       "Can I take a photo in bad light?"
     ],
-    "answer": "Use bright, even light and hold the phone steady. Keep the skin change visible and in focus. Avoid filters and include enough surrounding skin to see the area. A good photo still cannot confirm a diagnosis.",
+    "answer": "Use bright, even light and hold the phone steady. Keep the skin change visible and in focus. Avoid filters and include enough surrounding skin to see the area. A good photo still cannot confirm a diagnosis. SkinX is intended for a clear photo of an actual skin change, especially in people with albinism, not photographs of unrelated objects.",
     "keywords": [
       "photograph",
       "picture",
@@ -468,7 +476,7 @@
       "Does a lesion need to be dark?",
       "Can melanoma have no color?"
     ],
-    "answer": "Some skin cancers can look pink, pale or skin-colored rather than dark. This includes some melanomas. A new or changing spot should be checked regardless of its color.",
+    "answer": "Some skin cancers can look pink, pale or skin-colored rather than dark. This includes some melanomas. A new or changing spot should be checked regardless of its color. A pale or pink lesion in a person with albinism can still be important and needs examination when it grows, bleeds or persists.",
     "keywords": [
       "pink",
       "pale",
@@ -777,7 +785,7 @@
       "I work on a farm in the sun",
       "How can outdoor workers prevent sun damage?"
     ],
-    "answer": "Try to arrange shade and breaks during the hottest, brightest hours. Wear protective clothing and a broad-brimmed hat. Apply sunscreen to uncovered skin and reapply outdoors. Ask your workplace or community group about access to protection.",
+    "answer": "Try to arrange shade and breaks during the hottest, brightest hours. Wear protective clothing and a broad-brimmed hat. Apply sunscreen to uncovered skin and reapply outdoors. Ask your workplace or community group about access to protection. People with albinism who work outdoors may need planned shade breaks, hats, covered clothing and access to sunscreen.",
     "keywords": [
       "work",
       "farm",
@@ -797,7 +805,7 @@
       "My child plays outside at school",
       "How should schools help students with albinism?"
     ],
-    "answer": "A child with albinism may need a hat, sunscreen, shade and a place to rest out of strong sun. Families can discuss outdoor schedules and seating with teachers. Eye and vision support may also be important.",
+    "answer": "A child with albinism may need a hat, sunscreen, shade and a place to rest out of strong sun. Families can discuss outdoor schedules and seating with teachers. Eye and vision support may also be important. Children with albinism may need support with shade, protective clothing and sunscreen at school.",
     "keywords": [
       "children",
       "school",
@@ -974,7 +982,7 @@
       "Can a dry scaly patch be serious?",
       "What does a crusty patch mean?"
     ],
-    "answer": "A rough or scaly patch may have many causes, including sun damage. Actinic keratosis is one possibility, but a clinician must examine the skin to know what it is. Ask for care if it persists or changes.",
+    "answer": "A rough or scaly patch may have many causes, including sun damage. Actinic keratosis is one possibility, but a clinician must examine the skin to know what it is. Ask for care if it persists or changes. People with albinism may develop sun-damaged rough patches; persistent patches should be assessed rather than assumed harmless.",
     "keywords": [
       "rough",
       "scaly",
@@ -1010,7 +1018,7 @@
       "Are facial wounds serious?",
       "A bump appeared near my nose"
     ],
-    "answer": "The face often receives sunlight and can develop many kinds of skin changes. A new or growing facial spot, especially one that bleeds or does not heal, should be assessed by a clinician.",
+    "answer": "The face often receives sunlight and can develop many kinds of skin changes. A new or growing facial spot, especially one that bleeds or does not heal, should be assessed by a clinician. The face receives frequent UV exposure, especially relevant to people with albinism. Have changing or non-healing areas checked.",
     "keywords": [
       "face",
       "facial",
@@ -1028,7 +1036,7 @@
       "Can skin cancer affect ears?",
       "Why does my ear have a scab?"
     ],
-    "answer": "Ears can receive a lot of sun exposure. If you notice a persistent wound, crust, bleeding or growing spot on an ear, ask for medical assessment. Cover your ears with a wide-brimmed hat when outdoors.",
+    "answer": "Ears can receive a lot of sun exposure. If you notice a persistent wound, crust, bleeding or growing spot on an ear, ask for medical assessment. Cover your ears with a wide-brimmed hat when outdoors. Ears are easily missed during sun protection. People with albinism should protect them and seek assessment of persistent lesions.",
     "keywords": [
       "ear",
       "ears",
@@ -1045,7 +1053,7 @@
       "Can skin cancer happen on lips?",
       "My lip wound is not healing"
     ],
-    "answer": "A persistent lip sore or crust may have different causes. Because the lips are also exposed to the sun, a sore that does not heal should be checked by a qualified health professional.",
+    "answer": "A persistent lip sore or crust may have different causes. Because the lips are also exposed to the sun, a sore that does not heal should be checked by a qualified health professional. Protect exposed lips from UV with suitable SPF lip balm. A persistent sore on the lip needs clinical attention.",
     "keywords": [
       "lip",
       "sore",
@@ -1061,7 +1069,7 @@
       "A sore is under my hair",
       "How do I check my scalp?"
     ],
-    "answer": "The scalp can be hard to see. Ask someone you trust to help check for new, crusting or bleeding spots. A clinician should assess a sore that stays or grows.",
+    "answer": "The scalp can be hard to see. Ask someone you trust to help check for new, crusting or bleeding spots. A clinician should assess a sore that stays or grows. Protect the scalp with a wide-brimmed hat or suitable covering, especially for a person with albinism.",
     "keywords": [
       "scalp",
       "head",
@@ -1077,7 +1085,7 @@
       "Can sun damage my hands?",
       "A rough spot appeared on my arm"
     ],
-    "answer": "Hands and arms often receive sunlight. A rough, growing or non-healing spot may need assessment. Wear protective clothing when practical and use sunscreen on skin that remains uncovered.",
+    "answer": "Hands and arms often receive sunlight. A rough, growing or non-healing spot may need assessment. Wear protective clothing when practical and use sunscreen on skin that remains uncovered. Hands are frequently exposed to sunlight. Pay attention to changing, rough or non-healing spots.",
     "keywords": [
       "hand",
       "hands",
@@ -1182,7 +1190,7 @@
       "Can AK turn into SCC?",
       "What is the difference between AK and SCC?"
     ],
-    "answer": "Actinic keratosis is generally considered a precancerous sun-damaged patch. Squamous cell carcinoma is cancer. A clinician can decide whether a patch needs treatment or testing.",
+    "answer": "Actinic keratosis is generally considered a precancerous sun-damaged patch. Squamous cell carcinoma is cancer. A clinician can decide whether a patch needs treatment or testing. Actinic keratosis and SCC are both relevant concerns after long-term UV exposure in people with albinism; assessment is needed to distinguish them.",
     "keywords": [
       "ak",
       "actinic",
@@ -1201,7 +1209,7 @@
       "Which cancer is basal cell?",
       "Which cancer is squamous cell?"
     ],
-    "answer": "BCC and SCC start in different types of skin cells. Both need medical assessment. SCC can have a greater risk of spreading in some cases; the appearance of a spot alone cannot confirm which kind it is.",
+    "answer": "BCC and SCC start in different types of skin cells. Both need medical assessment. SCC can have a greater risk of spreading in some cases; the appearance of a spot alone cannot confirm which kind it is. BCC and SCC both occur in people with albinism and can look similar in a photo. Clinical examination is necessary.",
     "keywords": [
       "bcc",
       "scc",
@@ -1307,7 +1315,7 @@
       "How often should I do a skin self-exam?",
       "How often do I look for new spots?"
     ],
-    "answer": "Try to become familiar with your skin and check it regularly, using mirrors or help from someone you trust. A health professional can suggest a check-up schedule based on your risk. Do not wait for a schedule if you notice a warning sign.",
+    "answer": "Try to become familiar with your skin and check it regularly, using mirrors or help from someone you trust. A health professional can suggest a check-up schedule based on your risk. Do not wait for a schedule if you notice a warning sign. For a person with albinism, regular skin awareness and clinical review of concerning changes are particularly important.",
     "keywords": [
       "check",
       "frequency",
@@ -1380,7 +1388,7 @@
       "Can SkinX be wrong?",
       "What is a false positive?"
     ],
-    "answer": "SkinX can flag an image as Suspicious even when the photographed area is not cancer. It was trained on skin-lesion images and is not reliable for unrelated objects. A Suspicious result calls for professional assessment, not a diagnosis.",
+    "answer": "SkinX can flag an image as Suspicious even when the photographed area is not cancer. It was trained on skin-lesion images and is not reliable for unrelated objects. A Suspicious result calls for professional assessment, not a diagnosis. An app flag is a screening prompt, not proof of disease. A clinician can assess a lesion in a person with albinism.",
     "keywords": [
       "false",
       "positive",
@@ -1399,7 +1407,7 @@
       "What is a false negative?",
       "Does less suspicious mean I am safe?"
     ],
-    "answer": "Yes. SkinX can miss cancer and may give a Less suspicious result for a concerning lesion. Do not use the result as medical clearance. Ask for clinical review of any spot that changes, bleeds, grows or does not heal.",
+    "answer": "Yes. SkinX can miss cancer and may give a Less suspicious result for a concerning lesion. Do not use the result as medical clearance. Ask for clinical review of any spot that changes, bleeds, grows or does not heal. The risk of a missed lesion makes prompt clinical review essential for a person with albinism when a spot is growing, bleeding or not healing.",
     "keywords": [
       "false",
       "negative",
