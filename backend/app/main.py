@@ -1,5 +1,9 @@
 """SkinX online educational chat service."""
 import os
+import logging
+from pathlib import Path
+
+from dotenv import load_dotenv
 import time
 from collections import defaultdict, deque
 from typing import Literal
@@ -9,7 +13,9 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, ConfigDict, Field
 
-app = FastAPI(title="SkinX Chat API", version="1.0.0")
+load_dotenv(Path(__file__).resolve().parents[1] / ".env")
+logger = logging.getLogger("skinx.chat")
+app = FastAPI(title="SkinX Chat API", version="1.1.0")
 origins = [value.strip() for value in os.getenv("CORS_ORIGINS", "").split(",") if value.strip()]
 if origins:
     app.add_middleware(
@@ -34,6 +40,7 @@ class ChatRequest(BaseModel):
 
     question: str = Field(min_length=1, max_length=1500)
     history: list[ChatMessage] = Field(default_factory=list, max_length=8)
+    language: Literal["en", "rw"] = "en"
 
 
 class ChatResponse(BaseModel):
@@ -62,7 +69,7 @@ def health() -> dict:
 async def chat(payload: ChatRequest, request: Request) -> ChatResponse:
     api_key = os.getenv("GROQ_API_KEY", "").strip()
     if not api_key:
-        raise HTTPException(503, "Online chat is unavailable")
+        raise HTTPException(503, "GROQ_KEY_MISSING")
 
     # Never trust forwarding headers as a client identity without a trusted proxy.
     remote = request.client.host if request.client else "unknown"
@@ -82,6 +89,9 @@ async def chat(payload: ChatRequest, request: Request) -> ChatResponse:
         "No image, screening record or account details are provided to you. "
         "Do not request identifying health details, and remind the user not to share them."
     )
+    if payload.language == "rw":
+        system += (" Respond in natural, clear Kinyarwanda. Use simple wording that a person "
+                   "in Rwanda can understand. Keep medical explanations cautious. ")
     history = [{"role": item.role, "content": item.content} for item in payload.history]
     messages = [{"role": "system", "content": system}, *history,
                 {"role": "user", "content": payload.question.strip()}]
@@ -97,13 +107,24 @@ async def chat(payload: ChatRequest, request: Request) -> ChatResponse:
                     "max_tokens": 550,
                 },
             )
-            if response.status_code == 429:
-                raise HTTPException(503, "Chat is temporarily busy. Please try again.")
             if response.status_code >= 400:
-                raise HTTPException(503, "Online chat is temporarily unavailable")
+                logger.warning("Groq chat returned HTTP %s", response.status_code)
+                if response.status_code in (401, 403):
+                    raise HTTPException(503, "GROQ_AUTH_FAILED")
+                if response.status_code == 404:
+                    raise HTTPException(503, "GROQ_MODEL_NOT_FOUND")
+                if response.status_code == 429:
+                    raise HTTPException(503, "GROQ_RATE_LIMITED")
+                if response.status_code == 400:
+                    raise HTTPException(503, "GROQ_REQUEST_REJECTED")
+                raise HTTPException(503, "GROQ_UNAVAILABLE")
             answer = response.json()["choices"][0]["message"]["content"].strip()
+    except httpx.TimeoutException:
+        logger.warning("Groq chat timed out")
+        raise HTTPException(503, "GROQ_TIMEOUT") from None
     except httpx.HTTPError:
-        raise HTTPException(503, "Online chat is temporarily unavailable") from None
+        logger.warning("Groq chat could not be reached")
+        raise HTTPException(503, "GROQ_NETWORK_ERROR") from None
     except (ValueError, TypeError, KeyError, IndexError, AttributeError):
         raise HTTPException(503, "Online chat returned an invalid response") from None
 
