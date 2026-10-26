@@ -120,3 +120,54 @@ def test_kinyarwanda_language_is_passed_to_model(monkeypatch):
     response = client.post('/chat', json={'question': 'Muraho', 'language': 'rw'})
     assert response.status_code == 200
     assert 'Kinyarwanda' in captured['data']['messages'][0]['content']
+
+
+def test_online_chat_prompt_focuses_on_albinism_and_plain_text(monkeypatch):
+    monkeypatch.setenv('GROQ_API_KEY', 'test-key')
+    _limits.clear()
+    sent = {}
+
+    class FakeClient:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            return False
+
+        async def post(self, url, headers=None, json=None):
+            sent['body'] = json
+            return httpx.Response(200, json={'choices': [{'message': {'content': 'Hello.'}}]},
+                                  request=httpx.Request('POST', url))
+
+    monkeypatch.setattr('app.main.httpx.AsyncClient', lambda **kwargs: FakeClient())
+    response = client.post('/chat', json={'question': 'How can someone avoid skin cancer?'})
+    assert response.status_code == 200
+    system = sent['body']['messages'][0]['content']
+    assert 'persons with albinism' in system
+    assert 'Do not write Markdown headings' in system
+    assert sent['body']['max_completion_tokens'] == 900
+    assert sent['body']['reasoning_effort'] == 'low'
+
+
+def test_online_chat_allows_trimmed_history(monkeypatch):
+    monkeypatch.setenv('GROQ_API_KEY', 'test-key')
+    _limits.clear()
+
+    class FakeClient:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            return False
+
+        async def post(self, url, headers=None, json=None):
+            return httpx.Response(200, json={'choices': [{'message': {'content': 'Okay.'}}]},
+                                  request=httpx.Request('POST', url))
+
+    monkeypatch.setattr('app.main.httpx.AsyncClient', lambda **kwargs: FakeClient())
+    payload = {'question': 'Tell me more', 'history': [
+        {'role': 'user', 'content': 'Question'},
+        {'role': 'assistant', 'content': 'A' * 1000},
+    ] * 3}
+    response = client.post('/chat', json=payload)
+    assert response.status_code == 200
