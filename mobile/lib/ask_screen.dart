@@ -1,3 +1,4 @@
+import 'services/app_language.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -86,7 +87,7 @@ class _AskScreenState extends State<AskScreen> {
     if (uri == null || !uri.hasScheme || uri.scheme != 'https') return;
     if (!ConnectivityService.instance.online) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Source links can be opened when internet is available.')),
+        const SnackBar(content: SkinXText('Source links can be opened when internet is available.')),
       );
       return;
     }
@@ -124,11 +125,11 @@ class _AskScreenState extends State<AskScreen> {
                       onLanguageTap: widget.onLanguageTap,
                     ),
                     const SizedBox(height: 20),
-                    const Text('Ask SkinX', style: TextStyle(
+                    const SkinXText('Ask SkinX', style: TextStyle(
                       color: _ink, fontSize: 25, fontWeight: FontWeight.w700,
                     )),
                     const SizedBox(height: 5),
-                    const Text(
+                    const SkinXText(
                       'Simple answers about skin health and sun protection.',
                       style: TextStyle(color: _muted, fontSize: 13, height: 1.45),
                     ),
@@ -154,11 +155,11 @@ class _AskScreenState extends State<AskScreen> {
                           children: [
                             Icon(Icons.forum_outlined, size: 28, color: _teal),
                             SizedBox(height: 10),
-                            Text('What would you like to know?', style: TextStyle(
+                            SkinXText('What would you like to know?', style: TextStyle(
                               fontSize: 17, fontWeight: FontWeight.w600, color: _ink,
                             )),
                             SizedBox(height: 7),
-                            Text('Choose a question below or type your own. Basic skin-health answers are available offline.',
+                            SkinXText('Choose a question below or type your own. Basic skin-health answers are available offline.',
                               style: TextStyle(fontSize: 13, height: 1.5, color: _muted)),
                           ],
                         ),
@@ -184,7 +185,7 @@ class _AskScreenState extends State<AskScreen> {
                               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
                               child: Row(
                                 children: [
-                                  Expanded(child: Text(question, style: const TextStyle(
+                                  Expanded(child: SkinXText(question, style: const TextStyle(
                                     fontSize: 13.5, color: _ink,
                                   ))),
                                   const SizedBox(width: 8),
@@ -206,7 +207,7 @@ class _AskScreenState extends State<AskScreen> {
                             color: const Color(0xFFE3F1E1),
                             borderRadius: BorderRadius.circular(16),
                           ),
-                          child: Text(turn.question, style: const TextStyle(
+                          child: SkinXText(turn.question, style: const TextStyle(
                             color: _ink, fontSize: 14, height: 1.5,
                           )),
                         ),
@@ -222,18 +223,26 @@ class _AskScreenState extends State<AskScreen> {
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: turn.answer == null
-                              ? const Text('Finding an answer...', style: TextStyle(color: _muted))
+                              ? const SkinXText('Finding an answer...', style: TextStyle(color: _muted))
                               : Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(turn.answer!.text, style: const TextStyle(
+                                    SkinXText(turn.answer!.text, style: const TextStyle(
                                       color: _ink, fontSize: 14, height: 1.55,
                                     )),
+                                    if (turn.answer!.problem != null) ...[
+                                      const SizedBox(height: 8),
+                                      SkinXText(turn.answer!.problem!,
+                                        style: const TextStyle(fontSize: 12, color: _muted, height: 1.4)),
+                                      const SizedBox(height: 3),
+                                      const SkinXText('Offline guidance is shown above.',
+                                        style: TextStyle(fontSize: 12, color: _muted, height: 1.4)),
+                                    ],
                                     if (turn.answer!.source != null) ...[
                                       const SizedBox(height: 8),
                                       InkWell(
                                         onTap: () => _openSource(turn.answer!.source!),
-                                        child: const Text('View source', style: TextStyle(
+                                        child: const SkinXText('View source', style: TextStyle(
                                           color: _teal, fontSize: 12, fontWeight: FontWeight.w600,
                                         )),
                                       ),
@@ -267,7 +276,7 @@ class _AskScreenState extends State<AskScreen> {
                             maxLines: 4,
                             onSubmitted: (value) => _submitQuestion(value),
                             decoration: InputDecoration(
-                              hintText: 'Ask a question...',
+                              hintText: AppLanguage.text('Ask a question...'),
                               hintStyle: const TextStyle(color: _muted, fontSize: 14),
                               filled: true,
                               fillColor: const Color(0xFFF8FAF8),
@@ -305,7 +314,7 @@ class _AskScreenState extends State<AskScreen> {
                       ],
                     ),
                     const SizedBox(height: 8),
-                    const Text(
+                    const SkinXText(
                       'AI answers are educational. Avoid sharing personal medical details.',
                       style: TextStyle(fontSize: 11, color: _muted),
                     ),

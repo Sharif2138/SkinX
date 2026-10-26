@@ -1,7 +1,9 @@
+import 'services/app_language.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'data/offline_guides.dart';
+import 'data/offline_guides_rw.dart';
 import 'services/connectivity_service.dart';
 
 const _ink = Color(0xFF193B38);
@@ -17,7 +19,7 @@ class EducationGuideScreen extends StatelessWidget {
     if (guide.sourceUrl.isEmpty) return;
     if (!ConnectivityService.instance.online) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('You can open this reference when you are online.')),
+        const SnackBar(content: SkinXText('You can open this reference when you are online.')),
       );
       return;
     }
@@ -34,7 +36,7 @@ class EducationGuideScreen extends StatelessWidget {
         foregroundColor: _ink,
         surfaceTintColor: Colors.white,
         elevation: 0,
-        title: const Text('Skin-health guide', style: TextStyle(
+        title: const SkinXText('Skin-health guide', style: TextStyle(
           fontSize: 17, fontWeight: FontWeight.w600,
         )),
       ),
@@ -55,17 +57,17 @@ class EducationGuideScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(guide.category.toUpperCase(), style: const TextStyle(
+                      SkinXText(guide.category.toUpperCase(), style: const TextStyle(
                         fontSize: 11, letterSpacing: 1, fontWeight: FontWeight.w700,
                         color: _teal,
                       )),
                       const SizedBox(height: 10),
-                      Text(guide.title, style: const TextStyle(
+                      SkinXText(guide.title, style: const TextStyle(
                         fontSize: 26, height: 1.15, fontWeight: FontWeight.w700,
                         color: _ink,
                       )),
                       const SizedBox(height: 14),
-                      Text(guide.introduction, style: const TextStyle(
+                      SkinXText(guide.introduction, style: const TextStyle(
                         fontSize: 14.5, height: 1.6, color: _ink,
                       )),
                     ],
@@ -77,7 +79,7 @@ class EducationGuideScreen extends StatelessWidget {
                   children: [
                     const Icon(Icons.lightbulb_outline, color: _teal, size: 22),
                     const SizedBox(width: 12),
-                    Expanded(child: Text(guide.keyPoint, style: const TextStyle(
+                    Expanded(child: SkinXText(guide.keyPoint, style: const TextStyle(
                       fontSize: 15, fontWeight: FontWeight.w600,
                       height: 1.5, color: _ink,
                     ))),
@@ -102,7 +104,7 @@ class EducationGuideScreen extends StatelessWidget {
                           decoration: const BoxDecoration(
                             color: Color(0xFFE0EEE2), shape: BoxShape.circle,
                           ),
-                          child: Text('${index + 1}', style: const TextStyle(
+                          child: SkinXText('${index + 1}', style: const TextStyle(
                             fontSize: 13, color: _teal, fontWeight: FontWeight.w700,
                           )),
                         ),
@@ -110,11 +112,11 @@ class EducationGuideScreen extends StatelessWidget {
                         Expanded(child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(guide.sections[index].heading, style: const TextStyle(
+                            SkinXText(guide.sections[index].heading, style: const TextStyle(
                               fontSize: 16, color: _ink, fontWeight: FontWeight.w700,
                             )),
                             const SizedBox(height: 8),
-                            Text(guide.sections[index].body, style: const TextStyle(
+                            SkinXText(guide.sections[index].body, style: const TextStyle(
                               fontSize: 14, height: 1.6, color: _ink,
                             )),
                           ],
@@ -125,24 +127,38 @@ class EducationGuideScreen extends StatelessWidget {
                   const SizedBox(height: 12),
                 ],
                 const SizedBox(height: 14),
-                Text('Information source', style: TextStyle(
+                SkinXText('Information source', style: TextStyle(
                   fontWeight: FontWeight.w600, fontSize: 13, color: _muted,
                 )),
                 const SizedBox(height: 8),
                 if (guide.sourceUrl.isEmpty)
-                  Text(guide.sourceName, style: const TextStyle(color: _ink, fontSize: 13))
+                  SkinXText(guide.sourceName, style: const TextStyle(color: _ink, fontSize: 13))
                 else
                   InkWell(
                     onTap: () => _openSource(context),
                     child: Row(children: [
-                      Expanded(child: Text(guide.sourceName, style: const TextStyle(
+                      Expanded(child: SkinXText(guide.sourceName, style: const TextStyle(
                         color: _teal, fontWeight: FontWeight.w600, fontSize: 13,
                       ))),
                       const Icon(Icons.open_in_new, size: 17, color: _teal),
                     ]),
                   ),
                 const SizedBox(height: 24),
-                const Text(
+                SkinXText(AppLanguage.instance.code == 'rw' ? 'Andi masomo' : 'More guides',
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: _ink)),
+                const SizedBox(height: 8),
+                for (final item in (AppLanguage.instance.code == 'rw' ? offlineGuidesRw : offlineGuides))
+                  if (item.id != guide.id)
+                    ListTile(
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                      title: SkinXText(item.title, style: const TextStyle(color: _teal)),
+                      trailing: const Icon(Icons.chevron_right, color: _teal),
+                      onTap: () => Navigator.of(context).pushReplacement(MaterialPageRoute<void>(
+                        builder: (_) => EducationGuideScreen(guide: item))),
+                    ),
+                const SizedBox(height: 24),
+                const SkinXText(
                   'This guide is for education only. It cannot replace an examination or diagnosis from a health professional.',
                   style: TextStyle(color: _muted, height: 1.5, fontSize: 12),
                 ),

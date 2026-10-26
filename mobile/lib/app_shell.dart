@@ -1,8 +1,10 @@
+import 'services/app_language.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:typed_data';
 import 'dart:async';
 import 'package:image_picker/image_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'account_screen.dart';
 import 'ask_screen.dart';
@@ -68,6 +70,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   Map<String, dynamic>? _profile;
   StreamSubscription<AuthState>? _authSubscription;
   bool _passwordDialogOpen = false;
+  bool _syncErrorShown = false;
 
   bool get _isCommunityHealthWorker => AuthService.user != null &&
       (_profile?['account_type'] == 'chw' ||
@@ -107,21 +110,6 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     } catch (_) {}
   }
 
-  Future<void> _updateRole(SkinXAccountType role) async {
-    if (AuthService.user == null) return;
-    if (_records.isNotEmpty) {
-      _showError('Account type cannot change after screening records have been saved.');
-      return;
-    }
-    try {
-      final type = role == SkinXAccountType.communityHealthWorker ? 'chw' : 'individual';
-      await AuthService.updateAccountType(type);
-      await _loadProfile();
-    } catch (_) {
-      _showError('Could not save account preference. Try again online.');
-    }
-  }
-
   void _maybeShowPasswordRecovery() {
     if (!mounted || _passwordDialogOpen || !AuthService.passwordRecoveryPending.value) return;
     _passwordDialogOpen = true;
@@ -130,7 +118,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Set a new password'),
+        title: const SkinXText('Set a new password'),
         content: TextField(
           controller: password,
           obscureText: true,
@@ -142,7 +130,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
               AuthService.passwordRecoveryPending.value = false;
               Navigator.pop(dialogContext);
             },
-            child: const Text('Later'),
+            child: const SkinXText('Later'),
           ),
           FilledButton(
             onPressed: () async {
@@ -158,7 +146,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                 _showError('Could not update password. Try again.');
               }
             },
-            child: const Text('Update password'),
+            child: const SkinXText('Update password'),
           ),
         ],
       ),
@@ -183,6 +171,14 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
         savedDetails: row['result'] as String,
         thumbnailAsset: '',
       )).toList());
+      if (_history.lastSyncError != null && !_syncErrorShown && mounted) {
+        _syncErrorShown = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _showError(_history.lastSyncError ?? 'Cloud sync unavailable.');
+        });
+      } else if (_history.lastSyncError == null) {
+        _syncErrorShown = false;
+      }
     } catch (_) {
       if (mounted) _showError('Could not open local screening history.');
     }
@@ -190,7 +186,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
 
   void _showError(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: SkinXText(message)));
   }
 
   Future<void> _pickPhoto(ImageSource source) async {
@@ -241,6 +237,10 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
             communityHealthWorker: _isCommunityHealthWorker,
           );
           _patientNameController.clear();
+          if (mounted) setState(() {
+            _photoBytes = null;
+            _confirmedSkinPhoto = false;
+          });
           await _loadHistory();
         },
       ),
@@ -249,11 +249,11 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
 
   Future<void> _showRecord(ScreeningRecord record) async {
     final delete = await showDialog<bool>(context: context, builder: (dialogContext) => AlertDialog(
-      title: const Text('Saved screening'),
-      content: Text('${record.patientName}\n${record.savedDetails} • ${record.savedAt.toLocal()}\n\nThis result is not a diagnosis. No photo was saved.'),
+      title: const SkinXText('Saved screening'),
+      content: SkinXText('${record.patientName}\n${record.savedDetails} • ${record.savedAt.toLocal()}\n\nThis result is not a diagnosis. No photo was saved.'),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: const Text('Close')),
-        TextButton(onPressed: () => Navigator.pop(dialogContext, true), child: const Text('Delete record')),
+        TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: const SkinXText('Close')),
+        TextButton(onPressed: () => Navigator.pop(dialogContext, true), child: const SkinXText('Delete record')),
       ],
     ));
     if (delete == true && record.id != null) {
@@ -304,11 +304,11 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Text(title),
-        content: SingleChildScrollView(child: Text(content)),
+        title: SkinXText(title),
+        content: SingleChildScrollView(child: SkinXText(content)),
         actions: [
           TextButton(onPressed: () => Navigator.pop(dialogContext),
-              child: const Text('Close')),
+              child: const SkinXText('Close')),
         ],
       ),
     );
@@ -320,6 +320,20 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     Navigator.of(context).push(MaterialPageRoute<void>(
       builder: (_) => EducationGuideScreen(guide: guide),
     ));
+  }
+
+  Future<void> _showVideos() async {
+    const url = 'https://www.aad.org/public/diseases/skin-cancer';
+    if (!ConnectivityService.instance.online) {
+      _showError('Videos are only available with internet.');
+      return;
+    }
+    try {
+      final opened = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+      if (!opened) _showError('Could not open the educational video resource.');
+    } catch (_) {
+      _showError('Could not open the educational video resource.');
+    }
   }
 
   void _selectDestination(SkinXDestination destination) {
@@ -361,6 +375,8 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                       onFeaturedGuideTap: () => _openGuide('sun_protection'),
                       onSkinChangesTap: () => _openGuide('skin_changes'),
                       onSeekCareTap: () => _openGuide('seek_care'),
+                      onAllVideosTap: _showVideos,
+                      onVideoTap: _showVideos,
                     ),
                     HistoryScreen(records: _records, onRecordTap: _showRecord),
                     ScreeningScreen(
@@ -404,7 +420,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                             initialRole: _isCommunityHealthWorker
                                 ? SkinXAccountType.communityHealthWorker
                                 : SkinXAccountType.individual,
-                            onRoleChanged: _updateRole,
+                            onLanguageTap: () => AppLanguage.choose(context),
                             actionLabel: AuthService.user == null
                                 ? 'Sign in (online)'
                                 : 'Sign out',

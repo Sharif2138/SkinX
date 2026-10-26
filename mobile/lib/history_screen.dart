@@ -1,3 +1,4 @@
+import 'services/app_language.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets/skinx_header.dart';
@@ -123,7 +124,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   onLanguageTap: widget.onLanguageTap,
                 ),
                 const SizedBox(height: 30),
-                const Text(
+                const SkinXText(
                   'Screening history',
                   style: TextStyle(
                     fontFamily: 'Roboto',
@@ -134,7 +135,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   ),
                 ),
                 const SizedBox(height: 4),
-                const Text(
+                const SkinXText(
                   'Find and reopen saved screenings.',
                   style: TextStyle(fontFamily: 'Roboto', fontSize: 14, color: _muted, height: 1.4),
                 ),
@@ -184,7 +185,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       borderRadius: BorderRadius.circular(24),
                       child: _FilterChip(
                         selected: _query.isEmpty && _selectedDate == null,
-                        child: Text(
+                        child: SkinXText(
                           'All records • ${_records.length}',
                           style: const TextStyle(fontFamily: 'Roboto', fontSize: 13, color: _teal, fontWeight: FontWeight.w500),
                         ),
@@ -201,8 +202,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         }
                       },
                       itemBuilder: (context) => const [
-                        PopupMenuItem(value: 'any', child: Text('Any date')),
-                        PopupMenuItem(value: 'choose', child: Text('Choose date')),
+                        PopupMenuItem(value: 'any', child: SkinXText('Any date')),
+                        PopupMenuItem(value: 'choose', child: SkinXText('Choose date')),
                       ],
                       child: _FilterChip(
                         selected: false,
@@ -211,7 +212,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                           children: [
                             const SkinXIcon(SkinXIconType.calendar, size: 16),
                             const SizedBox(width: 7),
-                            Text(
+                            SkinXText(
                               _selectedDate == null ? 'Any date' : _dateLabel(_selectedDate!),
                               style: const TextStyle(fontFamily: 'Roboto', fontSize: 13, color: _muted),
                             ),
@@ -227,7 +228,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 Row(
                   children: [
                     const Expanded(
-                      child: Text(
+                      child: SkinXText(
                         'Saved screenings',
                         style: TextStyle(fontFamily: 'Roboto', fontSize: 18, color: _ink, fontWeight: FontWeight.w700),
                       ),
@@ -240,7 +241,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                           borderRadius: BorderRadius.circular(5),
                           border: Border.all(color: const Color(0xFFF0DEB9)),
                         ),
-                        child: const Text(
+                        child: const SkinXText(
                           'SAMPLE RECORDS',
                           style: TextStyle(fontFamily: 'Roboto', fontSize: 9, fontWeight: FontWeight.w600, color: Color(0xFFB18843), letterSpacing: 0.3),
                         ),
@@ -251,7 +252,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 if (records.isEmpty)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 24),
-                    child: Text(
+                    child: SkinXText(
                       _records.isEmpty ? 'No saved screenings yet.' : 'No screenings match your search.',
                       style: const TextStyle(fontFamily: 'Roboto', fontSize: 14, color: _muted),
                     ),
@@ -336,7 +337,7 @@ class _RecordCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      SkinXText(
                         record.patientName,
                         style: const TextStyle(fontFamily: 'Roboto', fontSize: 16, fontWeight: FontWeight.w600, color: _ink, height: 1.25),
                       ),
@@ -350,7 +351,7 @@ class _RecordCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Expanded(
-                            child: Text(
+                            child: SkinXText(
                               '${_dateLabel(record.savedAt)} • ${_timeLabel(record.savedAt)}',
                               style: const TextStyle(fontFamily: 'Roboto', fontSize: 12, color: _muted, height: 1.25),
                             ),
@@ -358,7 +359,7 @@ class _RecordCard extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 3),
-                      Text(
+                      SkinXText(
                         record.savedDetails,
                         style: const TextStyle(fontFamily: 'Roboto', fontSize: 12, color: _teal, fontWeight: FontWeight.w600, height: 1.25),
                       ),
@@ -393,7 +394,7 @@ class _SampleNotice extends StatelessWidget {
           SkinXIcon(SkinXIconType.folderLock, size: 24),
           SizedBox(width: 12),
           Expanded(
-            child: Text(
+            child: SkinXText(
               'These are illustrative records shown for demonstration. Your saved screenings will appear here.',
               style: TextStyle(fontFamily: 'Roboto', fontSize: 13, color: Color(0xFF718B80), height: 1.5),
             ),

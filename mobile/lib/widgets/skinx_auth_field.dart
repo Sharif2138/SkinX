@@ -1,3 +1,4 @@
+import '../services/app_language.dart';
 import 'package:flutter/material.dart';
 
 import 'skinx_icon.dart';
@@ -40,7 +41,7 @@ class SkinXAuthField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        SkinXText(
           label,
           style: const TextStyle(
             fontFamily: 'Roboto',
@@ -52,7 +53,7 @@ class SkinXAuthField extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Semantics(
-          label: label,
+          label: AppLanguage.text(label),
           child: TextFormField(
             controller: controller,
             validator: validator,
@@ -68,7 +69,7 @@ class SkinXAuthField extends StatelessWidget {
             onTapOutside: (_) => FocusScope.of(context).unfocus(),
             style: const TextStyle(fontFamily: 'Roboto', fontSize: 14, color: Color(0xFF193B38), height: 1.4),
             decoration: InputDecoration(
-              hintText: hint,
+              hintText: AppLanguage.text(hint),
               hintStyle: const TextStyle(fontFamily: 'Roboto', fontSize: 14, color: Color(0xFF647D78), height: 1.4),
               isDense: true,
               filled: true,

@@ -1,3 +1,4 @@
+import 'services/app_language.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets/skinx_header.dart';
@@ -74,12 +75,12 @@ class LearnScreen extends StatelessWidget {
                       onLanguageTap: onLanguageTap,
                     ),
                     const SizedBox(height: 22),
-                    Text(
+                    SkinXText(
                       'Learn to protect your skin',
                       style: _type(24, weight: FontWeight.w700, height: 1.14),
                     ),
                     const SizedBox(height: 3),
-                    Text(
+                    SkinXText(
                       'Small steps for healthier skin.',
                       style: _type(14, color: _muted, height: 1.42),
                     ),
@@ -134,12 +135,12 @@ class _LearnResources extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: Text(
+              child: SkinXText(
                 'Skin-health guides',
                 style: _type(22, weight: FontWeight.w700, height: 1.15),
               ),
             ),
-            Text(
+            SkinXText(
               '2 topics',
               style: _type(11, color: _teal, weight: FontWeight.w600),
             ),
@@ -163,7 +164,7 @@ class _LearnResources extends StatelessWidget {
         ),
         const SizedBox(height: 27),
         if (offline)
-          Text(
+          SkinXText(
             'Videos are available in online mode.',
             style: _type(12, color: _muted, height: 1.5),
           )
@@ -171,7 +172,7 @@ class _LearnResources extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(
+                child: SkinXText(
                   'Watch & learn',
                   style: _type(22, weight: FontWeight.w700, height: 1.15),
                 ),
@@ -181,7 +182,7 @@ class _LearnResources extends StatelessWidget {
                 borderRadius: BorderRadius.circular(6),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 6),
-                  child: Text(
+                  child: SkinXText(
                     'All videos',
                     style: _type(11, color: _teal, weight: FontWeight.w600),
                   ),
@@ -262,7 +263,7 @@ class _FeaturedGuide extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        SkinXText(
                           'FEATURED GUIDE',
                           style: _type(
                             9,
@@ -272,7 +273,7 @@ class _FeaturedGuide extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 7),
-                        Text(
+                        SkinXText(
                           'Small habits.\nStronger protection.',
                           style: _type(
                             21,
@@ -295,7 +296,7 @@ class _FeaturedGuide extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: Text(
+                        child: SkinXText(
                           'EVERYDAY PROTECTION',
                           style: _type(
                             10,
@@ -305,14 +306,14 @@ class _FeaturedGuide extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Text('4 min read', style: _type(11, color: _muted)),
+                      SkinXText('4 min read', style: _type(11, color: _muted)),
                     ],
                   ),
                   const SizedBox(height: 9),
                   Row(
                     children: [
                       Expanded(
-                        child: Text(
+                        child: SkinXText(
                           'Make sun protection a habit',
                           style: _type(
                             18.5,
@@ -338,7 +339,7 @@ class _FeaturedGuide extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Text(
+                  SkinXText(
                     'Shade, covered skin and sunscreen can help protect skin with albinism.',
                     style: _type(13, color: _muted, height: 1.5),
                   ),
@@ -393,14 +394,14 @@ class _GuideRow extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  SkinXText(
                     title,
                     style: _type(15.5, weight: FontWeight.w600, height: 1.2),
                   ),
                   const SizedBox(height: 3),
-                  Text(subtitle, style: _type(12, color: _muted, height: 1.25)),
+                  SkinXText(subtitle, style: _type(12, color: _muted, height: 1.25)),
                   const SizedBox(height: 2),
-                  Text(
+                  SkinXText(
                     category,
                     style: _type(
                       9,
@@ -482,7 +483,7 @@ class _VideoCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      SkinXText(
                         'Protecting your skin outdoors',
                         style: _type(
                           15.5,
@@ -491,7 +492,7 @@ class _VideoCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 5),
-                      Text(
+                      SkinXText(
                         'Short video • 2:40',
                         style: _type(12, color: _muted),
                       ),

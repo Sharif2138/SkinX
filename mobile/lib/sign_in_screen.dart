@@ -1,3 +1,4 @@
+import 'services/app_language.dart';
 import 'dart:async';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +75,7 @@ class _SignInScreenState extends State<SignInScreen> {
       if (!mounted) return;
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const AppShell()));
     } catch (error) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$error')));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: SkinXText('$error')));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -88,16 +89,16 @@ class _SignInScreenState extends State<SignInScreen> {
     final email = _emailController.text.trim();
     if (!AuthService.configured || _validateEmail(email) != null) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Enter a valid email. Password reset requires a configured online account.')));
+        content: SkinXText('Enter a valid email. Password reset requires a configured online account.')));
       return;
     }
     try {
       await AuthService.requestPasswordReset(email);
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('If the account exists, check your email for reset instructions.')));
+        content: SkinXText('If the account exists, check your email for reset instructions.')));
     } catch (_) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Could not request a reset right now. Please try again online.')));
+        content: SkinXText('Could not request a reset right now. Please try again online.')));
     }
   }
 
@@ -168,9 +169,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                   children: [
                                     SkinXHeader(languageCode: widget.languageCode, onLanguageTap: widget.onLanguageTap),
                                     const SizedBox(height: 26),
-                                    Text('Welcome back', style: _type(24, weight: FontWeight.w700, height: 1.2)),
+                                    SkinXText('Welcome back', style: _type(24, weight: FontWeight.w700, height: 1.2)),
                                     const SizedBox(height: 4),
-                                    Text('Sign in to continue your skin-health journey.', style: _type(14, color: _muted, height: 1.4)),
+                                    SkinXText('Sign in to continue your skin-health journey.', style: _type(14, color: _muted, height: 1.4)),
                                     const SizedBox(height: 24),
                                     SkinXAuthField(
                                       label: 'Email',
@@ -200,7 +201,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                         borderRadius: BorderRadius.circular(6),
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(vertical: 8),
-                                          child: Text('Forgot password?', style: _type(12.5, color: _teal, weight: FontWeight.w500)),
+                                          child: SkinXText('Forgot password?', style: _type(12.5, color: _teal, weight: FontWeight.w500)),
                                         ),
                                       ),
                                     ),
@@ -216,12 +217,12 @@ class _SignInScreenState extends State<SignInScreen> {
                                           shape: const StadiumBorder(),
                                           textStyle: _type(14, weight: FontWeight.w600),
                                         ),
-                                        child: Text(_busy ? 'Signing in...' : 'Sign in'),
+                                        child: SkinXText(_busy ? 'Signing in...' : 'Sign in'),
                                       ),
                                     ),
                                     const SizedBox(height: 12),
                                     Center(child: TextButton(onPressed: _continueOffline,
-                                      child: const Text('Continue without an account'),)),
+                                      child: const SkinXText('Continue without an account'),)),
                                     const SizedBox(height: 12),
                                     Center(
                                       child: Wrap(
@@ -229,13 +230,13 @@ class _SignInScreenState extends State<SignInScreen> {
                                         crossAxisAlignment: WrapCrossAlignment.center,
                                         spacing: 8,
                                         children: [
-                                          Text('New to SkinX?', style: _type(12.5, color: _muted)),
+                                          SkinXText('New to SkinX?', style: _type(12.5, color: _muted)),
                                           InkWell(
                                             onTap: _openSignUp,
                                             borderRadius: BorderRadius.circular(6),
                                             child: Padding(
                                               padding: const EdgeInsets.all(8),
-                                              child: Text('Sign up', style: _type(12.5, color: _teal, weight: FontWeight.w600)),
+                                              child: SkinXText('Sign up', style: _type(12.5, color: _teal, weight: FontWeight.w600)),
                                             ),
                                           ),
                                         ],
@@ -259,9 +260,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text('Small steps for healthier skin', style: _type(12.5, weight: FontWeight.w600, height: 1.4)),
+                                          SkinXText('Small steps for healthier skin', style: _type(12.5, weight: FontWeight.w600, height: 1.4)),
                                           const SizedBox(height: 3),
-                                          Text('Explore skin-health guides in Learn, even without an account.', style: _type(12.5, color: _muted, height: 1.45)),
+                                          SkinXText('Explore skin-health guides in Learn, even without an account.', style: _type(12.5, color: _muted, height: 1.45)),
                                         ],
                                       ),
                                     ),

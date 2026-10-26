@@ -1,3 +1,4 @@
+import '../services/app_language.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -21,7 +22,7 @@ class SkinXHeader extends StatelessWidget {
         children: [
           SvgPicture.asset('assets/skinx_logo.svg', width: 27, height: 27),
           const SizedBox(width: 10),
-          const Text(
+          const SkinXText(
             'SkinX',
             style: TextStyle(
               fontFamily: 'Roboto',
@@ -33,10 +34,10 @@ class SkinXHeader extends StatelessWidget {
           ),
           const Spacer(),
           Semantics(
-            label: 'Change language, $languageCode',
+            label: 'Change language, ${AppLanguage.instance.shortCode}',
             button: true,
             child: InkWell(
-              onTap: onLanguageTap,
+              onTap: onLanguageTap ?? () => AppLanguage.choose(context),
               borderRadius: BorderRadius.circular(8),
               child: SizedBox(
                 height: 40,
@@ -45,8 +46,8 @@ class SkinXHeader extends StatelessWidget {
                   children: [
                     const SkinXIcon(SkinXIconType.globe, size: 17),
                     const SizedBox(width: 6),
-                    Text(
-                      languageCode,
+                    SkinXText(
+                      AppLanguage.instance.shortCode,
                       style: const TextStyle(
                         fontFamily: 'Roboto',
                         fontSize: 12,

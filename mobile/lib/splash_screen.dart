@@ -1,3 +1,4 @@
+import 'services/app_language.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -103,7 +104,7 @@ class _Brand extends StatelessWidget {
         children: [
           SvgPicture.asset('assets/skinx_logo.svg', width: 64, height: 64),
           const SizedBox(height: 24),
-          const Text(
+          const SkinXText(
             'SkinX',
             style: TextStyle(
               fontFamily: 'Roboto',
@@ -114,7 +115,7 @@ class _Brand extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          const Text(
+          const SkinXText(
             'Skin-cancer education and\nAI-assisted screening',
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -151,7 +152,7 @@ class _LoadingStatus extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 12),
-        Text(
+        SkinXText(
           text,
           textAlign: TextAlign.center,
           style: const TextStyle(

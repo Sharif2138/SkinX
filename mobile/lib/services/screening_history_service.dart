@@ -7,6 +7,7 @@ import 'connectivity_service.dart';
 
 class ScreeningHistoryService {
   Database? _db;
+  String? lastSyncError;
 
   Future<Database> get db async {
     if (_db != null) return _db!;
@@ -94,10 +95,12 @@ class ScreeningHistoryService {
   }
 
   Future<void> sync(String ownerId) async {
+    lastSyncError = null;
     if (!ConnectivityService.instance.online || AuthService.user?.id != ownerId) return;
     final database = await db;
     final table = AuthService.client.from('screening_records');
     try {
+      var failedUploads = false;
       final pending = await database.query('screenings',
           where: 'owner_id = ? AND synced = 0', whereArgs: [ownerId]);
       for (final row in pending) {
@@ -117,8 +120,13 @@ class ScreeningHistoryService {
           await database.update('screenings', {'synced': 1},
               where: 'id = ? AND owner_id = ?', whereArgs: [row['id'], ownerId]);
         } catch (_) {
+          failedUploads = true;
           continue;
         }
+      }
+      if (failedUploads) {
+        lastSyncError = 'Some records are waiting to sync. They are saved on this device.';
+        return;
       }
       final remote = <Map<String, dynamic>>[];
       const pageSize = 500;
@@ -151,7 +159,7 @@ class ScreeningHistoryService {
         }, conflictAlgorithm: ConflictAlgorithm.ignore);
       }
     } catch (_) {
-      // Local records are retained and synchronization can be retried later.
+      lastSyncError = 'Could not sync screening history. Records remain on this device.';
     }
   }
 }

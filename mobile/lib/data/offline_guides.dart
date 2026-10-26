@@ -1,3 +1,5 @@
+import '../services/app_language.dart';
+import 'offline_guides_rw.dart';
 class GuideSection {
   const GuideSection(this.heading, this.body);
   final String heading;
@@ -136,7 +138,7 @@ const offlineGuides = <OfflineGuide>[
 ];
 
 OfflineGuide? offlineGuideById(String id) {
-  for (final guide in offlineGuides) {
+  for (final guide in AppLanguage.instance.code == 'rw' ? offlineGuidesRw : offlineGuides) {
     if (guide.id == id) return guide;
   }
   return null;

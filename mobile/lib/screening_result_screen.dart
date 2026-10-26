@@ -1,3 +1,4 @@
+import 'services/app_language.dart';
 import 'package:flutter/material.dart';
 import 'models/screening_result.dart';
 
@@ -34,13 +35,13 @@ class _ScreeningResultScreenState extends State<ScreeningResultScreen> {
     final patientName = _name.text.trim();
     if (widget.communityHealthWorker && patientName.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Enter the patient name to save this screening.')),
+        const SnackBar(content: SkinXText('Enter the patient name to save this screening.')),
       );
       return;
     }
     if (widget.communityHealthWorker && !_permissionConfirmed) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Confirm permission to save the patient record.')),
+        const SnackBar(content: SkinXText('Confirm permission to save the patient record.')),
       );
       return;
     }
@@ -49,7 +50,7 @@ class _ScreeningResultScreenState extends State<ScreeningResultScreen> {
       await widget.onSave(widget.communityHealthWorker ? patientName : null);
       if (mounted) setState(() => _saved = true);
     } catch (_) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Could not save the result on this device.')));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: SkinXText('Could not save the result on this device.')));
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -63,7 +64,7 @@ class _ScreeningResultScreenState extends State<ScreeningResultScreen> {
     const teal = Color(0xFF14665E);
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(title: const Text('Screening result'), backgroundColor: Colors.white,
+      appBar: AppBar(title: const SkinXText('Screening result'), backgroundColor: Colors.white,
         foregroundColor: ink),
       body: SafeArea(
         child: Align(
@@ -75,11 +76,11 @@ class _ScreeningResultScreenState extends State<ScreeningResultScreen> {
                 Icon(suspicious ? Icons.warning_amber_rounded : Icons.info_outline_rounded,
                   color: suspicious ? const Color(0xFFB96720) : teal, size: 42),
                 const SizedBox(height: 16),
-                Text(status, style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: ink)),
+                SkinXText(status, style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: ink)),
                 const SizedBox(height: 16),
-                Text(widget.result.message, style: const TextStyle(fontSize: 15, height: 1.6, color: ink)),
+                SkinXText(widget.result.message, style: const TextStyle(fontSize: 15, height: 1.6, color: ink)),
                 const SizedBox(height: 22),
-                const Text('SkinX is a research screening tool, not a diagnosis. Even a less suspicious result cannot rule out skin cancer.',
+                const SkinXText('SkinX is a research screening tool, not a diagnosis. Even a less suspicious result cannot rule out skin cancer.',
                     style: TextStyle(fontSize: 13, height: 1.5, color: Color(0xFF647D78))),
                 const SizedBox(height: 30),
                 if (status != ScreeningResult.cannotInfer) ...[
@@ -88,9 +89,9 @@ class _ScreeningResultScreenState extends State<ScreeningResultScreen> {
                       controller: _name,
                       maxLength: 120,
                       textCapitalization: TextCapitalization.words,
-                      decoration: const InputDecoration(
-                        labelText: 'Patient name',
-                        helperText: 'Required to save the screening',
+                      decoration: InputDecoration(
+                        labelText: AppLanguage.text('Patient name'),
+                        helperText: AppLanguage.text('Required to save the screening'),
                       ),
                     ),
                     CheckboxListTile(
@@ -98,7 +99,7 @@ class _ScreeningResultScreenState extends State<ScreeningResultScreen> {
                       controlAffinity: ListTileControlAffinity.leading,
                       value: _permissionConfirmed,
                       onChanged: (value) => setState(() => _permissionConfirmed = value ?? false),
-                      title: const Text('I have permission to save this person’s name and screening result on this device and in my account when online.',
+                      title: const SkinXText('I have permission to save this person’s name and screening result on this device and in my account when online.',
                         style: TextStyle(fontSize: 13)),
                     ),
                     const SizedBox(height: 10),
@@ -106,10 +107,10 @@ class _ScreeningResultScreenState extends State<ScreeningResultScreen> {
                   SizedBox(width: double.infinity, child: FilledButton(
                     onPressed: _saving || _saved ? null : _save,
                     style: FilledButton.styleFrom(backgroundColor: teal, minimumSize: const Size.fromHeight(48)),
-                    child: Text(_saved ? 'Result saved' : _saving ? 'Saving...' : 'Save result'),
+                    child: SkinXText(_saved ? 'Result saved' : _saving ? 'Saving...' : 'Save result'),
                   )),
                   const SizedBox(height: 8),
-                  Text(
+                  SkinXText(
                     widget.communityHealthWorker
                         ? 'The patient name, result and date are saved. Signed-in records sync to the account when online. Photos are never uploaded.'
                         : 'Only the result and date are saved, never the photo or a patient name. Signed-in records sync when online; guest records stay on this device.',

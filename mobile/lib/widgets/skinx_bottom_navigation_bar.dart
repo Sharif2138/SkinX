@@ -1,3 +1,4 @@
+import '../services/app_language.dart';
 import 'package:flutter/material.dart';
 
 import 'skinx_icon.dart';
@@ -66,7 +67,7 @@ class SkinXBottomNavigationBar extends StatelessWidget {
 
     return Expanded(
       child: Semantics(
-        label: label,
+        label: AppLanguage.text(label),
         button: true,
         selected: selected,
         excludeSemantics: true,
@@ -102,9 +103,8 @@ class SkinXBottomNavigationBar extends StatelessWidget {
                     child: SkinXIcon(icon, size: 24, color: color),
                   ),
                 SizedBox(height: raised ? 10 : 7),
-                Text(
+                SkinXText(
                   label,
-                  textScaler: TextScaler.noScaling,
                   style: TextStyle(
                     fontFamily: 'Roboto',
                     fontSize: 10.5,

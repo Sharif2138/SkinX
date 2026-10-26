@@ -1,3 +1,4 @@
+import 'services/app_language.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets/skinx_header.dart';
@@ -69,18 +70,18 @@ class ScreeningScreen extends StatelessWidget {
                   onLanguageTap: onLanguageTap,
                 ),
                 SizedBox(height: photo == null ? 30 : 18),
-                Text(
+                SkinXText(
                   'Screen a skin change',
                   style: _textStyle(24, weight: FontWeight.w700, height: 1.2),
                 ),
                 const SizedBox(height: 4),
-                Text(
+                SkinXText(
                   'Check a skin change, step by step.',
                   style: _textStyle(14, color: _muted, height: 1.4),
                 ),
                 const SizedBox(height: 20),
                 if (showPatientName) ...[
-                  Text(
+                  SkinXText(
                     'Patient name',
                     style: _textStyle(13, weight: FontWeight.w600, height: 1.3),
                   ),
@@ -123,14 +124,14 @@ class ScreeningScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text(
+                  SkinXText(
                     'A name is required to save a patient screening. Get permission before recording it.',
                     style: _textStyle(11, color: _muted, height: 1.4),
                   ),
                   const SizedBox(height: 18),
                 ],
                 if (photo == null)
-                  Text(
+                  SkinXText(
                     'Photo',
                     style: _textStyle(13, weight: FontWeight.w600, height: 1.3),
                   )
@@ -143,7 +144,7 @@ class ScreeningScreen extends StatelessWidget {
                       spacing: 12,
                       runSpacing: 6,
                       children: [
-                        Text(
+                        SkinXText(
                           'Skin photo',
                           style: _textStyle(13, weight: FontWeight.w600, height: 1.3),
                         ),
@@ -152,7 +153,7 @@ class ScreeningScreen extends StatelessWidget {
                           children: [
                             const SkinXIcon(SkinXIconType.checkCircle, size: 14),
                             const SizedBox(width: 4),
-                            Text(
+                            SkinXText(
                               'Ready to review',
                               style: _textStyle(11, color: _teal, height: 1.4),
                             ),
@@ -168,7 +169,7 @@ class ScreeningScreen extends StatelessWidget {
                     isIllustrative: isIllustrativePhoto,
                   ),
                   const SizedBox(height: 8),
-                  Text(
+                  SkinXText(
                     'Check the area is clear before screening.',
                     style: _textStyle(11, color: _muted, height: 1.4),
                   ),
@@ -179,9 +180,9 @@ class ScreeningScreen extends StatelessWidget {
                     contentPadding: EdgeInsets.zero,
                     activeColor: _teal,
                     controlAffinity: ListTileControlAffinity.leading,
-                    title: Text('This photo shows a visible change on human skin.',
+                    title: SkinXText('This photo shows a visible change on human skin.',
                       style: _textStyle(13, height: 1.4)),
-                    subtitle: Text('Keep the affected area in focus. SkinX cannot screen objects or ordinary photos.',
+                    subtitle: SkinXText('Keep the affected area in focus. SkinX cannot screen objects or ordinary photos.',
                       style: _textStyle(11, color: _muted)),
                   ),
                   const SizedBox(height: 12),
@@ -241,12 +242,12 @@ class ScreeningScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            SkinXText(
                               'Screening, not a diagnosis',
                               style: _textStyle(13, weight: FontWeight.w700, height: 1.4),
                             ),
                             const SizedBox(height: 4),
-                            Text(
+                            SkinXText(
                               'A health professional should assess any concerning skin change.',
                               style: _textStyle(12.5, color: _muted, height: 1.45),
                             ),
@@ -313,7 +314,7 @@ class _SelectedPhoto extends StatelessWidget {
                       color: const Color(0xF2FFFFFF),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Text(
+                    child: SkinXText(
                       'ILLUSTRATIVE PHOTO',
                       style: _textStyle(10, color: const Color(0xFF647D78), weight: FontWeight.w700, height: 1.2),
                     ),
@@ -392,7 +393,7 @@ class _PhotoPlaceholder extends StatelessWidget {
               child: const SkinXIcon(SkinXIconType.camera, size: 28),
             ),
             const SizedBox(height: 12),
-            Text(
+            SkinXText(
               'Add a clear skin photo',
               textAlign: TextAlign.center,
               style: _textStyle(16, weight: FontWeight.w600, height: 1.4),
@@ -400,7 +401,7 @@ class _PhotoPlaceholder extends StatelessWidget {
             const SizedBox(height: 8),
             ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 310),
-              child: Text(
+              child: SkinXText(
                 'Use even daylight. Keep the area centered and in focus.',
                 textAlign: TextAlign.center,
                 style: _textStyle(13, color: const Color(0xFF57948B), height: 1.45),
@@ -457,7 +458,7 @@ class _PhotoButton extends StatelessWidget {
                   SkinXIcon(icon, size: 20, color: filled ? Colors.white : _teal),
                   const SizedBox(width: 8),
                   Flexible(
-                    child: Text(
+                    child: SkinXText(
                       label,
                       textAlign: TextAlign.center,
                       style: _textStyle(

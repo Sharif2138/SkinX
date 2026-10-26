@@ -1,3 +1,4 @@
+import 'services/app_language.dart';
 import 'dart:async';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
@@ -82,11 +83,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const AppShell()));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Check your email to confirm the account, then sign in.')));
+            content: SkinXText('Check your email to confirm the account, then sign in.')));
         _openSignIn();
       }
     } catch (error) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$error')));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: SkinXText('$error')));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -151,11 +152,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       children: [
                         SkinXHeader(languageCode: widget.languageCode, onLanguageTap: widget.onLanguageTap),
                         const SizedBox(height: 26),
-                        Text('Create your account', style: _type(24, weight: FontWeight.w700, height: 1.2)),
+                        SkinXText('Create your account', style: _type(24, weight: FontWeight.w700, height: 1.2)),
                         const SizedBox(height: 4),
-                        Text('Start your skin-health journey with SkinX.', style: _type(14, color: _muted, height: 1.4)),
+                        SkinXText('Start your skin-health journey with SkinX.', style: _type(14, color: _muted, height: 1.4)),
                         const SizedBox(height: 22),
-                        Text('Account type', style: _type(13, weight: FontWeight.w600, height: 1.3)),
+                        SkinXText('Account type', style: _type(13, weight: FontWeight.w600, height: 1.3)),
                         const SizedBox(height: 8),
                         SkinXAccountTypeSelector(
                           value: _accountType,
@@ -191,7 +192,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           validator: (value) => (value ?? '').length < 8 ? 'Use at least 8 characters.' : null,
                         ),
                         const SizedBox(height: 8),
-                        Text('Use at least 8 characters.', style: _type(12, color: _muted, height: 1.35)),
+                        SkinXText('Use at least 8 characters.', style: _type(12, color: _muted, height: 1.35)),
                         const SizedBox(height: 18),
                         SkinXAuthField(
                           label: 'Confirm password',
@@ -219,12 +220,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               shape: const StadiumBorder(),
                               textStyle: _type(14, weight: FontWeight.w600),
                             ),
-                            child: Text(_busy ? 'Creating account...' : 'Sign up'),
+                            child: SkinXText(_busy ? 'Creating account...' : 'Sign up'),
                           ),
                         ),
                         const SizedBox(height: 10),
                         Center(child: TextButton(onPressed: _continueOffline,
-                          child: const Text('Continue without an account'),)),
+                          child: const SkinXText('Continue without an account'),)),
                         const SizedBox(height: 12),
                         Center(
                           child: Wrap(
@@ -232,13 +233,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             crossAxisAlignment: WrapCrossAlignment.center,
                             spacing: 8,
                             children: [
-                              Text('Already have an account?', style: _type(12.5, color: _muted)),
+                              SkinXText('Already have an account?', style: _type(12.5, color: _muted)),
                               InkWell(
                                 onTap: _openSignIn,
                                 borderRadius: BorderRadius.circular(6),
                                 child: Padding(
                                   padding: const EdgeInsets.all(8),
-                                  child: Text('Sign in', style: _type(12.5, color: _teal, weight: FontWeight.w600)),
+                                  child: SkinXText('Sign in', style: _type(12.5, color: _teal, weight: FontWeight.w600)),
                                 ),
                               ),
                             ],

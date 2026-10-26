@@ -1,3 +1,4 @@
+import 'services/app_language.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets/skinx_account_type_selector.dart';
@@ -18,7 +19,6 @@ class AccountScreen extends StatefulWidget {
     this.profileTitle = 'Example account',
     this.profileSubtitle = 'Illustrative profile · no personal data',
     this.initialRole = SkinXAccountType.individual,
-    this.onRoleChanged,
     this.languageCode = 'EN',
     this.languageName = 'English',
     this.onLanguageTap,
@@ -33,7 +33,6 @@ class AccountScreen extends StatefulWidget {
   final String profileTitle;
   final String profileSubtitle;
   final SkinXAccountType initialRole;
-  final ValueChanged<SkinXAccountType>? onRoleChanged;
   final String languageCode;
   final String languageName;
   final VoidCallback? onLanguageTap;
@@ -47,18 +46,6 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
-  late SkinXAccountType _role = widget.initialRole;
-
-  @override
-  void didUpdateWidget(covariant AccountScreen oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.initialRole != widget.initialRole) _role = widget.initialRole;
-  }
-
-  void _changeRole(SkinXAccountType role) {
-    setState(() => _role = role);
-    widget.onRoleChanged?.call(role);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,9 +62,9 @@ class _AccountScreenState extends State<AccountScreen> {
               children: [
                 SkinXHeader(languageCode: widget.languageCode, onLanguageTap: widget.onLanguageTap),
                 const SizedBox(height: 20),
-                Text('Account', style: _type(24, weight: FontWeight.w700, height: 1.2)),
+                SkinXText('Account', style: _type(24, weight: FontWeight.w700, height: 1.2)),
                 const SizedBox(height: 4),
-                Text('Your details and account preferences.', style: _type(14, color: _muted, height: 1.4)),
+                SkinXText('Your details and account preferences.', style: _type(14, color: _muted, height: 1.4)),
                 const SizedBox(height: 20),
                 Container(
                   padding: const EdgeInsets.all(16),
@@ -99,9 +86,9 @@ class _AccountScreenState extends State<AccountScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(widget.profileTitle, style: _type(16, weight: FontWeight.w700, height: 1.3)),
+                            SkinXText(widget.profileTitle, style: _type(16, weight: FontWeight.w700, height: 1.3)),
                             const SizedBox(height: 2),
-                            Text(widget.profileSubtitle, style: _type(12, color: _muted, height: 1.35)),
+                            SkinXText(widget.profileSubtitle, style: _type(12, color: _muted, height: 1.35)),
                           ],
                         ),
                       ),
@@ -110,17 +97,24 @@ class _AccountScreenState extends State<AccountScreen> {
                 ),
                 if (widget.accountActionAvailable) ...[
                 const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(child: Text('Account role', style: _type(14, weight: FontWeight.w600, height: 1.3))),
-                    const SizedBox(width: 10),
-                    Text('Account preference', style: _type(12, color: _muted, height: 1.3)),
-                  ],
-                ),
+                SkinXText('Account type', style: _type(14, weight: FontWeight.w600, height: 1.3)),
                 const SizedBox(height: 8),
-                SkinXAccountTypeSelector(value: _role, onChanged: _changeRole),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: _border),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Row(children: [
+                    const Icon(Icons.badge_outlined, color: _teal, size: 20),
+                    const SizedBox(width: 12),
+                    Expanded(child: SkinXText(widget.initialRole == SkinXAccountType.communityHealthWorker
+                        ? 'Community health worker' : 'Individual')),
+                  ]),
+                ),
                 const SizedBox(height: 20),
-                Text('Account details', style: _type(14, weight: FontWeight.w600, height: 1.3)),
+                SkinXText('Account details', style: _type(14, weight: FontWeight.w600, height: 1.3)),
                 const SizedBox(height: 8),
                 Container(
                   decoration: BoxDecoration(
@@ -150,8 +144,8 @@ class _AccountScreenState extends State<AccountScreen> {
                       _PreferenceRow(
                         icon: SkinXIconType.globe,
                         title: 'Language',
-                        value: widget.languageName,
-                        onTap: widget.onLanguageTap,
+                        value: AppLanguage.instance.displayName,
+                        onTap: widget.onLanguageTap ?? () => AppLanguage.choose(context),
                       ),
                       Container(height: 1, color: _border),
                       _PreferenceRow(
@@ -183,7 +177,7 @@ class _AccountScreenState extends State<AccountScreen> {
                           children: [
                             const SkinXIcon(SkinXIconType.signOut, size: 20),
                             const SizedBox(width: 10),
-                            Text(widget.actionLabel, style: _type(14, color: _teal, weight: FontWeight.w600)),
+                            SkinXText(widget.actionLabel, style: _type(14, color: _teal, weight: FontWeight.w600)),
                           ],
                         ),
                       ),
@@ -193,12 +187,12 @@ class _AccountScreenState extends State<AccountScreen> {
                 if (!widget.accountActionAvailable)
                   const Padding(
                     padding: EdgeInsets.only(top: 8, bottom: 16),
-                    child: Text('Account sign-in and cloud syncing are available in online mode.',
+                    child: SkinXText('Account sign-in and cloud syncing are available in online mode.',
                       style: TextStyle(fontSize: 12, color: _muted)),
                   ),
                 const SizedBox(height: 18),
                 Center(
-                  child: Text(
+                  child: SkinXText(
                     'SkinX · AI-assisted skin screening\nCapstone by Sharif Kiviiri',
                     textAlign: TextAlign.center,
                     style: _type(12, color: _muted, height: 1.55),
@@ -225,9 +219,9 @@ class _DetailRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
       child: Row(
         children: [
-          Expanded(child: Text(label, style: _type(14, height: 1.3))),
+          Expanded(child: SkinXText(label, style: _type(14, height: 1.3))),
           const SizedBox(width: 12),
-          Flexible(child: Text(value, textAlign: TextAlign.right, style: _type(13.5, color: _muted, height: 1.3))),
+          Flexible(child: SkinXText(value, textAlign: TextAlign.right, style: _type(13.5, color: _muted, height: 1.3))),
         ],
       ),
     );
@@ -252,10 +246,10 @@ class _PreferenceRow extends StatelessWidget {
           children: [
             SkinXIcon(icon, size: 20),
             const SizedBox(width: 10),
-            Expanded(child: Text(title, style: _type(14, height: 1.3))),
+            Expanded(child: SkinXText(title, style: _type(14, height: 1.3))),
             if (value != null) ...[
               const SizedBox(width: 8),
-              Flexible(child: Text(value!, textAlign: TextAlign.right, style: _type(13.5, color: _muted, height: 1.3))),
+              Flexible(child: SkinXText(value!, textAlign: TextAlign.right, style: _type(13.5, color: _muted, height: 1.3))),
             ],
             const SizedBox(width: 12),
             if (onTap != null) const SkinXIcon(SkinXIconType.chevronRight, size: 14),

@@ -1,3 +1,4 @@
+import '../services/app_language.dart';
 import 'package:flutter/material.dart';
 
 enum SkinXAccountType { individual, communityHealthWorker }
@@ -38,7 +39,7 @@ class SkinXAccountTypeSelector extends StatelessWidget {
     return Semantics(
       checked: selected,
       inMutuallyExclusiveGroup: true,
-      label: '$title. $subtitle',
+      label: '${AppLanguage.text(title)}. ${AppLanguage.text(subtitle)}',
       excludeSemantics: true,
       onTap: () => onChanged(type),
       child: Material(
@@ -58,7 +59,7 @@ class SkinXAccountTypeSelector extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      SkinXText(
                         title,
                         style: const TextStyle(
                           fontFamily: 'Roboto',
@@ -68,7 +69,7 @@ class SkinXAccountTypeSelector extends StatelessWidget {
                           height: 1.3,
                         ),
                       ),
-                      Text(
+                      SkinXText(
                         subtitle,
                         style: const TextStyle(
                           fontFamily: 'Roboto',
