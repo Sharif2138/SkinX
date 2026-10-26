@@ -52,7 +52,9 @@ class SkinXAuthField extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        Semantics(
+        AnimatedBuilder(
+          animation: AppLanguage.instance,
+          builder: (context, _) => Semantics(
           label: AppLanguage.text(label),
           child: TextFormField(
             controller: controller,
@@ -91,6 +93,7 @@ class SkinXAuthField extends StatelessWidget {
                       ),
                     ),
             ),
+          ),
           ),
         ),
       ],

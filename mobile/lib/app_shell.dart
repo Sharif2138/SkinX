@@ -24,6 +24,7 @@ import 'widgets/skinx_account_type_selector.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'data/offline_guides.dart';
 import 'education_guide_screen.dart';
+import 'videos_screen.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({
@@ -250,7 +251,16 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   Future<void> _showRecord(ScreeningRecord record) async {
     final delete = await showDialog<bool>(context: context, builder: (dialogContext) => AlertDialog(
       title: const SkinXText('Saved screening'),
-      content: SkinXText('${record.patientName}\n${record.savedDetails} • ${record.savedAt.toLocal()}\n\nThis result is not a diagnosis. No photo was saved.'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SkinXText(record.patientName),
+          SkinXText('${record.savedDetails} • ${record.savedAt.toLocal()}'),
+          const SizedBox(height: 12),
+          const SkinXText('This result is not a diagnosis. No photo was saved.'),
+        ],
+      ),
       actions: [
         TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: const SkinXText('Close')),
         TextButton(onPressed: () => Navigator.pop(dialogContext, true), child: const SkinXText('Delete record')),
@@ -322,18 +332,22 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     ));
   }
 
-  Future<void> _showVideos() async {
-    const url = 'https://www.aad.org/public/diseases/skin-cancer';
+  void _showVideos() {
     if (!ConnectivityService.instance.online) {
-      _showError('Videos are only available with internet.');
+      _showError('Internet is required to watch these videos.');
       return;
     }
-    try {
-      final opened = await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-      if (!opened) _showError('Could not open the educational video resource.');
-    } catch (_) {
-      _showError('Could not open the educational video resource.');
+    Navigator.of(context).push(MaterialPageRoute<void>(
+      builder: (_) => const VideosScreen(),
+    ));
+  }
+
+  Future<void> _showFeaturedVideo() async {
+    if (!ConnectivityService.instance.online) {
+      _showError('Internet is required to watch these videos.');
+      return;
     }
+    await VideosScreen.openVideo(context, VideosScreen.videos.first.url);
   }
 
   void _selectDestination(SkinXDestination destination) {
@@ -346,7 +360,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: ConnectivityService.instance,
+      animation: Listenable.merge([ConnectivityService.instance, AppLanguage.instance]),
       builder: (context, _) => AnnotatedRegion<SystemUiOverlayStyle>(
         value: const SystemUiOverlayStyle(
           statusBarColor: Colors.white,
@@ -376,7 +390,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                       onSkinChangesTap: () => _openGuide('skin_changes'),
                       onSeekCareTap: () => _openGuide('seek_care'),
                       onAllVideosTap: _showVideos,
-                      onVideoTap: _showVideos,
+                      onVideoTap: _showFeaturedVideo,
                     ),
                     HistoryScreen(records: _records, onRecordTap: _showRecord),
                     ScreeningScreen(

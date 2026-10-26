@@ -28,7 +28,12 @@ class EducationGuideScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => AnimatedBuilder(
+    animation: AppLanguage.instance,
+    builder: (context, _) => _buildPage(context, offlineGuideById(guide.id) ?? guide),
+  );
+
+  Widget _buildPage(BuildContext context, OfflineGuide guide) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(

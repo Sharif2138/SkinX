@@ -484,7 +484,7 @@ class _VideoCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SkinXText(
-                        'Protecting your skin outdoors',
+                        'Skin cancer prevention in albinism',
                         style: _type(
                           15.5,
                           weight: FontWeight.w600,
@@ -493,7 +493,7 @@ class _VideoCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 5),
                       SkinXText(
-                        'Short video • 2:40',
+                        'Watch on YouTube',
                         style: _type(12, color: _muted),
                       ),
                     ],

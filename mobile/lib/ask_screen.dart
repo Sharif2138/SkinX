@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'services/chatbot_service.dart';
 import 'services/connectivity_service.dart';
+import 'widgets/chat_message_text.dart';
 import 'widgets/skinx_header.dart';
 
 const _ink = Color(0xFF193B38);
@@ -130,7 +131,7 @@ class _AskScreenState extends State<AskScreen> {
                     )),
                     const SizedBox(height: 5),
                     const SkinXText(
-                      'Simple answers about skin health and sun protection.',
+                      'Ask about skin care for people with albinism.',
                       style: TextStyle(color: _muted, fontSize: 13, height: 1.45),
                     ),
                   ],
@@ -144,58 +145,50 @@ class _AskScreenState extends State<AskScreen> {
                   padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
                   children: [
                     if (_conversation.isEmpty) ...[
-                      Container(
-                        padding: const EdgeInsets.all(18),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF1F6F1),
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                        child: const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(2, 4, 2, 16),
+                        child: Row(
                           children: [
-                            Icon(Icons.forum_outlined, size: 28, color: _teal),
-                            SizedBox(height: 10),
-                            SkinXText('What would you like to know?', style: TextStyle(
-                              fontSize: 17, fontWeight: FontWeight.w600, color: _ink,
+                            const Icon(Icons.forum_outlined, color: _teal, size: 20),
+                            const SizedBox(width: 9),
+                            Expanded(child: SkinXText(
+                              'Explore common questions',
+                              style: const TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.w600, color: _ink,
+                              ),
                             )),
-                            SizedBox(height: 7),
-                            SkinXText('Choose a question below or type your own. Basic skin-health answers are available offline.',
-                              style: TextStyle(fontSize: 13, height: 1.5, color: _muted)),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 20),
                       ...[
-                        'What are the warning signs of skin cancer?',
-                        'How do I protect my skin from the sun?',
-                        'What does a suspicious result mean?',
-                        'How do I check my skin?',
-                      ].map((question) => Padding(
-                        padding: const EdgeInsets.only(bottom: 9),
-                        child: Material(
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            side: const BorderSide(color: _border),
-                            borderRadius: BorderRadius.circular(13),
-                          ),
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(13),
-                            onTap: () => _submitQuestion(question),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
-                              child: Row(
-                                children: [
-                                  Expanded(child: SkinXText(question, style: const TextStyle(
-                                    fontSize: 13.5, color: _ink,
-                                  ))),
-                                  const SizedBox(width: 8),
-                                  const Icon(Icons.arrow_forward_ios_rounded, color: _teal, size: 14),
-                                ],
+                        'What are signs of skin cancer in people with albinism?',
+                        'How can a person with albinism protect their skin?',
+                        'What should I do if a sore does not heal?',
+                        'Can SkinX diagnose skin cancer?',
+                      ].map((englishQuestion) {
+                        final question = AppLanguage.text(englishQuestion);
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Material(
+                            color: const Color(0xFFF7FAF7),
+                            borderRadius: BorderRadius.circular(14),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(14),
+                              onTap: () => _submitQuestion(question),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 13),
+                                child: Row(
+                                  children: [
+                                    Expanded(child: Text(question,
+                                      style: const TextStyle(fontSize: 13.5, color: _ink, height: 1.4))),
+                                    const Icon(Icons.north_east_rounded, size: 16, color: _teal),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      )),
+                        );
+                      }),
                     ],
                     for (final turn in _conversation) ...[
                       Align(
@@ -227,16 +220,14 @@ class _AskScreenState extends State<AskScreen> {
                               : Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    SkinXText(turn.answer!.text, style: const TextStyle(
-                                      color: _ink, fontSize: 14, height: 1.55,
-                                    )),
+                                    SelectionArea(
+                                      child: ChatMessageText(turn.answer!.text),
+                                    ),
                                     if (turn.answer!.problem != null) ...[
                                       const SizedBox(height: 8),
                                       SkinXText(turn.answer!.problem!,
                                         style: const TextStyle(fontSize: 12, color: _muted, height: 1.4)),
-                                      const SizedBox(height: 3),
-                                      const SkinXText('Offline guidance is shown above.',
-                                        style: TextStyle(fontSize: 12, color: _muted, height: 1.4)),
+
                                     ],
                                     if (turn.answer!.source != null) ...[
                                       const SizedBox(height: 8),
@@ -315,7 +306,7 @@ class _AskScreenState extends State<AskScreen> {
                     ),
                     const SizedBox(height: 8),
                     const SkinXText(
-                      'AI answers are educational. Avoid sharing personal medical details.',
+                      'This answer is for education, not a diagnosis.',
                       style: TextStyle(fontSize: 11, color: _muted),
                     ),
                   ],

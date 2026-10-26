@@ -120,7 +120,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: ConnectivityService.instance,
+      animation: Listenable.merge([ConnectivityService.instance, AppLanguage.instance]),
       builder: (context, _) {
         if (!ConnectivityService.instance.online) {
           return OfflineWelcome(onContinue: _continueOffline);
