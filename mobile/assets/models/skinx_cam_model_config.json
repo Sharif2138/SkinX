@@ -1,0 +1,156 @@
+{
+  "schema_version": 2,
+  "model_name": "SkinX offline binary screening with CAM explanation",
+  "selected_variant": "float16_cam",
+  "source_architecture": "EfficientNetB0",
+  "source_stage": "EfficientNetB0__head",
+  "source_model_sha256": "e5247daddbac75a10acd0d4dfc84d67fad3a58f4519f978fcef44b6c0378f5a5",
+  "tflite_sha256": "f15835559dac9e6aa2f3e6a0185a7c4fda4b64805de6dddc5a16e15f90a76b7c",
+  "model_size_mib": 7.782,
+  "input_shape": [
+    1,
+    224,
+    224,
+    3
+  ],
+  "input_color_order": "RGB",
+  "external_normalization": "NONE; pixel values are float32 0..255 before tensor quantization",
+  "resize": "tf.image.resize_with_pad, bilinear, preserve aspect ratio, black padding, centered",
+  "input_dtype": "float32",
+  "output_dtype": "float32",
+  "input_quantization": {
+    "scale": 0.0,
+    "zero_point": 0
+  },
+  "output_quantization": {
+    "scale": 0.0,
+    "zero_point": 0
+  },
+  "positive_label": 1,
+  "labels": {
+    "0": "NON_TARGET",
+    "1": "TARGET"
+  },
+  "target_probability_threshold": 0.374953031539917,
+  "decision_rule": "Cannot infer when abs(target score - target_probability_threshold) <= uncertainty_margin; otherwise Suspicious above the upper boundary and Less suspicious below the lower boundary.",
+  "cannot_infer": "Technical failures or a score within the configured uncertainty band. A borderline score does not mean the lesion is harmless.",
+  "uncertainty_abstention_enabled": true,
+  "uncertainty_margin": 0.05,
+  "uncertainty_lower_boundary": 0.324953031539917,
+  "uncertainty_upper_boundary": 0.424953031539917,
+  "uncertainty_policy_validation": {
+    "margin": 0.05,
+    "lower_boundary": 0.324953031539917,
+    "upper_boundary": 0.424953031539917,
+    "n": 339,
+    "target_count": 286,
+    "non_target_count": 53,
+    "abstained": 9,
+    "abstention_rate": 0.02654867256637168,
+    "classified": 330,
+    "coverage_rate": 0.9734513274336283,
+    "target_abstained": 3,
+    "non_target_abstained": 6,
+    "tp_classified": 266,
+    "fn_classified": 17,
+    "tn_classified": 40,
+    "fp_classified": 7,
+    "sensitivity_among_classified": 0.9399293286219081,
+    "specificity_among_classified": 0.851063829787234,
+    "target_flagged_for_review_if_cannot_infer_prompts_assessment": 269,
+    "target_review_rate_if_cannot_infer_prompts_assessment": 0.9405594405594405,
+    "non_target_flagged_for_review_if_cannot_infer_prompts_assessment": 13,
+    "non_target_review_rate_if_cannot_infer_prompts_assessment": 0.24528301886792453
+  },
+  "uncertainty_policy_validation_scope": "Conventional validation split only; exploratory prototype policy, not clinical validation.",
+  "validation_metrics": {
+    "variant": "float16",
+    "size_mb": 7.754,
+    "median_colab_inference_ms": 10.86,
+    "max_probability_difference": 0.004998624324798584,
+    "accepted": true,
+    "n": 339,
+    "tp": 269,
+    "fn": 17,
+    "tn": 43,
+    "fp": 10,
+    "sensitivity": 0.9405594405594405,
+    "specificity": 0.8113207547169812,
+    "auroc": 0.9472885604961077
+  },
+  "tensorflow_version": "2.21.0",
+  "limitations": "Research pilot; not diagnostic; PWA data sparse and source-reported; do not hide clinical warning for non-target predictions.",
+  "connectivity": "Screening inference is entirely offline when this model and preprocessing are bundled in the Android app.",
+  "output_shape": [
+    1,
+    50
+  ],
+  "cam": {
+    "enabled": true,
+    "height": 7,
+    "width": 7,
+    "output_layout": "target_score_then_row_major_cam",
+    "method": "EfficientNetB0 class activation map (CAM)",
+    "validated_against_gradcam": true,
+    "gradcam_validation": {
+      "sample_count": 8,
+      "max_normalized_map_mae": 4.6566128730773926e-08
+    },
+    "tflite_map_parity": {
+      "sample_count": 8,
+      "max_normalized_map_mae": 0.0036888541653752327,
+      "minimum_cosine_similarity": 0.9978233575820923,
+      "max_score_absolute_difference": 0.004998624324798584
+    },
+    "validation_metrics": {
+      "n": 339,
+      "tp": 269,
+      "fn": 17,
+      "tn": 43,
+      "fp": 10,
+      "sensitivity": 0.9405594405594405,
+      "specificity": 0.8113207547169812,
+      "auroc": 0.9472885604961077
+    },
+    "selected_base_tflite_validation_metrics": {
+      "variant": "float16",
+      "size_mb": 7.754,
+      "median_colab_inference_ms": 10.86,
+      "max_probability_difference": 0.004998624324798584,
+      "accepted": true,
+      "n": 339,
+      "tp": 269,
+      "fn": 17,
+      "tn": 43,
+      "fp": 10,
+      "sensitivity": 0.9405594405594405,
+      "specificity": 0.8113207547169812,
+      "auroc": 0.9472885604961077
+    },
+    "note": "Highlighted areas influenced the model output; they are not a confirmed lesion boundary or diagnosis."
+  },
+  "max_upload_bytes": 12582912,
+  "max_image_pixels": 20000000,
+  "allowed_image_formats": [
+    "JPEG",
+    "PNG"
+  ],
+  "technical_image_checks": "File validity, format, dimensions, payload size; no clinical image-quality gate.",
+  "exif_orientation": "Normalize when needed before RGB resize; verify Flutter parity separately.",
+  "cannot_infer_reasons": [
+    "EMPTY_IMAGE",
+    "IMAGE_TOO_LARGE_BYTES",
+    "IMAGE_DIMENSIONS_UNSUPPORTED",
+    "UNSUPPORTED_IMAGE_FORMAT",
+    "ANIMATED_IMAGE_UNSUPPORTED",
+    "INVALID_OR_CORRUPT_IMAGE",
+    "UNABLE_TO_PREPROCESS_IMAGE",
+    "INFERENCE_ERROR"
+  ],
+  "threshold_origin": "Notebook 04 conventional validation; locked, never updated using PWA/test.",
+  "display_messages": {
+    "Suspicious": "Suspicious pattern. Seek clinical assessment.",
+    "Less suspicious": "This does not rule out cancer. Seek assessment for persistent or changing lesions.",
+    "Cannot infer": "Technical failures or a borderline model score can prevent SkinX from assigning a screening category. A borderline score does not mean the lesion is harmless."
+  }
+}

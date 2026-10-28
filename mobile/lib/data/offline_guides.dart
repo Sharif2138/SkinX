@@ -114,7 +114,7 @@ const offlineGuides = <OfflineGuide>[
       GuideSection('Before you take a photo', 'Use a clear photo of the skin change, in good natural light when possible. Keep the area visible and avoid filters. Do not photograph unrelated objects for medical screening.'),
       GuideSection('Suspicious', 'The model found image patterns that may need attention. This is not proof of cancer. Arrange an assessment with a health professional.'),
       GuideSection('Less suspicious', 'The model did not flag the image at its fixed screening threshold. It can still miss skin cancer, so seek care for persistent, changing or bleeding lesions.'),
-      GuideSection('Cannot infer', 'SkinX could not process the image, for example because it was invalid or unsuitable for technical reasons. Try another clear photo. This does not tell you whether a lesion is safe.'),
+      GuideSection('Cannot infer', 'SkinX may be unable to process a photo for technical reasons, or the model score may be too close to its decision threshold to assign a screening category. A borderline score does not mean a lesion is harmless. For a technical problem, try another clear photo; for a borderline score, seek assessment from a health professional.'),
       GuideSection('Privacy offline', 'You can screen without internet. Saved screening history stays on the device. Only keep results you are comfortable storing, especially on a shared phone.'),
     ],
     sourceName: 'SkinX · Screening model information',

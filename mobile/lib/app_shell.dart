@@ -217,19 +217,31 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     final bytes = _photoBytes;
     if (bytes == null || _screening || !_confirmedSkinPhoto) return;
     setState(() => _screening = true);
-    showDialog<void>(context: context, barrierDismissible: false,
+      showDialog<void>(context: context, barrierDismissible: false,
       builder: (_) => const Dialog(
         backgroundColor: Colors.white,
         child: Padding(
           padding: EdgeInsets.all(24),
-          child: Row(mainAxisSize: MainAxisSize.min, children: [
-            CircularProgressIndicator(color: Color(0xFF14665E)),
-            SizedBox(width: 18),
-            Expanded(child: SkinXText('Checking photo...', style: TextStyle(
-              fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xFF193B38)))),
-          ]),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(color: Color(0xFF14665E)),
+              SizedBox(width: 18),
+              Expanded(
+                child: SkinXText(
+                  'Checking photo...',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF193B38),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-      ));
+      ),
+    );
     ScreeningResult result;
     try {
       result = await _model.screen(bytes);
@@ -242,12 +254,15 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     await Navigator.of(context).push(MaterialPageRoute<void>(
       builder: (_) => ScreeningResultScreen(
         result: result,
+        originalImageBytes: bytes,
         communityHealthWorker: _isCommunityHealthWorker,
         initialPatientName: _isCommunityHealthWorker ? _patientNameController.text : '',
         onSave: (name) async {
           await _history.save(
             ownerId: AuthService.ownerId,
-            result: result.status,
+            result: result.cannotInferReason == ScreeningResult.borderlinePredictionReason
+                ? 'Cannot infer (borderline score)'
+                : result.status,
             patientName: name,
             communityHealthWorker: _isCommunityHealthWorker,
           );
@@ -271,47 +286,92 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
         icon: Icons.assignment_outlined,
         content: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 360),
-          child: Column(mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start, children: [
-              SkinXText(record.patientName, style: const TextStyle(
-                fontWeight: FontWeight.w700, fontSize: 16)),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SkinXText(
+                record.patientName,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                ),
+              ),
               const SizedBox(height: 12),
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: isSuspicious ? const Color(0xFFFFF2E8) : const Color(0xFFEAF2E9),
+                  color: isSuspicious
+                      ? const Color(0xFFFFF2E8)
+                      : const Color(0xFFEAF2E9),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Row(children: [
-                  Icon(isSuspicious ? Icons.warning_amber_rounded : Icons.info_outline_rounded,
-                    color: isSuspicious ? const Color(0xFFA85E22) : const Color(0xFF14665E)),
-                  const SizedBox(width: 10),
-                  Expanded(child: SkinXText(record.savedDetails,
-                    style: const TextStyle(fontWeight: FontWeight.w600))),
-                ]),
+                child: Row(
+                  children: [
+                    Icon(
+                      isSuspicious
+                          ? Icons.warning_amber_rounded
+                          : Icons.info_outline_rounded,
+                      color: isSuspicious
+                          ? const Color(0xFFA85E22)
+                          : const Color(0xFF14665E),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: SkinXText(
+                        record.savedDetails,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 12),
-              Row(children: [
-                const Icon(Icons.event_outlined, size: 18, color: Color(0xFF647D78)),
-                const SizedBox(width: 8),
-                Expanded(child: SkinXText(
-                  MaterialLocalizations.of(dialogContext).formatMediumDate(record.savedAt) +
-                    ' · ' + MaterialLocalizations.of(dialogContext).formatTimeOfDay(
-                      TimeOfDay.fromDateTime(record.savedAt)),
-                  style: const TextStyle(color: Color(0xFF647D78), fontSize: 13))),
-              ]),
+              Row(
+                children: [
+                  const Icon(
+                    Icons.event_outlined,
+                    size: 18,
+                    color: Color(0xFF647D78),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: SkinXText(
+                      MaterialLocalizations.of(
+                            dialogContext,
+                          ).formatMediumDate(record.savedAt) +
+                          ' · ' +
+                          MaterialLocalizations.of(
+                            dialogContext,
+                          ).formatTimeOfDay(
+                            TimeOfDay.fromDateTime(record.savedAt),
+                          ),
+                      style: const TextStyle(
+                        color: Color(0xFF647D78),
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               const SizedBox(height: 14),
-              const SkinXText('This result is not a diagnosis. No photo was saved.',
-                style: TextStyle(fontSize: 12.5, color: Color(0xFF647D78))),
+              const SkinXText(
+                'This result is not a diagnosis. No photo was saved.',
+                style: TextStyle(fontSize: 12.5, color: Color(0xFF647D78)),
+              ),
             ],
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(dialogContext, false),
-            child: const SkinXText('Close')),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const SkinXText('Close'),
+          ),
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, true),
-            style: TextButton.styleFrom(foregroundColor: const Color(0xFF9B4238)),
+            style: TextButton.styleFrom(
+              foregroundColor: const Color(0xFF9B4238),
+            ),
             child: const SkinXText('Delete record'),
           ),
         ],
@@ -366,9 +426,9 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
 
 
   void _openPrivacyConsent() {
-    Navigator.of(context).push(MaterialPageRoute<void>(
-      builder: (_) => const PrivacyConsentScreen(),
-    ));
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => const PrivacyConsentScreen()),
+    );
   }
 
   void _openGuide(String id) {

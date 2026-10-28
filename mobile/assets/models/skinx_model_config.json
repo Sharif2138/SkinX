@@ -32,12 +32,41 @@
     "1": "TARGET"
   },
   "target_probability_threshold": 0.374953031539917,
-  "decision_rule": "TARGET when probability >= target_probability_threshold; otherwise NON_TARGET",
-  "cannot_infer": "Only technical failures e.g. file cannot be decoded; no validated uncertainty or quality cutoff exists",
+  "decision_rule": "Cannot infer when abs(target score - target_probability_threshold) <= uncertainty_margin; otherwise Suspicious above the upper boundary and Less suspicious below the lower boundary.",
+  "cannot_infer": "Technical failures or a score within the configured uncertainty band. A borderline score does not mean the lesion is harmless.",
+  "uncertainty_abstention_enabled": true,
+  "uncertainty_margin": 0.05,
+  "uncertainty_lower_boundary": 0.324953031539917,
+  "uncertainty_upper_boundary": 0.424953031539917,
+  "uncertainty_policy_validation": {
+    "margin": 0.05,
+    "lower_boundary": 0.324953031539917,
+    "upper_boundary": 0.424953031539917,
+    "n": 339,
+    "target_count": 286,
+    "non_target_count": 53,
+    "abstained": 9,
+    "abstention_rate": 0.02654867256637168,
+    "classified": 330,
+    "coverage_rate": 0.9734513274336283,
+    "target_abstained": 3,
+    "non_target_abstained": 6,
+    "tp_classified": 266,
+    "fn_classified": 17,
+    "tn_classified": 40,
+    "fp_classified": 7,
+    "sensitivity_among_classified": 0.9399293286219081,
+    "specificity_among_classified": 0.851063829787234,
+    "target_flagged_for_review_if_cannot_infer_prompts_assessment": 269,
+    "target_review_rate_if_cannot_infer_prompts_assessment": 0.9405594405594405,
+    "non_target_flagged_for_review_if_cannot_infer_prompts_assessment": 13,
+    "non_target_review_rate_if_cannot_infer_prompts_assessment": 0.24528301886792453
+  },
+  "uncertainty_policy_validation_scope": "Conventional validation split only; exploratory prototype policy, not clinical validation.",
   "validation_metrics": {
     "variant": "float16",
     "size_mb": 7.754,
-    "median_colab_inference_ms": 10.39,
+    "median_colab_inference_ms": 10.86,
     "max_probability_difference": 0.004998624324798584,
     "accepted": true,
     "n": 339,
@@ -60,7 +89,6 @@
   ],
   "technical_image_checks": "File validity, format, dimensions, payload size; no clinical image-quality gate.",
   "exif_orientation": "Normalize when needed before RGB resize; verify Flutter parity separately.",
-  "uncertainty_abstention_enabled": false,
   "cannot_infer_reasons": [
     "EMPTY_IMAGE",
     "IMAGE_TOO_LARGE_BYTES",
@@ -75,6 +103,6 @@
   "display_messages": {
     "Suspicious": "Suspicious pattern. Seek clinical assessment.",
     "Less suspicious": "This does not rule out cancer. Seek assessment for persistent or changing lesions.",
-    "Cannot infer": "Could not screen this image. Please retake or choose another supported image."
+    "Cannot infer": "Technical failures or a borderline model score can prevent SkinX from assigning a screening category. A borderline score does not mean the lesion is harmless."
   }
 }
