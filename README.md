@@ -9,8 +9,8 @@ People with albinism are at high risk of skin cancer, and in many parts of Rwand
 | Deliverable | Link |
 |---|---|
 | Walkthrough video | `<ADD VIDEO LINK>` |
-| Technical report (PDF, 4 pages) | https://docs.google.com/document/d/1rRtq8FLkG8kfki29Ewr2VCMoVuEwNcr3wviql2OiA7Y/edit?usp=sharing |
-| Android APK | `<ADD APK LINK>` or `release/skinx.apk` |
+| Technical report (pdf, 4 pages) | https://docs.google.com/document/d/1rRtq8FLkG8kfki29Ewr2VCMoVuEwNcr3wviql2OiA7Y/edit?usp=sharing| docs/SkinX_Technical_Report.pdf
+| Android APK | releases/SkinX.apk |
 
 ---
 
