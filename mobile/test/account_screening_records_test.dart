@@ -7,6 +7,8 @@ void main() {
   const result = ScreeningResult(
     status: ScreeningResult.suspicious,
     message: 'Clinical assessment is recommended.',
+    targetProbability: 0.42,
+    decisionThreshold: 0.374953,
   );
 
   testWidgets('Individual screening results do not request a patient name', (tester) async {
