@@ -231,7 +231,6 @@ cd mobile && flutter analyze
 | Integration / parity | Real TFLite model vs. Colab golden score on a synthetic image, repeatability, empty input | `mobile/integration_test/` |
 | Model validation | Patient-grouped splits, sealed test set, PWA source-group-held-out folds | `ml/03`–`ml/06` |
 
-Latest results: `<ADD: pytest X passed; flutter test X/Y passed; device used for the integration test>`.
 
 ## Model results
 
@@ -247,7 +246,6 @@ These are the honest numbers, weak spots included.
 
 We compared three architectures on validation AUROC: ResNet50 0.954 (90.6 MB), MobileNetV3Large 0.952 (12.1 MB) and EfficientNetB0 0.946 (16.3 MB). We went with EfficientNetB0 because it gave the best balance of accuracy and size for a phone.
 
-On-device performance: `<ADD device table or link to docs/performance.md>`.
 
 ## Design notes
 
