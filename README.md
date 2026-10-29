@@ -8,7 +8,7 @@ People with albinism are at high risk of skin cancer, and in many parts of Rwand
 
 | Deliverable | Link |
 |---|---|
-| Walkthrough video | `<ADD VIDEO LINK>` |
+| Walkthrough video | https://drive.google.com/drive/folders/1Buoqd-FdtHvaMmjD66FX_K9wzh3mYfyx?usp=sharing |
 | Technical report (pdf, 4 pages) | https://docs.google.com/document/d/1rRtq8FLkG8kfki29Ewr2VCMoVuEwNcr3wviql2OiA7Y/edit?usp=sharing| docs/SkinX_Technical_Report.pdf
 | Android APK | releases/SkinX.apk |
 
@@ -287,6 +287,3 @@ A few choices worth knowing about if you're reading the code:
 * The online chat only sees the question you type and your recent messages, and the model is told to remind users not to share identifying health details.
 * The datasets are used under their own licences; the notebooks list the sources.
 
-## Licence and acknowledgements
-
-`<ADD LICENCE, e.g. MIT, and add a LICENSE file>`. Built as a capstone project. Datasets: PAD-UFES-20 and MILK10k. Models: EfficientNetB0 (Keras Applications).
